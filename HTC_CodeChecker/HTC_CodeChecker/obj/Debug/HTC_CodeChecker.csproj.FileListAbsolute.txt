@@ -1,0 +1,8 @@
+c:\users\ken\documents\visual studio 2013\Projects\HTC_CodeChecker\HTC_CodeChecker\bin\Debug\HTC_CodeChecker.exe.config
+c:\users\ken\documents\visual studio 2013\Projects\HTC_CodeChecker\HTC_CodeChecker\bin\Debug\HTC_CodeChecker.exe
+c:\users\ken\documents\visual studio 2013\Projects\HTC_CodeChecker\HTC_CodeChecker\bin\Debug\HTC_CodeChecker.pdb
+c:\users\ken\documents\visual studio 2013\Projects\HTC_CodeChecker\HTC_CodeChecker\obj\Debug\HTC_CodeChecker.Form1.resources
+c:\users\ken\documents\visual studio 2013\Projects\HTC_CodeChecker\HTC_CodeChecker\obj\Debug\HTC_CodeChecker.Properties.Resources.resources
+c:\users\ken\documents\visual studio 2013\Projects\HTC_CodeChecker\HTC_CodeChecker\obj\Debug\HTC_CodeChecker.csproj.GenerateResource.Cache
+c:\users\ken\documents\visual studio 2013\Projects\HTC_CodeChecker\HTC_CodeChecker\obj\Debug\HTC_CodeChecker.exe
+c:\users\ken\documents\visual studio 2013\Projects\HTC_CodeChecker\HTC_CodeChecker\obj\Debug\HTC_CodeChecker.pdb
