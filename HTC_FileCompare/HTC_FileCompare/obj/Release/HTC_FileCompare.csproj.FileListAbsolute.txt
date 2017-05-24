@@ -1,0 +1,8 @@
+C:\Users\ken\Documents\Visual Studio 2013\Projects\HTC_FileCompare\HTC_FileCompare\bin\Release\HTC_FileCompare.exe.config
+C:\Users\ken\Documents\Visual Studio 2013\Projects\HTC_FileCompare\HTC_FileCompare\bin\Release\HTC_FileCompare.exe
+C:\Users\ken\Documents\Visual Studio 2013\Projects\HTC_FileCompare\HTC_FileCompare\bin\Release\HTC_FileCompare.pdb
+C:\Users\ken\Documents\Visual Studio 2013\Projects\HTC_FileCompare\HTC_FileCompare\obj\Release\HTC_FileCompare.Form1.resources
+C:\Users\ken\Documents\Visual Studio 2013\Projects\HTC_FileCompare\HTC_FileCompare\obj\Release\HTC_FileCompare.Properties.Resources.resources
+C:\Users\ken\Documents\Visual Studio 2013\Projects\HTC_FileCompare\HTC_FileCompare\obj\Release\HTC_FileCompare.csproj.GenerateResource.Cache
+C:\Users\ken\Documents\Visual Studio 2013\Projects\HTC_FileCompare\HTC_FileCompare\obj\Release\HTC_FileCompare.exe
+C:\Users\ken\Documents\Visual Studio 2013\Projects\HTC_FileCompare\HTC_FileCompare\obj\Release\HTC_FileCompare.pdb
