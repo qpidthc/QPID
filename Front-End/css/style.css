@@ -355,3 +355,7 @@ h3{
     font-size: 2em;
     margin-left:0px;
 }
+.barFixed{
+    position: fixed;
+    left: 0.5em;
+}
