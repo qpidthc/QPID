@@ -238,7 +238,7 @@ h3{
 }
 .ok-btn{
     border-radius: 0px;
-    font-size: 2em;
+    font-size: 1.5em;
     padding:0.2em;
     background-color: rgba(160,160,160,1);
     color:#fff;
@@ -358,4 +358,12 @@ h3{
 .barFixed{
     position: fixed;
     left: 0.5em;
+}
+
+.BorderBox{
+　border-top:1px black solid;　//上方邊框寬度設為 5px，顏色為黑色
+　border-right:1px black solid;　//右邊的邊框寬度設為 8px，顏色為紅色，樣式為 double
+　border-left:1px black solid;　//左邊的邊框寬度設為 7px，顏色為黃色，樣式為 dotted
+　border-bottom:1px black solid;　//下方邊框寬度設為 3px，顏色為藍色，樣式為 dashed
+　padding:30px;
 }
