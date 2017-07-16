@@ -1,0 +1,23 @@
+﻿/* DataTable Style*/
+    #example {
+        border-collapse: collapse;
+    }
+    #example thead th {
+        text-align: center;
+        border: 1px solid #aaa;
+    }
+    #example td {
+        text-align: center;
+        border: 1px solid #aaa;
+    }
+    #example thead th:hover {
+        background-color: #58ACFA;
+    }
+    #example tbody tr:hover {
+        background-color: #58ACFA;
+        color: #000000;
+        transition: background-color 0.8s;
+    }
+    #example tr.even:hover td.sorting_1 {
+        background-color: #58ACFA;
+    }
