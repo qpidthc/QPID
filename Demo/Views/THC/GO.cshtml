@@ -1,0 +1,64 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+
+    <script>
+          (function (i, s, o, g, r, a, m) {
+              i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                  (i[r].q = i[r].q || []).push(arguments)
+              }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                  m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+          })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+          ga('create', 'UA-100349562-1', 'auto');
+          ga('send', 'pageview');
+
+    </script>
+
+</head>
+<body>
+    <div style="width:100%;text-align:center">
+        <h1>@ViewBag.id</h1>
+        <!-- <img src="~/img/tt.jpg" /> -->
+        <!--
+        <iframe style="width:100%;height:800px;border:0px;" src="@ViewBag.Link" target="_parent" ></iframe>
+        -->
+    </div>
+
+    <script>
+
+          var iCount = 0;
+
+          function alertFunc() {
+            
+              if (iCount == 3) {
+
+                   //alert('@ViewBag.id');
+                    var link = '@ViewBag.Link';
+                    if (link.length > 0) {
+                         window.location.href = '@ViewBag.Link';
+                    }
+
+              } else{
+                  setInterval(alertFunc, 1000);
+              }
+
+              iCount++;
+          }
+
+          var myVar = setInterval(alertFunc, 1000);
+
+    </script>
+
+</body>
+
+
+</html>
+
