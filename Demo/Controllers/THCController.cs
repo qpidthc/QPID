@@ -24,10 +24,11 @@ namespace WebHTCBackEnd.Controllers
             {
                
                 string strCOP;
-                string strLink = GetCodeInfo(id, out strCOP);
+                int iCounter;
+                string strLink = GetCodeInfo(id, out strCOP, out iCounter);
                 ViewBag.id = id;
                 ViewBag.cop = strCOP;
-
+                ViewBag.counter = iCounter;
                 ViewBag.Link = strLink;
                 return View("GO2");
             }
@@ -37,9 +38,10 @@ namespace WebHTCBackEnd.Controllers
             }                  
         }
 
-        private string GetCodeInfo(string id, out string cop)
+        private string GetCodeInfo(string id, out string cop, out int counter)
         {
             cop = "";
+            counter = -1;
             if (!string.IsNullOrEmpty(id))
             {
                 string strSQL = "select * from thc_codes where cid='" + id + "'";
@@ -51,8 +53,15 @@ namespace WebHTCBackEnd.Controllers
                 {
                     strResult = dataReader["link"].ToString().Trim();
                     cop = dataReader["cop"].ToString().Trim();
+                    counter = int.Parse(dataReader["counter"].ToString());
                 }
                 dataReader.Close();
+                if (cop.Length > 0)
+                {
+                    strSQL = "update thc_codes set counter=counter+1 where cid='" + id + "'";
+                    dbCtl.ExecuteCommad(strSQL, null);
+                    counter++;
+                }
                 dbCtl.Close();
                 return strResult;
             }
