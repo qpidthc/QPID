@@ -1,16 +1,19 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8" />
         <meta name="author" content="" />
         <meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes" />
 
-        <title>Sign-up</title>
+        <title>確認中獎</title>
         <link type="text/css" rel="stylesheet" href="css/bootstrap.css" />
         <link type="text/css" rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.css" />
         <link type="text/css" rel="stylesheet" href="jQuery.mmenu-master/demo/css/demo.css" />
         <link type="text/css" rel="stylesheet" href="jQuery.mmenu-master/dist/jquery.mmenu.css" />
         <link type="text/css" rel="stylesheet" href="css/style.css" />
+        <style>
+            p.solid {border-style: solid;}
+        </style>
     </head>
     <body class=" bg5">
         <div id="page ">
@@ -18,37 +21,49 @@
             <nav id="menu">
             </nav>
             <div class="header-bar">
-                <i class="fa fa-long-arrow-left fa-3x barFixed" aria-hidden="true" ></i>
             </div>
             <div class="content">
 
                 <div class="logo w50"><img src="images/Logo_sm.png" class="logo-sm" />
                 </div>
-                <section id = "Login">
-                    <div  class="content inputcontent text-center">
+
+                 <section id="msg">
+                    <div class="content">
+
+                        <div class="row">
+                            <div class = "col-md-12" style="width:130px;height:70px;margin:20px auto;border: 2px #6E6E6E ;border-style: solid;text-align:center; vertical-align:middle; font-size:1.5em;padding:20px;color: #595959">
+                            確認
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="cil-xs-2"></div>
                             <div class="col-xs-8 col-xs-offset-2">
-                                <input type="text" class="form-control qpid-input" placeholder="帳號" style="width: 100%;">
+                                <input type="text" class="form-control qpid-input" placeholder="手機號碼" style="width: 100%;margin-top: 2em">
                             </div>
                             <div class="cil-xs-2"></div>
                         </div>
                         <div class="row">
-                            <div class="col-xs-8 col-xs-offset-2">
-                                <input type="text" class="form-control qpid-input" placeholder="密碼" style="width: 100%">
+                            <div class="cil-xs-2"></div>
+                            <div class="col-xs-8 col-xs-offset-2" style="text-align: center; margin-top: 1em;color: black;font-size: 1.3em">
+                                <b>請注意手機簡訊之</b><br>
+                                <b>中獎序號</b><br>
+                                <b>相關資訊</b>
                             </div>
+                            <div class="cil-xs-2"></div>
                         </div>
                     </div>
-                </section>
-                <div class="row" style="position:fixed; bottom: 20%; width: 100%;">
+
+                 </section>
+
+                <div class="row" style="position:fixed; bottom: 5%; width: 100%;">
                         <div class="col-xs-8 col-xs-offset-2">
-                            <button type="button" class="form-control ok-btn">申請新帳號</button>
+                            <button type="button" class="form-control ok-btn">下一步</button>
                         </div>
                 </div>
 
             </div>
 
-
+        </div>
         <!--JS---->
         <script type="text/javascript" src="js/jquery-3.2.1.js"></script>
         <script type="text/javascript" src="jQuery.mmenu-master/dist/jquery.mmenu.js"></script>
