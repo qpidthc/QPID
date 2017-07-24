@@ -27,6 +27,7 @@ hr.divsion{
 }
 .header-bar{
     position: fixed !important;
+    left: 20px;
     z-index: 2001;
 }
 label{
