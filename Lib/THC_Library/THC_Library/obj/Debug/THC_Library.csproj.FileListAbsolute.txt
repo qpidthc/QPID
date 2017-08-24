@@ -1,0 +1,8 @@
+C:\Users\ken\Desktop\WebHTCBackEnd\THC_Library\THC_Library\bin\Debug\THC_Library.dll
+C:\Users\ken\Desktop\WebHTCBackEnd\THC_Library\THC_Library\bin\Debug\THC_Library.pdb
+C:\Users\ken\Desktop\WebHTCBackEnd\THC_Library\THC_Library\obj\Debug\THC_Library.dll
+C:\Users\ken\Desktop\WebHTCBackEnd\THC_Library\THC_Library\obj\Debug\THC_Library.pdb
+D:\THC\WebHTCBackEnd\THC_Library\THC_Library\bin\Debug\THC_Library.dll
+D:\THC\WebHTCBackEnd\THC_Library\THC_Library\bin\Debug\THC_Library.pdb
+D:\THC\WebHTCBackEnd\THC_Library\THC_Library\obj\Debug\THC_Library.dll
+D:\THC\WebHTCBackEnd\THC_Library\THC_Library\obj\Debug\THC_Library.pdb
