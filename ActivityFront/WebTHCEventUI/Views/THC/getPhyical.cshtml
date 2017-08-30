@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = "getPhyical";
+    Layout = "~/Views/Shared/_THCUI.cshtml";
+}
+
+<body class=" bg5">
+    <div id="page ">
+
+        <nav id="menu">
+        </nav>
+        <div class="header-bar">
+        </div>
+        <div class="content">
+
+            <div class="logo w50">
+                <img src="~/images/Logo_sm.png" class="logo-sm" />
+            </div>
+            <section id="msg">
+                <div class="container">
+
+                    <div class="row">
+                        <div class="col-md-12" style="width:130px;margin:20px auto;border: 2px #6E6E6E ;border-style: solid;text-align:center; vertical-align:middle; font-size:1.5em;padding:10px;color: #595959">
+                            恭喜中獎。
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <div class="row" style="position:fixed; bottom: 5%; width: 100%;">
+                <div class="col-xs-8 col-xs-offset-2">
+                    <button type="button" class="form-control ok-btn" onclick="done();">完成</button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script>
+        
+        var timeHandle;
+
+        $(document).ready(function () {
+
+            if (CODE.length > 0 && ACTIVITY.length > 0) {
+                timeHandle = window.setTimeout(redirectLogin, 10);
+            }
+        });
+
+        function done() {
+
+            window.location.href = 'http://60.251.140.166/WebTHCApp';
+
+        }
+
+    </script>
+
+</body>
+

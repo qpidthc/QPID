@@ -1,0 +1,724 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_THCUI.cshtml";
+}
+
+<body class=" bg5">
+
+    <div id="page ">
+
+        <nav id="menu">
+        </nav>
+        <div class="header-bar">
+        </div>
+        <div class="content">
+
+            <div class="logo w50">
+                <img src="~/images/Logo_sm.png" class="logo-sm" />
+            </div>
+            <section id="msg">
+                <div class="container">
+
+                    <div class="row">
+                        <div class="col-md-12" style="width:90%;margin:20px auto;border: 0px #6E6E6E ;border-style: solid;text-align:center; vertical-align:middle; font-size:1.5em;padding:10px;color: #595959">
+                            <img src="~/@ViewBag.RWD_IMG" style="width:80%;height:130px;" />
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        
+                        <div class="col-xs-12" style="text-align:center;">
+                            <p style="font-size:18px;color:#6699ff!important;">@ViewBag.RWD_NAME</p>
+                        </div>
+                    </div>
+
+                    <div class="row">                        
+                        <div class="col-xs-12" style="text-align:left;">
+                            <p style="font-size:12px;color:#424242!important;">@ViewBag.RWD_DESC</p>
+                        </div>
+                    </div>
+
+                    <dir class="row">&nbsp;</dir>
+
+                    <div class="row">
+
+                        <form style="margin-top: 3em">
+                            <div class="col-xs-8 col-xs-offset-2">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label id="lbl_mobil" for="txt_mobil">手機電話</label>
+                                        <input id="txt_mobil" name="txt_mobil" type="number" class="form-control qpid-input" placeholder="手機電話" style="width: 100%" />
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label id="lbl_id" for="txt_id">身份證號</label>
+                                        <input id="txt_id" name="txt_id" type="text" class="form-control qpid-input" placeholder="身份證號" style="width:100%;text-transform:uppercase" />
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label id="lbl_id" for="txt_id">性別</label>
+                                        <select id="sel_gender" name="sel_gender" class=" qpid-select" style="width:100%;">
+                                            @{
+                                                if (string.IsNullOrEmpty(ViewBag.GENDER))
+                                                {
+                                                    <option value="">請選擇</option>
+                                                    <option value="1">男</option>
+                                                    <option value="0">女</option>
+                                                    <option value="2">彩虹</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="">請選擇</option>
+                                                    if (ViewBag.GENDER == "1")
+                                                    {
+                                                        <option value="1" selected="selected">男</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="1">男</option>
+                                                    }
+                                                    if (ViewBag.GENDER == "0")
+                                                    {
+                                                        <option value="0" selected="selected">女</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="0">女</option>
+                                                    }
+                                                    if (ViewBag.GENDER == "2")
+                                                    {
+                                                        <option value="2" selected="selected">彩虹</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="2">彩虹</option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label id="lbl_id" for="txt_id">年齡</label>
+                                        <select id="sel_age" name="sel_age" class=" qpid-select" style="width:100%;">
+
+                                            @{
+                                                if (string.IsNullOrEmpty(ViewBag.AGE))
+                                                {
+                                                    <option value="">請選擇</option>
+                                                    <option value="1">10-20</option>
+                                                    <option value="2">20-30</option>
+                                                    <option value="3">30-40</option>
+                                                    <option value="4">40-50</option>
+                                                    <option value="5">50-60</option>
+                                                    <option value="6">60-70</option>
+                                                    <option value="7">70 以上</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="">請選擇</option>
+                                                    if (ViewBag.AGE == "1")
+                                                    {
+                                                        <option value="1" selected="selected">10-20</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="1">10-20</option>
+                                                    }
+                                                    if (ViewBag.AGE == "2")
+                                                    {
+                                                        <option value="2" selected="selected">20-30</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="2">20-30</option>
+                                                    }
+                                                    if (ViewBag.AGE == "3")
+                                                    {
+                                                        <option value="3" selected="selected">30-40</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="3">30-40</option>
+                                                    }
+                                                    if (ViewBag.AGE == "4")
+                                                    {
+                                                        <option value="4" selected="selected">40-50</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="4">40-50</option>
+                                                    }
+                                                    if (ViewBag.AGE == "5")
+                                                    {
+                                                        <option value="5" selected="selected">50-60</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="5">50-60</option>
+                                                    }
+                                                    if (ViewBag.AGE == "6")
+                                                    {
+                                                        <option value="6" selected="selected">60-70</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="6">60-70</option>
+                                                    }
+                                                    if (ViewBag.AGE == "7")
+                                                    {
+                                                        <option value="7" selected="selected">70 以上</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="7">70 以上</option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label id="lbl_city" for="sel_city">縣市</label>
+                                        <select id="sel_city" name="sel_city" class="form-control qpid-select" style="width: 100%">
+                                            <option value="">請選擇</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label id="lbl_town" for="sel_town">區</label>
+                                        <select id="sel_town" name="sel_town" class="form-control qpid-select" style="width: 100%">
+                                            <option value="">請選擇</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label id="lbl_road" for="sel_road">路/街/道</label>
+                                        <select id="sel_road" name="sel_road" class="form-control qpid-select" style="width: 100%">
+                                            <option value="">請選擇</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!--
+                                     <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">段</label>
+                                        <input id="txt_sec" name="txt_sec" type="text" class="form-control qpid-input" style="width: 100%" />
+                                    </div>
+                                </div>
+                                -->
+
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="txt_lane">巷</label>
+                                        <input id="txt_lane" name="txt_lane" type="text" class="form-control qpid-input" style="width: 100%" />
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label for="txt_alley">弄</label>
+                                        <input id="txt_alley" name="txt_alley" type="text" class="form-control qpid-input" style="width: 100%" />
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label id="lbl_no" for="txt_no">號</label>
+                                        <input id="txt_no" name="txt_no" type="text" class="form-control qpid-input" style="width: 100%" />
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label id="lbl_floor" for="txt_floor">樓</label>
+                                        <input id="txt_floor" name="txt_floor" type="text" class="form-control qpid-input" style="width: 100%" />
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label for="btn_next">&nbsp;&nbsp;</label>
+                                        <button id="btn_next" name="btn_next" onclick="doNext();" type="button" class="form-control ok-btn">下一步</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+
+                </div>
+                <dir class="row">&nbsp;</dir>
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+
+    var act = '';
+    var code = '';
+    var acc = '';
+    var tk = '';
+    var m = '';
+    var g = '';
+    var a = '';
+    var iid = '';
+    var address = '';
+    var coup_number = '';
+    var log = '';
+
+    $(document).ready(function () {
+
+        @{
+
+            if (!string.IsNullOrEmpty(ViewBag.ACTIVITY))
+            {
+                <text>
+        act = '@ViewBag.ACTIVITY';
+        </text>
+            }
+
+            if (!string.IsNullOrEmpty(ViewBag.CODE))
+            {
+                <text>
+        code = '@ViewBag.CODE';
+        </text>
+            }
+
+            if (!string.IsNullOrEmpty(ViewBag.ACC))
+            {
+                <text>
+        acc = '@ViewBag.ACC';
+        </text>
+            }
+
+            if (!string.IsNullOrEmpty(ViewBag.TICKET))
+            {
+                <text>
+        tk = '@ViewBag.TICKET';
+        </text>
+            }
+
+            if (!string.IsNullOrEmpty(ViewBag.MOBIL))
+            {
+                <text>
+        m = '@ViewBag.MOBIL';
+        </text>
+            }
+
+            if (!string.IsNullOrEmpty(ViewBag.GENDER))
+            {
+                <text>
+        g = '@ViewBag.GENDER';
+        </text>
+            }
+
+            if (!string.IsNullOrEmpty(ViewBag.AGE))
+            {
+                <text>
+        a = '@ViewBag.AGE';
+        </text>
+            }
+
+             if (!string.IsNullOrEmpty(ViewBag.IID))
+            {
+                <text>
+        iid = '@ViewBag.IID';
+        </text>
+            }
+
+             if (!string.IsNullOrEmpty(ViewBag.ADDRESS))
+            {
+                <text>
+        address = '@ViewBag.ADDRESS';
+        </text>
+            }
+
+            if (!string.IsNullOrEmpty(ViewBag.LOG_KEY))
+            {
+                <text>
+            log = '@ViewBag.LOG_KEY';
+            </text>
+            }
+
+            if (!string.IsNullOrEmpty(ViewBag.RWD_COUPNUMBER))
+            {
+                <text>
+            coup_number = '@ViewBag.RWD_COUPNUMBER';
+            </text>
+            }
+
+        }
+
+        if (iid.length > 0) {
+            $("#txt_id").val(iid);
+        }
+
+        if (m.length > 0) {
+            $("#txt_mobil").val(m);
+        }
+
+
+        getCities();
+
+        $("#sel_city").change(function () {
+            getTown();
+        });
+
+        $("#sel_town").change(function () {
+            getRoad();
+        });
+
+
+
+    });
+
+    function doNext() {
+
+        var mobil = $("#txt_mobil").val();
+        var gender = $("#sel_gender").val();
+        var age = $("#sel_age").val();
+        var id = $("#txt_id").val().toUpperCase();
+        var city = $("#sel_city").val();
+        var town = $("#sel_town").val();
+        var road = $("#sel_road").val();
+        var lane = $("#txt_lane").val();
+        var alley = $("#txt_alley").val();
+        var no = $("#txt_no").val();
+        var floor = $("#txt_floor").val();
+
+        if (mobil.length == 0) {
+            $("#lbl_mobil").css('color', 'red');
+            return false;
+        } else {
+            $("#lbl_mobil").css('color', 'black');
+        }
+        if (gender.length == 0) {
+            $("#lbl_gender").css('color', 'red');
+            return false;
+        } else {
+            $("#lbl_gender").css('color', 'black');
+        }
+        if (age.length == 0) {
+            $("#lbl_age").css('color', 'red');
+            return false;
+        } else {
+            $("#lbl_age").css('color', 'black');
+        }
+        if (id.length == 0) {
+            $("#lbl_id").css('color', 'red');
+            return false;
+        } else {
+            $("#lbl_id").css('color', 'black');
+        }
+        if (!checkID(id)) {
+            $("#lbl_id").css('color', 'red');
+            return false;
+        } else {
+            $("#lbl_id").css('color', 'black');
+        }
+
+        if (city.length == 0) {
+            $("#lbl_city").css('color', 'red');
+            return false;
+        } else {
+            $("#lbl_city").css('color', 'black');
+        }
+        if (town.length == 0) {
+            $("#lbl_town").css('color', 'red');
+            return false;
+        } else {
+            $("#lbl_town").css('color', 'black');
+        }
+        if (road.length == 0) {
+            $("#lbl_road").css('color', 'red');
+            return false;
+        } else {
+            $("#lbl_road").css('color', 'black');
+        }
+        if (no.length == 0) {
+            $("#lbl_no").css('color', 'red');
+            return false;
+        } else {
+            $("#lbl_no").css('color', 'black');
+        }
+
+        var addr = city + "*" + town + "*" + road + "*" +
+            lane + "*" + alley + "*" + no + "*" + floor;
+
+        var needUpdate = false;
+
+        if (address != addr) {
+            needUpdate = true;
+        }
+
+        if (m != mobil) {
+            needUpdate = true;
+        }
+
+        if (iid != id) {
+            needUpdate = true;
+        }
+
+        if (needUpdate) {
+
+            var data = "ml=" + acc + "&tk=" + tk + "&m=" + mobil +
+                "&g=" + gender + "&a=" + age + "&iid=" + id +
+                "&addr=" + addr;
+
+            updateInfo(data);
+        } else {
+
+            nextStep();
+        }
+
+    }
+
+    function updateInfo(data) {
+
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")Register/renewAccountInfo',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+                if (jDatas.length == 1) {
+                    if (jDatas[0].VERIFY == "1") {
+                        nextStep();
+                    }
+                } else {
+                    if (jDatas.ErrorMessage) {
+                        alert(jDatas.ErrorMessage);
+                    }
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+
+            }
+        });
+
+    }
+
+    function nextStep() {
+
+        window.location.href = '@Url.Content("~/")THC/get?act=' + act + '&code=' + code + '&tk=' + tk +
+                        '&ml=' + acc + '&m=' + m + "&lk=" + log + "&coup=" + coup_number + "&type=1";
+
+        //window.location.href = 'http://60.251.140.166/WebTHCApp';
+
+        //window.location.href = '@Url.Content("~/")THC/get?ac=' + act + '&code=' + code + '&tk=' + tk +
+        //                '&ml=' + acc + '&m=' + m;
+
+    }
+
+
+    function checkID(id) {
+        tab = "ABCDEFGHJKLMNPQRSTUVXYWZIO";
+        A1 = new Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3);
+        A2 = new Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5);
+        Mx = new Array(9, 8, 7, 6, 5, 4, 3, 2, 1, 1);
+
+        if (id.length != 10) return false;
+        i = tab.indexOf(id.charAt(0));
+        if (i == -1) return false;
+        sum = A1[i] + A2[i] * 9;
+
+        for (i = 1; i < 10; i++) {
+            v = parseInt(id.charAt(i));
+            if (isNaN(v)) return false;
+            sum = sum + v * Mx[i];
+        }
+        if (sum % 10 != 0) return false;
+        return true;
+    }
+
+    function getCities() {
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: '@Url.Content("~/")THC/getCities',
+            data: '',
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+                if (jDatas.length > 0) {
+
+                    $.each(jDatas, function (k, v) {
+
+                        $('#sel_city').append($('<option>',
+                        {
+                            value: v.city,
+                            text: v.city
+                        }));
+                    });
+
+
+                    if (address.length > 0) {
+                        var split = address.split('*');
+                        $('#sel_city').val(split[0]).change();
+                        getTown();
+                    }
+
+                } else {
+                    if (jDatas.ErrorMessage) {
+                        alert(jDatas.ErrorMessage);
+                    }
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+
+            }
+        });
+    }
+
+    function getTown() {
+
+        var city = $("#sel_city").val();
+        if (city.length == 0) {
+            return false;
+        }
+
+        var data = "city=" + city;
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: '@Url.Content("~/")THC/getTowns',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+                if (jDatas.length > 0) {
+
+                    $('#sel_town')
+                    .empty()
+                    .append('<option selected="selected" value="">請選擇</option>');
+
+                    $('#sel_road')
+                    .empty()
+                    .append('<option selected="selected" value="">請選擇</option>');
+
+                    $.each(jDatas, function (k, v) {
+
+                        $('#sel_town').append($('<option>',
+                        {
+                            value: v.town,
+                            text: v.town
+                        }));
+                    });
+
+                    if (address.length > 0) {
+                        var split = address.split('*');
+                        var exists = $("#sel_town:has(option[value='" + split[1] + "'])").length > 0;
+                        if (exists) {
+                            $('#sel_town').val(split[1]).change();
+                        } else {
+                            $('#sel_town').val('').change();
+                        }
+
+                        getRoad();
+                    }
+
+
+                } else {
+                    if (jDatas.ErrorMessage) {
+                        alert(jDatas.ErrorMessage);
+                    }
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+
+            }
+        });
+    }
+
+    function getRoad() {
+
+        var city = $("#sel_city").val();
+        if (city.length == 0) {
+            return false;
+        }
+
+        var town = $("#sel_town").val();
+        if (town.length == 0) {
+            return false;
+        }
+
+        var data = "city=" + city + "&town=" + town;
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: '@Url.Content("~/")THC/getRoad',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+                if (jDatas.length > 0) {
+
+                    $('#sel_road')
+                   .empty()
+                   .append('<option selected="selected" value="">請選擇</option>');
+
+                    $.each(jDatas, function (k, v) {
+
+                        $('#sel_road').append($('<option>',
+                        {
+                            value: v.road,
+                            text: v.road
+                        }));
+                    });
+
+                    var split = address.split('*');
+
+                    var exists = $("#sel_road:has(option[value='" + split[2] + "'])").length > 0;
+                    if (exists) {
+                        $('#sel_road').val(split[2]).change();
+                    } else {
+                        $('#sel_road').val('').change();
+                    }
+
+                    $('#txt_lane').val(split[3]);
+                    $('#txt_alley').val(split[4]);
+                    $('#txt_no').val(split[5]);
+                    $('#txt_floor').val(split[6]);
+
+                } else {
+                    if (jDatas.ErrorMessage) {
+                        alert(jDatas.ErrorMessage);
+                    }
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+
+            }
+        });
+    }
+
+    </script>
+
+</body>

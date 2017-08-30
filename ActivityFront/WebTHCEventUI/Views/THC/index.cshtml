@@ -1,0 +1,72 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_THCUI.cshtml";
+
+}
+<body class=" bg4">
+    <div id="page">
+
+        <nav id="menu">
+        </nav>
+        <div class="header-bar" style="margin-top: 1em">
+            <i class="fa fa-backward fa-2x barFixed" aria-hidden="true"></i>
+        </div>
+        <div class="content">
+
+            <div class="logo w50">
+                <img src="~/images/logo_blk.png" class="logo-img" />
+            </div>
+            <section id="msg">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12" style="text-align:center;">
+                            <p style="font-size:2.5em;margin-top:2.5em;color:#595959!Important;">連線中</p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+
+        var ACTIVITY = '';
+        var CODE = '';
+        var timeHandle;
+
+        $(document).ready(function () {
+
+            @{
+             if (!string.IsNullOrEmpty(ViewBag.CODE))
+             {
+                 <text>
+            CODE = '@ViewBag.CODE';
+
+            </text>
+             }
+
+             if (!string.IsNullOrEmpty(ViewBag.ACTIVITY))
+             {
+                 <text>
+            ACTIVITY = '@ViewBag.ACTIVITY';
+
+            </text>
+             }
+
+         }
+
+            if (CODE.length > 0 && ACTIVITY.length > 0) {
+                timeHandle = window.setTimeout(redirectLogin, 1000);
+            }
+        });
+
+        function redirectLogin() {
+
+            window.location.href = '@Url.Action("/")preLogin?ac=' + ACTIVITY + '&code=' + CODE;
+        }
+
+
+
+    </script>
+</body>

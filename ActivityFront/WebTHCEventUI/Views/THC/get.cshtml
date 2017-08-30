@@ -1,0 +1,89 @@
+﻿
+@{    
+    Layout = "~/Views/Shared/_THCUI.cshtml";
+}
+
+<body class=" bg5">
+    <div id="page ">
+
+        <nav id="menu">
+        </nav>
+        <div class="header-bar">
+        </div>
+        <div class="content">
+
+            <div class="logo w50">
+                <img src="~/images/Logo_sm.png" class="logo-sm" />
+            </div>
+            <section id="msg">
+                <div class="container">
+
+                    <div class="row">
+                        <div class="col-md-12" style="width:130px;margin:20px auto;border: 2px #6E6E6E ;border-style: solid;text-align:center; vertical-align:middle; font-size:1.5em;padding:10px;color: #595959">
+                            恭喜中獎
+                        </div>
+                    </div>
+
+                    <dir class="row">
+                        <div class="col-xs-2"></div>
+                        <div class="col-xs-10" style="display:inline-block;">
+                            <div style="display:inline-block;">
+                                <p>已傳送簡訊至 </p>
+                            </div>
+                            <div style="display:inline-block;">
+                                <h3 style="color:blue;">@ViewBag.MOBIL</h3>
+                            </div>
+                        </div>
+
+                    </dir>
+
+                    <div class="row">
+                        <div class="col-xs-2"></div>
+                        <div class="col-xs-10" style="display:inline-block;">
+                            <div style="display:inline-block;">
+                                <p>中獎序號 </p>
+                            </div>
+                            <div style="display:inline-block;">
+                                <h3 style="color:blue;">@ViewBag.RWD_COUPNUMBER</h3>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <dir class="row">
+                        <div class="col-xs-2"></div>
+                        <div class="col-xs-10">
+                            <p>請關注您的手機簡訊通知</p>
+                        </div>
+                    </dir>
+
+                </div>
+
+            </section>
+
+            <div class="row" style="position:fixed; bottom: 5%; width: 100%;">
+                <div class="col-xs-8 col-xs-offset-2">
+                    <button type="button" class="form-control ok-btn" onclick="done();">完成</button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script>
+
+
+
+        function done() {
+
+            window.location.href = 'http://60.251.140.166/WebTHCApp';
+
+            //window.location.href = 'http://localhost:51323/THC/get?act=' + act + '&code=' + code + '&tk=' + tk +
+            //                '&ml=' + acc + '&m=' + m + "&lk=" + log + "&coup=" + coup_number;
+
+        }
+
+    </script>
+
+</body>

@@ -1,0 +1,87 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_THCUI.cshtml";
+}
+
+<div id="page">
+
+    <nav id="menu">
+    </nav>
+    <div class="header-bar" style="margin-top: 1em">
+        <i class="fa fa-backward fa-2x barFixed" aria-hidden="true"></i>
+    </div>
+    <div class="content">
+
+        <div class="logo w50">
+            <img src="~/images/logo_blk.png" class="logo-img" />
+        </div>
+        <section id="msg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12" style="text-align:center;">
+                        <p style="font-size:2.5em;margin-top:2.5em;color:#595959!Important;">對獎中</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+
+    var ACTIVITY = '';
+    var CODE = '';
+    var timeHandle;
+
+    $(document).ready(function () {
+
+        @{
+             if (!string.IsNullOrEmpty(ViewBag.CODE))
+             {
+                 <text>
+        CODE = '@ViewBag.CODE';
+
+        </text>
+             }
+
+             if (!string.IsNullOrEmpty(ViewBag.ACTIVITY))
+             {
+                 <text>
+        ACTIVITY = '@ViewBag.ACTIVITY';
+
+        </text>
+             }
+
+         }
+
+        if (CODE.length > 0 && ACTIVITY.length > 0) {
+            checkReward();
+        }
+    });
+
+    function checkReward() {
+
+        var data = "ac=" + ACTIVITY + "&code=" + CODE;
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: '@Url.Content("~/")THC/go',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                alert(data);
+                
+                
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+
+            }
+        });
+    }
+
+</script>

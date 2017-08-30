@@ -1,0 +1,46 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_THCUI.cshtml";
+
+}
+
+<body class=" bg5">
+    <div id="page ">
+
+        <nav id="menu">
+        </nav>
+        <div class="header-bar">
+        </div>
+        <div class="content">
+
+            <div class="logo w50">
+                <img src="~/images/Logo_sm.png" class="logo-sm" />
+            </div>
+            <section id="msg">
+                <div class="container">
+                    <!-- <row1> -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="text-center" style="width: 100%; font-size: 2.5em;margin-top: 2.5em;color:red!important;line-height:1.0em">@ViewBag.Message</p>
+                        </div>
+                    </div>
+                    <!-- <row3> -->
+                    <!--
+                    <div class="row" style="width: 100%;text-align:center;">
+                        <div class="col-md-12">
+                            <button type="button" class="ok-btn" style="width:50%;margin-top: 0.5em;">OK</button>
+                        </div>
+                    </div>
+                    -->
+                </div>
+            </section>
+
+            <div class="row" style="position:fixed; bottom: 5%; width: 100%;">
+                <div class="col-md-12">
+                    <h1 class="text-center">Bye</h1>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
