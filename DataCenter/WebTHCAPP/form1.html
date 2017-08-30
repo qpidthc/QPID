@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="author" content="" />
+        <meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes" />
+
+        <title>QPID</title>
+        <link type="text/css" rel="stylesheet" href="css/bootstrap.css" />
+        <link type="text/css" rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.css" />
+        <link type="text/css" rel="stylesheet" href="jQuery.mmenu-master/demo/css/demo.css" />
+        <link type="text/css" rel="stylesheet" href="jQuery.mmenu-master/dist/jquery.mmenu.css" />
+        <link type="text/css" rel="stylesheet" href="css/style.css" />
+
+    </head>
+    <body class="bg2">
+        <div id="page">
+            <nav id="menu">
+                <ul class="text-center">
+                    <li><a>
+                        <img src="images/user-175.png" class="userpic" /><br>
+                        <div class="userphone">0919-123-456</div>
+                        </a>
+                        <hr class="divsion"/>
+                    </li>
+                    <li><a href="index.html"><i class="fa fa-fw fa-qrcode"></i><span>掃瞄 | 中獎記錄</span></a></li>
+                    <li><a href="index.html"><i class="fa fa-fw fa-commenting-o"></i><span>活動說明</span></a></li>
+                    <li><a href="index.html"><i class="fa fa-fw fa-user-o"></i><span>個人資料</span></a></li>
+                    <li><a href="index.html"><i class="fa fa-fw fa-info-circle"></i><span>常見問題</span></a></li>
+                    <li><a href="index.html"><i class="fa fa-fw fa-question-circle-o"></i><span>關於我們</span></a></li>
+                    <li><a href="form1.html"><i class="fa fa-fw fa-list-alt"></i><span>表單元件1</span></a></li>
+                    <li><a href="form2.html"><i class="fa fa-fw fa-list-alt"></i><span>表單元件2</span></a></li>
+                    <li><a href="listview.html"><i class="fa fa-fw fa-list-ul"></i><span>LIST BOX</span></a></li>
+                </ul>
+            </nav>
+            <div class="header-bar fixed">
+                <a href="#menu"><span></span></a><i class="backbtn fa fa-times pull-right" aria-hidden="true"></i>
+                <div class="logo w30"><img src="images/logo.png" class="logo-img" /></div>
+            </div>
+            <div class="content inputcontent text-center">
+                <div style="clear:both"></div>
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <img src="images/user-175.png" class="userpic w100" />
+                    </div>
+                </div>      
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <h3 class="pagetitle">個人資料</h3>
+                    </div>
+                </div>             
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <input type="text" class="form-control qpid-input" placeholder="會員名稱" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <input type="text" class="form-control qpid-input" placeholder="掃瞄次數" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <input type="email" class="form-control qpid-input" placeholder="電子郵件" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <select class="form-control qpid-select">
+                            <option>請選擇</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <button type="button" class="form-control qpid-btn">更新資料</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!--JS---->
+        <script type="text/javascript" src="js/jquery-3.2.1.js"></script>
+        <script type="text/javascript" src="jQuery.mmenu-master/dist/jquery.mmenu.js"></script>
+        <script type="text/javascript">
+            $(function() {
+                $('nav#menu').mmenu();
+            });
+        </script>
+    </body>
+</html>
