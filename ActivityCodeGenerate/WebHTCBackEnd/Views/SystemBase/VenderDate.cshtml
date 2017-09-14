@@ -1,0 +1,507 @@
+﻿@model System.Data.DataTable
+@using System.Data;
+@using System.Collections.Generic;
+@using WebHTCBackEnd.Language;
+
+@{
+    Layout = "~/Views/Shared/_THCStandarf.cshtml";
+    Vender_Lan lan = (Vender_Lan)ViewData["lan"];   
+}
+
+<div class="container-fluid">
+
+    <div style="width:100%;">
+        <div>
+            <strong class="event-title"> @lan.Title  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img id="img_bar" src="~/img/progress_bar.gif" style="height:18px;display:none;"></strong>
+            <hr class="style2" />
+        </div>
+    </div>
+
+    <div id="div_bar" class="control-panel" style="width:100%;">
+        <div class="row">
+            <div class="form-inline col-md-3" >
+                <label class="control-label" for="txt_sh_accno">@lan.AccountNo</label>
+                <input class="form-control input-sm" id="txt_sh_accno" name="txt_sh_accno" value="" type="text">
+            </div>
+            
+            <div class="form-inline col-md-3" >
+                <label class="control-label" for="txt_sh_name">@lan.Name</label>
+                <input class="form-control input-sm" id="txt_sh_name" name="txt_sh_name" value="" type="text">
+            </div>
+           
+            <div class="form-inline col-md-3" >
+                <label class="control-label" for="txt_sh_bno">@lan.BNo</label>
+                <input class="form-control input-sm" id="txt_sh_bno" name="txt_sh_bno" value="" type="text">
+            </div>
+            
+            <div class="form-inline col-md-3 pull-right" >
+                <div class="pull-right">
+                    <button type="button" class="btn btn-info" onclick="goSearch()">@lan.Search</button>
+                    <button type="button" class="btn btn-info" onclick="goClear()">@lan.Clear</button>
+                    <button type="button" class="btn btn-warning" onclick="goAdd()">@lan.AddDate</button>
+                </div>
+            </div>
+        </div>
+        
+        <!--
+        <div class="form-inline" style="display:inline-block">
+            <label for="datetimepicker1">日期</label>
+            <div class="input-group date" id='datetimepicker1' style="width:150px;">
+                <input type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+            </div>
+            <span class="field-validation-valid" data-valmsg-for="Event_Client_Name" data-valmsg-replace="true"></span>
+        </div>
+        &nbsp;
+        <div class="form-inline" style="display:inline-block">
+            <label class="control-label" for="Event_Disabled">停用狀態</label>
+            <select class="form-control input-sm" id="Event_Disabled" name="Event_Disabled">
+                <option value="">全部</option>
+                <option value="Y">停用</option>
+                <option value="N">啟用</option>
+            </select>
+        </div>
+        -->
+        
+    </div>
+
+    <div id="div_table" class="pane panel-primary span8 offset2">
+
+        <div class="panel-body">
+
+            <div class="col-xs-12">
+                <table id="example" class="ui celled table" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>@lan.Editor</th>
+                            <th>VM001</th>
+                            <th>VM002</th>
+                            <th>VM003</th>
+                            <th>VM004</th>
+                            <th>VM006</th>
+                            <th>VM007</th>
+                            <th>VM008</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (DataRow row in @Model.Rows)
+                        {
+                            <tr>
+                                <td></td>
+                                <td>@row["VM001"]</td>
+                                <td>@row["VM002"]</td>
+                                <td>@row["VM003"]</td>
+                                <td>@row["VM004"]</td>
+                                <td>@row["VM006"]</td>
+                                <td>@row["VM007"]</td>
+                                <td>@row["VM008"]</td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="div_content" class="panel panel-info" style="display:none;">
+        <div class="panel-heading">
+            <div class="panel-title pull-left">@lan.EditorPanel</div>
+            <div class="panel-title pull-right">
+                <a href="javascript: void(0)" id="a_chk_def" onclick="goCancel();"><span class="glyphicon glyphicon-remove icon-success"></span></a>&nbsp;&nbsp;
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="panel-body">
+
+            <form id="form1" class="form" action="" role="form">
+                <!--data-toggle="validator" -->
+
+                <div class="row">
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_account">@lan.AccountNo</label>
+                        <input type="text" class="form-control" id="txt_account" placeholder="@lan.AccountNo" name="txt_account" maxlength="20" data-error="@lan.Error_Accno" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_name">@lan.Name</label>
+                        <input type="text" class="form-control" id="txt_name" placeholder="@lan.Name" name="txt_name" maxlength="20" data-error="@lan.Error_Name" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_full_name">@lan.FullName</label>
+                        <input type="text" class="form-control" id="txt_full_name" placeholder="@lan.FullName" name="txt_full_name" maxlength="40">                        
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_bno">@lan.BNo</label>
+                        <input type="text" class="form-control" id="txt_bno" maxlength="8" placeholder="@lan.BNo" name="txt_bno">
+                    </div>
+                    <div class="form-group col-md-8 form-inline">
+                        <label for="txt_addr">@lan.Address</label>
+                        <input type="text" class="form-control " id="txt_addr" placeholder="@lan.Address" maxlength="255" name="txt_addr" style="min-width:400px;">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_con_1">@lan.Person_1</label>
+                        <input type="text" class="form-control" id="txt_con_1" maxlength="20" placeholder="@lan.Person_1" name="txt_con_1">
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_tel_1">@lan.Tel</label>
+                        <input type="text" class="form-control" id="txt_tel_1" maxlength="20" placeholder="@lan.Tel" name="txt_tel_1">
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_mail_1">@lan.Mail</label>
+                        <input type="text" class="form-control" id="txt_mail_1" maxlength="40" placeholder="@lan.Mail" name="txt_mail_1">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_con_2">@lan.Person_2</label>
+                        <input type="text" class="form-control" id="txt_con_2" maxlength="20" placeholder="@lan.Person_2" name="txt_con_2">
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_tel_2">@lan.Tel</label>
+                        <input type="text" class="form-control" id="txt_tel_2" maxlength="20" placeholder="@lan.Tel" name="txt_tel_2">
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_mail_2">@lan.Mail</label>
+                        <input type="text" class="form-control" id="txt_mail_2" maxlength="40" placeholder="@lan.Mail" name="txt_mail_2">
+                    </div>
+                </div>
+
+                <hr />
+                <button type="submit" class="btn btn-primary" id="btn_submit">
+                    <!-- onclick="doSubmit();" -->
+                    <span class="glyphicon glyphicon-saved"></span>&nbsp;&nbsp;&nbsp;&nbsp;@lan.Confirm&nbsp;&nbsp;&nbsp;&nbsp;
+                </button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-warning" onclick="goCancel();">
+                    <span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;&nbsp;&nbsp;@lan.Back&nbsp;&nbsp;&nbsp;&nbsp;
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    var mdlAction;
+    var editRow;
+    var table;
+
+    $(document).ready(function () {
+
+        @{
+            if (!string.IsNullOrEmpty(ViewBag.s_acc_no))
+            {
+                <text>
+        $("#txt_sh_accno").val('@ViewBag.s_acc_no');
+                </text>
+            }
+            if (!string.IsNullOrEmpty(ViewBag.s_acc_name))
+            {
+                <text>
+                $("#txt_sh_name").val('@ViewBag.s_acc_name');
+                </text>
+            }
+            if (!string.IsNullOrEmpty(ViewBag.s_bno))
+            {
+                <text>
+        $("#txt_sh_bno").val('@ViewBag.s_bno');
+                </text>
+            }
+
+        }
+        loadTable();
+
+        $('#form1').validator();
+        $('#form1').validator().on('submit', function (e) {
+            if (e.isDefaultPrevented()) {
+                // handle the invalid form...
+                //alert('invalid');
+            } else {
+                // everything looks good!
+                e.preventDefault();
+
+                if (editMode == 'A') {
+                    doAdd();
+                } else if (editMode == 'U') {
+                    doUpdate();
+                }
+            }
+        })
+    });
+
+    function loadTable() {
+        table = $('#example').DataTable({
+            info: false,
+            bLengthChange: false,
+            searching: false,
+            "language": {
+                "lengthMenu": "顯示 _MENU_ 紀錄 每頁",
+                "zeroRecords": "@lan.DataTable_NoData",
+                "info": "@lan.DataTable_CurrentPage _PAGE_ / _PAGES_",
+                "infoEmpty": "@lan.DataTable_NoData",
+                "infoFiltered": "(filtered from _MAX_ total records)",
+                "paginate": {
+                    "next": "&nbsp;&nbsp;@lan.DataTable_NextPage&nbsp;&nbsp;",
+                    "previous": "&nbsp;&nbsp;@lan.DataTable_PreviousPage&nbsp;&nbsp;"
+                }
+            },
+            "columns":
+            [
+                {
+                    mRender: function (data, type, row) {
+                        //console.log(row.info);
+                        var editLink = '<a  data-id="' + row.VM002 + '" onclick="editClick(\'' + row.VM002 + '\');" ><span class="glyphicon glyphicon-pencil" style="cursor: pointer;"></span></a>';
+                        var delLink = '<a  data-id="' + row.VM002 + '" onclick="deleteClick(\'' + row.VM002 + '\');" ><span class="glyphicon glyphicon-trash" style="cursor: pointer;"></a>';
+                        return editLink + '&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;' + delLink;
+                    },
+                    "orderable": false
+                },
+                { "title": "KEY", "data": "VM001", bVisible: false },
+                { "title": "@lan.AccountNo", "data": "VM002" },
+                { "title": "@lan.Name", "data": "VM003" },
+                { "title": "@lan.FullName", "data": "VM004" },
+                { "title": "@lan.BNo", "data": "VM006" },
+                { "title": "@lan.Person_1", "data": "VM007" },
+                { "title": "@lan.Tel", "data": "VM008" }
+
+            ],
+        });
+    }
+
+    function editClick(row) {
+        editRow = row;
+        getRemoteRow();
+        $("#div_bar").hide();
+        $("#div_table").hide();
+        $("#div_content").fadeIn(500);
+    }
+
+    function deleteClick(row) {
+        editRow = row;
+        //type, autohide , msg, action, handler
+        showQMoal('q', false, '@lan.CheckRemove', 100, onQuestion);
+    }
+
+    function onQuestion(action, type) {
+        //alert(action + type);
+        if (type == 'y') {
+            if (action == 100) {
+                doDelete();
+            }
+        } else if (type == 'n') {
+
+        }
+    }
+
+    function goSearch() {
+
+        var args = "accno=" + txt_sh_accno.value + "&accname=" + txt_sh_name.value +
+                    "&accbon=" + txt_sh_bno.value;
+        var searchUrl = "@Url.Content("~/")systembase/VenderDataSearch?" + args;
+        window.location.href = searchUrl;
+    }
+
+    function goAdd() {
+        $('#form1')[0].reset();
+
+        $("#div_bar").hide();
+        $("#div_table").hide();
+        $("#div_content").fadeIn(500);
+        $('#txt_account').removeAttr('disabled');
+        editMode = 'A';
+    }
+
+    function goClear() {
+        $("#div_bar :input[type=text]").val('');
+    }
+
+    function goCancel() {
+        $("#div_content").hide();
+        $("#div_bar").show();
+        $("#div_table").fadeIn(500);
+        $('#txt_account').removeAttr('disabled');
+        editMode = '';
+    }
+
+    function getRemoteRow() {
+
+        showLoadingBar();
+        var data = { accno: editRow };
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")systembase/SingleVenderData',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+                if (jDatas.length == 1) {
+                    $('#form1')[0].reset();
+                    $("#txt_account").val(jDatas[0].VM002);
+                    $("#txt_name").val(jDatas[0].VM003);
+                    $("#txt_full_name").val(jDatas[0].VM004);
+                    $("#txt_bno").val(jDatas[0].VM005);
+                    $("#txt_addr").val(jDatas[0].VM006);
+                    $("#txt_con_1").val(jDatas[0].VM007);
+                    $("#txt_tel_1").val(jDatas[0].VM008);
+                    $("#txt_mail_1").val(jDatas[0].VM009);
+                    $("#txt_con_2").val(jDatas[0].VM010);
+                    $("#txt_tel_2").val(jDatas[0].VM011);
+                    $("#txt_mail_2").val(jDatas[0].VM012);
+                    editMode = 'U';
+                    $('#txt_account').attr('disabled', 'disabled');
+                } else {
+                    if (jDatas.ErrorMessage) {
+                        //alert(jDatas.ErrorMessage);
+                        showQMoal('e', false, jDatas.ErrorMessage, 0, null);
+                    }
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+
+    function doAdd() {
+
+        showLoadingBar();
+        $formData = $("#form1").serialize();
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")systembase/NewVenderData',
+            data: $formData,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+                if (jDatas.length == 1) {
+                    table.row.add({
+                        "VM001": jDatas[0].NewId,
+                        "VM002": $("#txt_account").val(),
+                        "VM003": $("#txt_name").val(),
+                        "VM004": $("#txt_full_name").val(),
+                        "VM006": $("#txt_bno").val(),
+                        "VM007": $("#txt_con_1").val(),
+                        "VM008": $("#txt_tel_1").val()
+                    }).draw();
+                    goCancel();
+
+                } else {
+                    if (jDatas.ErrorMessage) {
+                        //alert(jDatas.ErrorMessage);
+                        showQMoal('e', false, jDatas.ErrorMessage, 0, null);
+                    }
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function doUpdate() {
+
+        showLoadingBar();
+
+        var disabled = $("#form1").find(':input:disabled').removeAttr('disabled');
+        $formData = $("#form1").serialize();
+        disabled.attr('disabled', 'disabled');
+
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")systembase/UpdateVenderData',
+            data: $formData,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+                if (jDatas.length == 1) {
+
+                    var targetRow = $('tr:has(td:nth-child(2):contains("' + editRow + '"))')
+                    if (targetRow.length == 1) {
+                        var rowData = table.row(targetRow).data();
+                        rowData.VM002 = $("#txt_account").val();
+                        rowData.VM003 = $("#txt_name").val();
+                        rowData.VM004 = $("#txt_full_name").val();
+                        rowData.VM006 = $("#txt_bno").val();
+                        rowData.VM007 = $("#txt_con_1").val();
+                        rowData.VM008 = $("#txt_tel_1").val();
+                        table.row(targetRow).data(rowData).draw();
+                    }
+                    goCancel();
+
+                } else {
+                    if (jDatas.ErrorMessage) {
+                        //alert(jDatas.ErrorMessage);
+                        showQMoal('e', true, jDatas.ErrorMessage, 0, null);
+                    }
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function doDelete() {
+
+        var targetRow = $('tr:has(td:nth-child(2):contains("' + editRow + '"))')
+        if (targetRow.length == 1) {
+
+            showLoadingBar();
+            var data = { accno: editRow };
+            $.ajax({
+                async: false,
+                type: "POST",
+                url: '@Url.Content("~/")systembase/DeleteVenderData',
+                data: data,
+                dataType: 'json',
+                success: function (data, status, xhr) {
+
+                    jDatas = jQuery.parseJSON(data);
+                    if (jDatas.length == 1) {
+                        table.row(targetRow).remove().draw();
+                    } else {
+                        if (jDatas.ErrorMessage) {
+                            showQMoal('e', true, jDatas.ErrorMessage, 0, null);
+                        }
+                    }
+                },
+                error: function (request, error) {
+                    alert(error + " : " + request.responseText);
+                },
+                complete: function () {
+                    hideLoadingBar();
+                }
+            });
+        }
+    }
+
+</script>

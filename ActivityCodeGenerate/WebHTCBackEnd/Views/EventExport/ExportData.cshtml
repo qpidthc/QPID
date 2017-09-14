@@ -1,0 +1,505 @@
+﻿
+@model System.Data.DataTable
+@using System.Data;
+@using System.Collections.Generic;
+@using System.Collections.Specialized;
+@using WebHTCBackEnd.Language;
+
+@{
+    Layout = "~/Views/Shared/_THCStandarf.cshtml";
+    Event_Export lan = (Event_Export)ViewData["lan"];
+}
+
+<div class="container-fluid">
+
+    <div style="width:100%;">
+        <div>
+            <strong class="event-title"> @lan.Title  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img id="img_bar" src="~/img/progress_bar.gif" style="height:18px;display:none;"></strong>
+            <hr class="style2" />
+        </div>
+    </div>    
+    <div id="div_bar" class="control-panel" style="width:100%;">
+        <div class="row">
+            <div class="form-inline col-md-4">
+                <label class="control-label" for="txt_sh_eventno">@lan.Event_No</label>
+                <!--
+                <input class="form-control input-sm" id="txt_sh_eventno" name="txt_sh_eventno" value="" type="text">
+                -->
+                <div class="input-group">
+                    <input type="text" class="form-control " id="txt_sh_eventno" name="txt_sh_eventno" aria-label="...">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle btn-info" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lan.EventList <span class="caret"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            @foreach (var evno in @ViewBag.TOP10_EVENTS)
+                            {
+                                <li><a href="#">@evno</a></li>
+                            }
+                        </ul>
+                    </div><!-- /btn-group -->
+                </div><!-- /input-group -->
+
+            </div>
+
+            <div class="form-inline col-md-4">
+                <label class="control-label" for="txt_sh_eventname">@lan.Event_Name</label>
+                <input class="form-control " id="txt_sh_eventname" name="txt_sh_eventname" value="" type="text">
+            </div>
+
+            <div class="form-inline col-md-4 pull-right">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-info" onclick="goSearch()">@lan.Search</button>
+                    <button type="button" class="btn btn-info" onclick="goClear()">@lan.Clear</button>
+                    <button type="button" class="btn btn-warning" id="btn_add" name="btn_add" onclick="goAdd()" >@lan.AddDate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    
+    <div id="div_table" class="pane panel-primary span8 offset2" style="display:none;">
+
+        <div class="panel-body">
+
+            <div class="col-xs-12">
+                <button type="button" class="btn btn-info" onclick="goLog()" id="btn_log" name="btn_log" data-popup-open="popup-1">@lan.SearchLog</button>
+                <br />
+                <br />
+                <table id="example" class="ui celled table" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>EQC002</th>
+                            <th>EQC003</th>
+                            <th>EQC004</th>   
+                            <th>EQC005</th>
+                            <th>EC</th>   
+                            <th>AEP004</th>
+                            <th>AEP005</th>
+                            <th>AEP006</th>                          
+                            <th>AE014</th>                   
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            if (Model != null)
+                            {
+                                foreach (DataRow row in @Model.Rows)
+                                {
+                                    <tr>
+                                       
+                                        <td>@row["EQC002"]</td>
+                                        <td>@row["EQC003"]</td>
+                                        <td>@row["EQC004"]</td>                                       
+                                        <td>@row["EQC005"]</td>                                        
+                                        <td>@row["EC"]</td>
+                                        <td>@row["AEP004"]</td>  
+                                        <td>@row["AEP005"]</td>
+                                        <td>@row["AEP006"]</td>
+                                        <td>@row["AE014"]</td>                                     
+                                    </tr>
+                                }
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="div_content" class="panel panel-info" style="display:none;">
+        <div class="panel-heading">
+            <div class="panel-title pull-left">@lan.EditorPanel</div>
+            <div class="panel-title pull-right">
+                <a href="javascript: void(0)" id="a_chk_def" onclick="goCancel();"><span class="glyphicon glyphicon-remove icon-success"></span></a>&nbsp;&nbsp;
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="panel-body">
+
+            <form id="form1" class="form" action="" role="form">
+                <!--data-toggle="validator" -->
+
+                <div class="row">
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_event_no">@lan.Event_No</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="txt_event_no" name="txt_event_no" maxlength="20" readonly>
+                        </div>
+                        <label id="lbl_event_name"></label>
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_employee">@lan.Employee</label>
+                        <input type="text" class="form-control" id="txt_employee" maxlength="20" placeholder="@lan.Employee" name="txt_employee" data-error="@lan.Error_Employee" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_download_datetime">@lan.DownloadDatetime</label>
+                        <input type="text" class="form-control" id="txt_download_datetime" name="txt_download_datetime" maxlength="20" readonly>
+                        <div class="help-block with-errors"></div>
+                    </div>                                        
+                </div>                   
+               
+                <hr />
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-warning" onclick="goCancel();" id="btn_back">
+                    <span class=" glyphicon glyphicon-share-alt">
+                    </span>&nbsp;&nbsp;&nbsp;&nbsp;@lan.Back&nbsp;&nbsp;&nbsp;&nbsp;
+                </button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="submit" class="btn btn-danger" id="btn_download">
+                    <span class=" glyphicon glyphicon-save">
+                    </span>&nbsp;&nbsp;&nbsp;&nbsp;@lan.Download&nbsp;&nbsp;&nbsp;&nbsp;
+                </button>
+                <br />
+                <br />
+             
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- POPUP -->
+<link rel="stylesheet" href="~/css/popup.css" />
+
+<div class="popup" data-popup="popup-1">
+    <div class="popup-inner" style="border:0px solid red;">
+        <h2>@lan.SearchLog</h2>
+        <hr class="style2" />
+        <table id="log_table" class="ui celled table" cellspacing="0" style="width:100%">
+            <thead>
+                <tr>                    
+                    <th>EPL001</th>
+                    <th>EPL002</th>
+                    <th>AE002</th>
+                    <th>AE003</th>
+                    <th>EPL003</th>
+                    <th>EPL004</th>
+                </tr>
+            </thead>
+            <tbody>
+             
+            </tbody>
+        </table>
+
+        <p></p>
+        <p><a data-popup-close="popup-1" href="#">Close</a></p>
+        <a class="popup-close" data-popup-close="popup-1" href="#">x</a>
+    </div>
+</div>
+
+<script>
+
+    var EVENT_KEY;
+    var editRow;
+    var table;
+    var log_table;
+    var MYKEY;
+    var tableRow;
+    var timer_handle;
+    var DOWNLOAD_ACTION = 101;
+
+    $(document).ready(function () {
+
+        //----- CLOSE
+        $('[data-popup-close]').on('click', function (e) {
+            var targeted_popup_class = jQuery(this).attr('data-popup-close');
+            $('[data-popup="' + targeted_popup_class + '"]').fadeOut(350);
+
+            e.preventDefault();
+        });
+
+        @{
+            if (!string.IsNullOrEmpty(ViewBag.s_event_no))
+            {
+                <text>
+        $("#txt_sh_eventno").val('@ViewBag.s_event_no');
+        </text>
+            }
+            if (!string.IsNullOrEmpty(ViewBag.s_event_name))
+            {
+                <text>
+        $("#txt_sh_eventname").val('@ViewBag.s_event_name');
+        </text>
+            }
+
+            if (!string.IsNullOrEmpty(ViewBag.EVENT_KEY))
+            {
+                <text>
+        EVENT_KEY = '@ViewBag.EVENT_KEY';
+        </text>
+            }
+
+        }
+
+        loadTable();
+        loadLogTable();
+        @{
+            if(Model != null){
+                <text>
+        $('#div_info').show();
+        $('#div_table').show();
+        $('#btn_add').show();
+        </text>
+            }
+        }
+
+        $(".dropdown-menu li a").click(function () {
+            var eventItem = $(this).text();
+            var splits = eventItem.split('-');
+            $("#txt_sh_eventno").val(splits[0]);
+            $("#txt_sh_eventname").val(splits[1]);
+        });
+
+        $('#form1').validator();
+        $('#form1').validator().on('submit', function (e) {
+            if (e.isDefaultPrevented()) {
+                // handle the invalid form...
+                //alert('invalid');
+            } else {
+                // everything looks good!
+                e.preventDefault();
+
+                if (editMode == 'A') {
+                    doDownloadQuestion();
+                }
+            }
+        })
+    });
+
+    function loadTable() {
+        table = $('#example').DataTable({
+            info: true,
+            bLengthChange: false,
+            searching: false,
+            "language": {
+                "lengthMenu": "顯示 _MENU_ 紀錄 每頁",
+                "zeroRecords": "@lan.DataTable_NoData",
+                "info": "@lan.DataTable_CurrentPage _PAGE_ / _PAGES_",
+                "infoEmpty": "@lan.DataTable_NoData",
+                "infoFiltered": "(filtered from _MAX_ total records)",
+                "paginate": {
+                    "next": "&nbsp;&nbsp;@lan.DataTable_NextPage&nbsp;&nbsp;",
+                    "previous": "&nbsp;&nbsp;@lan.DataTable_PreviousPage&nbsp;&nbsp;"
+                }
+            },
+            "columns":
+            [
+                { "title": "@lan.SerialNo", "data": "EQC002" },
+                { "title": "@lan.QR", "data": "EQC003" },
+                { "title": "@lan.SBit", "data": "EQC004" },
+                { "title": "@lan.QRBit", "data": "EQC005" },
+                { "title": "@lan.RWD_Vender", "data": "EC" },
+                { "title": "@lan.RWD_Level", "data": "AEP004" },
+                { "title": "@lan.RWD_Name", "data": "AEP005" },
+                { "title": "@lan.RWD_Qty", "data": "AEP006" },
+                { "title": "@lan.RWD_URL", "data": "AE014" }
+            ],
+        });
+    }
+
+    function loadLogTable() {
+        log_table = $('#log_table').DataTable({
+            info: true,
+            bLengthChange: false,
+            searching: false,
+            "language": {
+                "lengthMenu": "顯示 _MENU_ 紀錄 每頁",
+                "zeroRecords": "@lan.DataTable_NoData",
+                "info": "@lan.DataTable_CurrentPage _PAGE_ / _PAGES_",
+                "infoEmpty": "@lan.DataTable_NoData",
+                "infoFiltered": "(filtered from _MAX_ total records)",
+                "paginate": {
+                    "next": "&nbsp;&nbsp;@lan.DataTable_NextPage&nbsp;&nbsp;",
+                    "previous": "&nbsp;&nbsp;@lan.DataTable_PreviousPage&nbsp;&nbsp;"
+                }
+            },
+            "columns":
+            [
+                { "title": "KEY", "data": "EPL001", bVisible: false },
+                { "title": "EVENTKEY", "data": "EPL002", bVisible: false },
+                { "title": "@lan.Event_No", "data": "AE002" },
+                { "title": "@lan.Event_Name", "data": "AE003" },
+                { "title": "@lan.Employee", "data": "EPL003" },
+                { "title": "@lan.DownloadDatetime", "data": "EPL004" }
+
+            ],
+        });
+    }
+
+    function goLog() {
+
+        showLoadingBar();
+        var data = "event_key=" + EVENT_KEY;
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")eventexport/EventExportLog',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+
+                if (jDatas.length >= 0) {
+
+                    log_table.clear().draw();
+                    $.each(jDatas, function (k, v) {
+
+                        qrRow = log_table.row.add({
+                            "EPL001": v.EPL001,
+                            "EPL002": v.EPL002,
+                            "AE002": v.AE002,
+                            "AE003": v.AE003,
+                            "EPL003": v.EPL003,
+                            "EPL004": v.EPL004,
+                        });
+                        qrRow.draw();
+                    });
+
+                    var targeted_popup_class = $("#btn_log").attr('data-popup-open');
+                    $('[data-popup="' + targeted_popup_class + '"]').fadeIn(350);
+
+                } else {
+                    if (jDatas.ErrorMessage) {
+                        //alert(jDatas.ErrorMessage);
+                        showQMoal('e', false, jDatas.ErrorMessage, 0, null);
+                    }
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+
+    }
+
+    function editClick(row) {
+        editRow = row;
+        getTargetRow(editRow);
+        getRemoteRow();
+        $("#div_bar").hide();
+        $("#div_info").hide();
+        $("#div_table").hide();
+        $("#div_content").fadeIn(500);
+    }
+
+    function onQuestion(action, type) {
+
+        if (type == 'y') {
+            if (action == DOWNLOAD_ACTION) {
+                doDownload();
+            }
+        } else if (type == 'n') {
+
+        }
+    }
+
+    function goSearch() {
+
+        if (txt_sh_eventno.value.length == 0 && txt_sh_eventname.value.length == 0) {
+            $('#div_info').hide();
+            $('#div_table').hide();
+            $('#btn_add').hide();
+            return false;
+        }
+        var args = "event_no=" + txt_sh_eventno.value + "&event_name=" + txt_sh_eventname.value;
+        var searchUrl = "@Url.Content("~/")eventexport/EventExportSearch?" + args;
+        window.location.href = searchUrl;
+    }
+
+    function goAdd() {
+        $('#form1')[0].reset();
+        $("#div_bar").hide();
+        $('#div_info').hide();
+        $("#div_table").hide();
+        $("#div_content").fadeIn(500);
+
+        $("#txt_employee").prop('readonly', false);
+
+        $("#txt_event_no").val(txt_sh_eventno.value);
+        $("#lbl_event_name").text(txt_sh_eventname.value);
+        $("#txt_employee").val('');
+        $("#txt_download_datetime").val('');
+
+        $("#btn_back").attr("disabled", false);
+        $("#btn_download").attr("disabled", false);
+        editMode = 'A';
+    }
+
+    function goClear() {
+
+        $("#div_bar :input[type=text]").val('');
+    }
+
+    function goCancel() {
+        $("#div_content").hide();
+        $("#div_bar").show();
+        $('#div_info').show();
+        $("#div_table").fadeIn(500);
+        editMode = '';
+    }
+
+    function doDownloadQuestion() {
+        showQMoal('q', true, '@lan.CheckDownload', DOWNLOAD_ACTION, onQuestion);
+    }
+
+    function doDownload() {
+
+        showLoadingBar();
+        $formData = $("#form1").serialize() + "&event_key=" + EVENT_KEY +
+                        "&event_name=" + $("#txt_sh_eventname").val();
+
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")eventexport/NewEventDownload',
+            data: $formData,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+                if (jDatas.length == 1) {
+
+                    MYKEY = jDatas[0].NewId;
+
+                    var url = '@Url.Content("~/")exports/' + jDatas[0].FILE;
+                    downloadFile(url);
+                    //window.location.href = '@Url.Content("~/")exports/' + jDatas[0].FILE;
+
+                    $("#btn_back").attr("disabled", true);
+                    $("#btn_download").attr("disabled", true);
+
+                    //timer_handle = setInterval(queryDownloadState, 2000);
+
+                } else {
+                    if (jDatas.ErrorMessage) {
+                        showQMoal('e', false, jDatas.ErrorMessage, 0, null);
+                        peddingHide();
+                    }
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function downloadFile(filePath) {
+        var link = document.createElement('a');
+        link.href = filePath;
+        link.download = filePath.substr(filePath.lastIndexOf('/') + 1);
+        link.click();
+    }
+
+</script>

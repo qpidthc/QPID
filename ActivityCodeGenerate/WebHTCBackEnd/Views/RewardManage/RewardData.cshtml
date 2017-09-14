@@ -1,0 +1,1314 @@
+﻿@{
+    Layout = null;
+}
+@model System.Data.DataTable
+@using System.Data;
+@using System.Collections.Generic;
+@using System.Collections.Specialized;
+@using WebHTCBackEnd.Language;
+
+@{
+    Layout = "~/Views/Shared/_THCStandarf.cshtml";
+    Event_Reward lan = (Event_Reward)ViewData["lan"];
+
+}
+
+<div class="container-fluid">
+
+    <div style="width:100%;">
+        <div>
+            <strong class="event-title"> @lan.Title  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img id="img_bar" src="~/img/progress_bar.gif" style="height:18px;display:none;"></strong>
+            <hr class="style2" />
+        </div>
+    </div>    
+    <div id="div_bar" class="control-panel" style="width:100%;">
+        <div class="row">
+            <div class="form-inline col-md-4">
+                <label class="control-label" for="txt_sh_eventno">@lan.Event_No</label>               
+                <div class="input-group">
+                    <input type="text" class="form-control " id="txt_sh_eventno" name="txt_sh_eventno" aria-label="...">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default dropdown-toggle btn-info" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lan.EventList <span class="caret"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            @foreach (var evno in @ViewBag.TOP10_EVENTS)
+                            {
+                                <li><a href="#">@evno</a></li>
+                            }
+                        </ul>
+                    </div><!-- /btn-group -->
+                </div><!-- /input-group -->
+
+            </div>
+
+            <div class="form-inline col-md-4">
+                <label class="control-label" for="txt_sh_eventname">@lan.Event_Name</label>
+                <input class="form-control " id="txt_sh_eventname" name="txt_sh_eventname" value="" type="text">
+            </div>
+
+            <div class="form-inline col-md-4 pull-right">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-info" onclick="goSearch()">@lan.Search</button>
+                    <button type="button" class="btn btn-info" onclick="goClear()">@lan.Clear</button>
+                    <button type="button" class="btn btn-warning" id="btn_add" name="btn_add" onclick="goAdd()">@lan.AddDate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div id="div_info" class="panel panel-primary" style="width:100%;display:none;">
+        <div class="panel-heading">
+            @lan.EventTitle
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="form-inline col-md-3">
+                    <label class="control-label">@lan.Event_No</label>
+                    <label class="control-label">
+                        @if (@ViewBag.EVENT_NO != null)
+                        { @ViewBag.EVENT_NO}
+                    </label>
+                </div>
+
+                <div class="form-inline col-md-3">
+                    <label class="control-label">@lan.Event_Name</label>
+                    <label class="control-label">
+                        @if (@ViewBag.EVENT_NAME != null)
+                        { @ViewBag.EVENT_NAME}
+                    </label>
+                </div>               
+            </div>
+            <div class="row">
+                <div class="form-inline col-md-3">
+                    <label class="control-label">@lan.Vender_No</label>
+                    <label class="control-label">
+                        @if (@ViewBag.VENDER_NO != null)
+                        { @ViewBag.VENDER_NO}
+                    </label>
+                </div>
+
+                <div class="form-inline col-md-3">
+                    <label class="control-label">@lan.Vender</label>
+                    <label class="control-label">
+                        @if (@ViewBag.VENDER_NAME != null)
+                        { @ViewBag.VENDER_NAME}
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="div_table" class="pane panel-primary span8 offset2" style="display:none;">
+
+        <div class="panel-body">
+
+            <div class="col-xs-12">
+                <table id="example" class="ui celled table" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>@lan.Editor</th>
+                            <th>AEP001</th>
+                            <th>AEP002</th>
+                            <th>RT002</th>
+                            <th>AEP004</th>
+                            <th>AEP005</th>
+                            <th>AEP006</th>    
+                            <th>RDWV002</th>   
+                            <th>AEP011</th>           
+                            <th>AEP008</th>  
+                            <th>AEP012</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            if (Model != null)
+                            {
+                                foreach (DataRow row in @Model.Rows)
+                                {
+                                    <tr>
+                                        <td></td>
+                                        <td>@row["AEP001"]</td>
+                                        <td>@row["AEP002"]</td>
+                                        <td>@row["RT002"]</td>
+                                        <td>@row["AEP004"]</td>                                       
+                                        <td>@row["AEP005"]</td>
+                                        <td>@row["AEP006"]</td>  
+                                        <td>@row["RDWV002"]</td>   
+                                        <td>@row["AEP011"]</td>   
+                                        <td>@row["AEP008"]</td>      
+                                        <td>@row["AEP012"]</td>  
+                                    </tr>
+                                }
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="div_content" class="panel panel-info" style="display:none;">
+        <div class="panel-heading">
+            <div class="panel-title pull-left">@lan.EditorPanel</div>
+            <div class="panel-title pull-right">
+                <a href="javascript: void(0)" id="a_chk_def" onclick="goCancel();"><span class="glyphicon glyphicon-remove icon-success"></span></a>&nbsp;&nbsp;
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="panel-body">
+
+            <form id="form1" class="form" action="" role="form">
+                <!--data-toggle="validator" -->
+
+                <div class="row">
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_event_no">@lan.Event_No</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="txt_event_no" placeholder="@lan.Event_No" name="txt_event_no" maxlength="20" readonly>
+                        </div>
+                        <label id="lbl_event_name"></label>                        
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_vender">@lan.Vender</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="txt_vender" placeholder="@lan.Vender" name="txt_vender" maxlength="20" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_ptype">@lan.RwdType</label>  
+                       
+
+                        <select class="selectpicker form-control" id="txt_ptype" title="@lan.RwdType" name="txt_ptype" data-width="200px" data-error="@lan.Error_RwdType" required>
+
+                            @foreach (var rwd in @ViewBag.reward_types.AllKeys)
+                            {
+                                <option value="@rwd">@ViewBag.reward_types[@rwd]</option>
+                            }
+
+                        </select>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_level">@lan.RwdLevel</label>                       
+                        <input type="number" class="form-control" id="txt_level" max="254" placeholder="@lan.RwdLevel" name="txt_level" data-error="@lan.Error_RwdLevel" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_name">@lan.RwdName</label>
+                        <input type="text" class="form-control" id="txt_name" maxlength="20" placeholder="@lan.RwdName" name="txt_name" data-error="@lan.Error_RwdName" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_number">@lan.RwdNumber</label>
+                        <input type="number" class="form-control" id="txt_number" maxlength="20" placeholder="@lan.RwdNumber" name="txt_number" data-error="@lan.Error_RwdNumber" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_rwdvender">@lan.RwdVender</label>
+                        <select class="selectpicker form-control" id="txt_rwdvender" title="@lan.RwdVender" name="txt_rwdvender" data-width="200px" data-error="@lan.Error_RwdVender" required>
+
+                            @foreach (var vender in @ViewBag.reward_venders.AllKeys)
+                            {
+                                <option value="@vender">@ViewBag.reward_venders[@vender]</option>
+                            }
+
+                        </select>
+                        <div class="help-block with-errors"></div>
+                    </div>
+
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_assign">@lan.AssignAllot</label>                        
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="@lan.AssignAllot" id="txt_assign" name="txt_assign" readonly>
+                            <span class="input-group-btn">
+                                <button class="btn btn-info" type="button" id="btn_assign" data-popup-open="popup-1">@lan.AssignAllot</button>
+                                <button class="btn btn-danger" type="button" id="btn_clean">@lan.Clear</button>
+                            </span>
+                        </div><!-- /input-group -->
+                    </div>
+
+                    <div class="form-group col-md-4 form-inline"> 
+                        <label for="txt_image">@lan.RwdImage</label>
+                        <input type="text" class="form-control" id="txt_image" name="txt_image" data-error="" maxlength="20">
+                        <div class="help-block with-errors"></div>                      
+                    </div>
+                    
+                </div>
+
+                <div class="row">
+                                        
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="dat_effective_time">@lan.RwdEffectiveTime</label>
+                        <div class="input-group date" id="dat_effective_time" name="dat_effective_time">
+                            <input type="text" class="form-control" id="txt_effective_time" name="txt_effective_time" data-error="" ><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                        </div>
+                        <div class="help-block with-errors"></div>
+                    </div>
+
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_completed">@lan.RwdCompleted</label>
+                        <input type="text" class="form-control" id="txt_completed" name="txt_completed" data-error="" readonly>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    
+                    <div class="form-group col-md-4 form-inline">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6 form-inline">
+                        <label for="txt_sms">@lan.RwdSMS</label>
+                        <textarea class="input-xlarge" id="txt_sms" name="txt_sms" rows="6" style="width:100%;"></textarea>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6 form-inline">
+                        <label for="txt_memo">@lan.RwdMemo</label>                        
+                        <textarea class="input-xlarge" id="txt_memo" name="txt_memo" rows="6" style="width:100%;"></textarea>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        
+                    </div>
+                </div>
+                              
+                <hr />
+                <button type="submit" class="btn btn-primary" id="btn_submit">
+                    <!-- onclick="doSubmit();" -->
+                    <span class="glyphicon glyphicon-saved"></span>&nbsp;&nbsp;&nbsp;&nbsp;@lan.Confirm&nbsp;&nbsp;&nbsp;&nbsp;
+                </button>               
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-warning" onclick="goCancel();" id="btn_back">
+                    <span class=" glyphicon glyphicon-share-alt">
+                    </span>&nbsp;&nbsp;&nbsp;&nbsp;@lan.Back&nbsp;&nbsp;&nbsp;&nbsp;
+                </button>
+                
+            </form>
+           
+            <div id="div_allot">
+                <h3 style="color:#ca5cf6">@lan.RwdAllot</h3>
+                <hr class="style2" />
+                 <!--   
+                <strong class="event-title">@lan.RwdVender</strong> &nbsp;&nbsp;                      
+                <div class="funkyradio " >
+                    <div class="funkyradio-success ">
+                        <input type="radio" name="radio" id="radio3" checked />
+                        <label for="radio3">宜睿</label>
+                    </div>
+                   
+                    <div class="funkyradio-danger">
+                        <input type="radio" name="radio" id="radio4" />
+                        <label for="radio4">Fourth Option danger</label>
+                    </div>
+                    <div class="funkyradio-warning">
+                        <input type="radio" name="radio" id="radio5" />
+                        <label for="radio5">Fifth Option warning</label>
+                    </div>
+                    <div class="funkyradio-info">
+                        <input type="radio" name="radio" id="radio6" />
+                        <label for="radio6">Sixth Option info</label>
+                    </div>
+                   
+                </div>
+                 -->
+                <br />                      
+                <button type="button" class="btn btn-info" id="btn_upload" onclick="getRewardCheck();">                
+                    <!-- onclick="doSubmit();" -->
+                    <span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;&nbsp;&nbsp;@lan.RwdUpload&nbsp;&nbsp;&nbsp;&nbsp;
+                </button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-success" id="btn_reward" onclick="checkAllotReward();">
+                    <span class="glyphicon glyphicon-copy"></span>&nbsp;&nbsp;&nbsp;&nbsp;@lan.RwdAllot&nbsp;&nbsp;&nbsp;&nbsp;
+                </button>
+               
+                <br /><br />              
+
+                <div class="file-drop-area">
+                    <span class="fake-btn">@lan.RwdSelectFile</span>
+                    <span class="file-msg js-set-number">@lan.RwdUploadFile</span>
+                    <input class="file-input" type="file" id="rwdFile" name="rwdFile">
+                </div>
+                             
+                <br /><br />
+                <div>
+                    <div id="div_progress" class="form-group col-md-4 form-inline">
+                        <label style="font-size:16px;">@lan.RwdState</label>
+                        <strong id="sng_state" name="sng_state" style="font-size:16px;"></strong>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="0"
+                                 aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                                0%
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>            
+
+        </div>
+    </div>
+
+</div>
+
+<!-- POPUP -->
+<link rel="stylesheet" href="~/css/popup.css" />
+
+<div class="popup" data-popup="popup-1" >
+    <div class="popup-inner" style="border:0px solid red;">
+        <h2>@lan.QRRecords</h2>
+        <hr class="style2" />
+        <table id="qr_table" class="ui celled table" cellspacing="0" style="width:100%">
+            <thead>
+                <tr>
+                    <th>@lan.Select</th>
+                    <th>EQCH001</th>
+                    <th>EQCH003</th>
+                    <th>EQCH007</th>
+                    <th>EQCH008</th>
+                    <th>EQCH009</th>
+                </tr>
+            </thead>
+            <tbody>
+               @*
+                    @{
+                        if (Model != null)
+                        {
+                            foreach (DataRow row in @Model.Rows)
+                            {
+                                <tr>
+                                    <td>@row["EQCH001"]</td>
+                                    <td>@row["EQCH003"]</td>
+                                    <td>@row["EQCH007"]</td>
+                                    <td>@row["EQCH008"]</td>
+                                    <td>@row["EQCH009"]</td>
+                                </tr>
+                            }
+                        }
+                    }
+               *@
+                </tbody>
+            </table>
+
+            <p></p>
+            <p><a data-popup-close="popup-1" href="#">Close</a></p>
+            <a class="popup-close" data-popup-close="popup-1" href="#">x</a>
+        </div>
+    </div>
+
+    <style>
+        .file-drop-area {
+          border: 5px solid #808080;
+          border-radius: 8px;
+          position: relative;
+          width: 450px;
+          max-width: 100%;
+          margin: 0 auto;
+          padding: 26px 20px 30px;
+          transition: 0.2s;
+
+        }
+        .is-active {
+            background-color: #c1d5e4;
+          }
+
+        .fake-btn {
+          background-color: #3F4069;
+          border: 1px solid #9E9EC4;
+          border-radius: 3px;
+          padding: 8px 15px;
+          margin-right: 8px;
+          font-size: 12px;
+          text-transform: uppercase;
+          color:#fff;
+        }
+
+        .file-msg {
+          font-size: small;
+          font-weight: 300;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: inline-block;
+          max-width: calc(100% - 130px);
+          vertical-align: middle;
+        }
+
+        .file-input {
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 100%;
+          width: 100%;
+          cursor: pointer;
+          opacity: 0;
+        }
+
+        .file-input:focus {
+        outline: none;
+      }
+
+
+        .funkyradio div {
+      clear: both;
+      overflow: hidden;
+    }
+
+    .funkyradio label {
+      width: 15%;
+      border-radius: 3px;
+      border: 1px solid #D1D3D4;
+      font-weight: normal;
+    }
+
+    .funkyradio input[type="radio"]:empty,
+    .funkyradio input[type="checkbox"]:empty {
+      display: none;
+    }
+
+    .funkyradio input[type="radio"]:empty ~ label,
+    .funkyradio input[type="checkbox"]:empty ~ label {
+      position: relative;
+      line-height: 2.5em;
+      text-indent: 3.25em;
+      margin-top: 2em;
+      cursor: pointer;
+      -webkit-user-select: none;
+         -moz-user-select: none;
+          -ms-user-select: none;
+              user-select: none;
+    }
+
+    .funkyradio input[type="radio"]:empty ~ label:before,
+    .funkyradio input[type="checkbox"]:empty ~ label:before {
+      position: absolute;
+      display: block;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      content: '';
+      width: 2.5em;
+      background: #D1D3D4;
+      border-radius: 3px 0 0 3px;
+    }
+
+    .funkyradio input[type="radio"]:hover:not(:checked) ~ label,
+    .funkyradio input[type="checkbox"]:hover:not(:checked) ~ label {
+      color: #888;
+    }
+
+    .funkyradio input[type="radio"]:hover:not(:checked) ~ label:before,
+    .funkyradio input[type="checkbox"]:hover:not(:checked) ~ label:before {
+      content: '\2714';
+      text-indent: .9em;
+      color: #C2C2C2;
+    }
+
+    .funkyradio input[type="radio"]:checked ~ label,
+    .funkyradio input[type="checkbox"]:checked ~ label {
+      color: #777;
+    }
+
+    .funkyradio input[type="radio"]:checked ~ label:before,
+    .funkyradio input[type="checkbox"]:checked ~ label:before {
+      content: '\2714';
+      text-indent: .9em;
+      color: #333;
+      background-color: #ccc;
+    }
+
+    .funkyradio input[type="radio"]:focus ~ label:before,
+    .funkyradio input[type="checkbox"]:focus ~ label:before {
+      box-shadow: 0 0 0 3px #999;
+    }
+
+    .funkyradio-default input[type="radio"]:checked ~ label:before,
+    .funkyradio-default input[type="checkbox"]:checked ~ label:before {
+      color: #333;
+      background-color: #ccc;
+    }
+
+    .funkyradio-primary input[type="radio"]:checked ~ label:before,
+    .funkyradio-primary input[type="checkbox"]:checked ~ label:before {
+      color: #fff;
+      background-color: #337ab7;
+    }
+
+    .funkyradio-success input[type="radio"]:checked ~ label:before,
+    .funkyradio-success input[type="checkbox"]:checked ~ label:before {
+      color: #fff;
+      background-color: #5cb85c;
+    }
+
+    .funkyradio-danger input[type="radio"]:checked ~ label:before,
+    .funkyradio-danger input[type="checkbox"]:checked ~ label:before {
+      color: #fff;
+      background-color: #d9534f;
+    }
+
+    .funkyradio-warning input[type="radio"]:checked ~ label:before,
+    .funkyradio-warning input[type="checkbox"]:checked ~ label:before {
+      color: #fff;
+      background-color: #f0ad4e;
+    }
+
+    .funkyradio-info input[type="radio"]:checked ~ label:before,
+    .funkyradio-info input[type="checkbox"]:checked ~ label:before {
+      color: #fff;
+      background-color: #5bc0de;
+    }
+
+    </style>
+
+    <script src="~/js/ajaxfileupload.js"></script>
+
+    <script>
+
+    var $fileInput = $('.file-input');
+    var $droparea = $('.file-drop-area');
+
+    // highlight drag area
+    $fileInput.on('dragenter focus click', function () {
+        $droparea.addClass('is-active');
+    });
+
+    // back to normal state
+    $fileInput.on('dragleave blur drop', function () {
+        $droparea.removeClass('is-active');
+    });
+
+    $(document).on('change', '#rwdFile', function (e) {
+        var filesCount = $(this)[0].files.length;
+        var $textContainer = $(this).prev('.js-set-number');
+
+        if (filesCount === 1) {
+            // if single file then show file name
+            $textContainer.text($(this).val().split('\\').pop());
+        } else {
+            // otherwise show number of files
+            $textContainer.text(filesCount + ' files selected');
+        }
+    });
+
+    var EVENT_KEY;
+    var editRow;
+    var table;
+    var qr_table;
+    var EVENT_NO = '';
+    var EVENT_NAME;
+    var VENDER_NO;
+    var VENDER_NAME;
+    var MYKEY;
+    var tableRow;
+    var timer_handle;
+    var JOB_ID;
+    var DELETE_ACTION = 100;
+    var SAVE_ACTION = 200;
+    var CHECK_ALLOT_ACTION = 101;
+
+    $(document).ready(function () {
+
+        $(".date").datepicker({
+            format: "yyyy/mm/dd",
+            language: 'zh-TW',
+            autoclose: true,
+            orientation: "bottom left"
+        });
+
+        //----- OPEN
+        $("#btn_assign").on('click', function (e) {
+
+            getQRTableData();
+            e.preventDefault();
+        });
+
+        $("#btn_clean").on('click', function (e) {
+            $("#txt_assign").val('');
+        });
+
+        //----- CLOSE
+        $('[data-popup-close]').on('click', function (e) {
+            var targeted_popup_class = jQuery(this).attr('data-popup-close');
+            $('[data-popup="' + targeted_popup_class + '"]').fadeOut(350);
+
+            e.preventDefault();
+        });
+
+        @{
+                if (!string.IsNullOrEmpty(ViewBag.s_event_no))
+                {
+                    <text>
+        $("#txt_sh_eventno").val('@ViewBag.s_event_no');
+        </text>
+                }
+                if (!string.IsNullOrEmpty(ViewBag.s_event_name))
+                {
+                    <text>
+        $("#txt_sh_eventname").val('@ViewBag.s_event_name');
+        </text>
+                }
+
+                <text>
+        EVENT_KEY = '@ViewBag.EVENT_KEY';
+        </text>
+            }
+
+        loadTable();
+
+        loadQRTable();
+
+        @{
+               if(Model != null){
+                   <text>
+        $('#div_info').show();
+        $('#div_table').show();
+        EVENT_NO = '@ViewBag.EVENT_NO';
+        EVENT_NAME = '@ViewBag.EVENT_NAME';
+        VENDER_NO = '@ViewBag.VENDER_NO';
+        VENDER_NAME = '@ViewBag.VENDER_NAME';
+        </text>
+                }
+            }
+
+        $(".dropdown-menu li a").click(function () {
+            var eventItem = $(this).text();
+            var splits = eventItem.split('-');
+            $("#txt_sh_eventno").val(splits[0]);
+            $("#txt_sh_eventname").val(splits[1]);
+        });
+
+        $('#form1').validator();
+        $('#form1').validator().on('submit', function (e) {
+            if (e.isDefaultPrevented()) {
+                // handle the invalid form...
+                //alert('invalid');
+            } else {
+                // everything looks good!
+                e.preventDefault();
+
+                if (editMode == 'A') {
+                    doAddQuestion();
+                } else if (editMode == 'U') {
+                    doUpdate();
+                }
+            }
+        })
+    });
+
+    function loadTable() {
+        table = $('#example').DataTable({
+            info: true,
+            bLengthChange: false,
+            searching: false,
+            "language": {
+                "lengthMenu": "顯示 _MENU_ 紀錄 每頁",
+                "zeroRecords": "@lan.DataTable_NoData",
+                "info": "@lan.DataTable_CurrentPage _PAGE_ / _PAGES_",
+                "infoEmpty": "@lan.DataTable_NoData",
+                "infoFiltered": "(filtered from _MAX_ total records)",
+                "paginate": {
+                    "next": "&nbsp;&nbsp;@lan.DataTable_NextPage&nbsp;&nbsp;",
+                    "previous": "&nbsp;&nbsp;@lan.DataTable_PreviousPage&nbsp;&nbsp;"
+                }
+            },
+            "columns":
+            [
+                {
+                    mRender: function (data, type, row) {
+                        //console.log(row.AEP001 + '   ' + row.AEP002);
+                        var editLink = '<a  data-id="' + row.AEP001 + '" onclick="editClick(\'' + row.AEP001 + '\');" ><span class="glyphicon glyphicon-pencil" style="cursor: pointer;"></span></a>';
+                        var delLink = '<a  data-id="' + row.AEP001 + '" onclick="deleteClick(\'' + row.AEP001 + '\');" ><span class="glyphicon glyphicon-trash" style="cursor: pointer;"></a>';
+                        return editLink + '&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;' + delLink;
+                    },
+                    "orderable": false
+                },
+                { "title": "KEY", "data": "AEP001", bVisible: false },
+                { "title": "EVENTKEY", "data": "AEP002", bVisible: false },
+                { "title": "@lan.RwdType", "data": "RT002" },
+                { "title": "@lan.RwdLevel", "data": "AEP004" },
+                { "title": "@lan.RwdName", "data": "AEP005" },
+                { "title": "@lan.RwdNumber", "data": "AEP006" },
+                { "title": "@lan.RwdVender", "data": "RDWV002" },
+                { "title": "@lan.RwdImage", "data": "AEP011" },
+                { "title": "@lan.RwdCompleted", "data": "AEP008" },
+                { "title": "@lan.RwdEffectiveTime", "data": "AEP012" }
+
+            ],
+        });
+    }
+
+    function loadQRTable() {
+        //var url = '@Url.Content("~/")codegen/GetCodeGenList?event_key=@ViewBag.EVENT_KEY';
+        qr_table = $('#qr_table').DataTable({
+            info: true,
+            bLengthChange: false,
+            searching: false,
+            "language": {
+                "lengthMenu": "顯示 _MENU_ 紀錄 每頁",
+                "zeroRecords": "@lan.DataTable_NoData",
+                "info": "@lan.DataTable_CurrentPage _PAGE_ / _PAGES_",
+                "infoEmpty": "@lan.DataTable_NoData",
+                "infoFiltered": "(filtered from _MAX_ total records)",
+                "paginate": {
+                    "next": "&nbsp;&nbsp;@lan.DataTable_NextPage&nbsp;&nbsp;",
+                    "previous": "&nbsp;&nbsp;@lan.DataTable_PreviousPage&nbsp;&nbsp;"
+                }
+            },
+            "columns":
+            [
+                {
+                    mRender: function (data, type, row) {
+                        var editLink = '<a  data-id="' + row.EQCH001 + '" onclick="assignClick(\'' + row.EQCH001 + '\');" ><span class="glyphicon glyphicon-ok" style="cursor: pointer;"></span></a>';
+
+                        return editLink;
+                    },
+                    "orderable": false
+                },
+
+                { "title": "NUMBER", "data": "EQCH001" },
+                { "title": "@lan.QR_GenDate", "data": "EQCH003" },
+                { "title": "@lan.QR_Qty", "data": "EQCH007" },
+                { "title": "@lan.QR_Employee", "data": "EQCH008" },
+                { "title": "@lan.QR_CompletedDate", "data": "EQCH009" }
+            ],
+
+        });
+    }
+
+    function assignClick(key) {
+        $("#txt_assign").val(key);
+        $('[data-popup-close]').click();
+    }
+
+    function editClick(row) {
+        editRow = row;
+        getTargetRow(editRow);
+        getRemoteRow();
+        $("#div_bar").hide();
+        $("#div_info").hide();
+        $("#div_table").hide();
+        $("#div_content").fadeIn(500);
+    }
+
+    function deleteClick(row) {
+        editRow = row;
+        getTargetRow(editRow);
+        //type, autohide , msg, action, handler
+        showQMoal('q', true, '@lan.CheckRemove', DELETE_ACTION, onQuestion);
+    }
+
+    function onQuestion(action, type) {
+
+        if (type == 'y') {
+            if (action == DELETE_ACTION) {
+                doDelete();
+            } else if (action == CHECK_ALLOT_ACTION) {
+                doAllotReward();
+            } else if (action == SAVE_ACTION) {
+                doAdd();
+            }
+        } else if (type == 'n') {
+
+        }
+    }
+
+    function goSearch() {
+
+        if (txt_sh_eventno.value.length == 0 && txt_sh_eventname.value.length == 0) {
+            $('#div_info').hide();
+            $('#div_table').hide();
+            $('#btn_add').hide();
+            return false;
+        }
+        var args = "event_no=" + txt_sh_eventno.value + "&event_name=" + txt_sh_eventname.value;
+        var searchUrl = "@Url.Content("~/")rewardmanage/RewardSearch?" + args;
+        window.location.href = searchUrl;
+    }
+
+    function doAddQuestion() {
+        showQMoal('q', false, '@lan.CheckSave', SAVE_ACTION, onQuestion);
+    }
+
+    function resetFileUpload() {
+        $('#rwdFile').val('');
+        var $textContainer = $(this).prev('.js-set-number');
+        $textContainer.text('');
+        $('#sng_state').text('');
+        var width = '0%';
+        $('.progress-bar').css('width', width)
+            .attr('aria-valuenow', 0)
+            .text(width);
+    }
+
+    function goAdd() {
+        $('#form1')[0].reset();
+        $("#div_bar").hide();
+        $('#div_info').hide();
+        $("#div_table").hide();
+        $("#div_content").fadeIn(500);
+
+        $('#txt_event_no').val(EVENT_NO);
+        $('#lbl_event_name').text(EVENT_NAME);
+        $('#txt_vender').val(VENDER_NAME);
+
+        resetFileUpload();
+
+        $("#txt_ptype").prop('readonly', false);
+        $("#txt_rwdvender").attr("disabled", false);
+        $("#txt_level").prop('readonly', false);
+        $("#txt_name").prop('readonly', false);
+        $("#txt_number").prop('readonly', false);
+
+        $("#txt_ptype").selectpicker('val', '');
+        $("#txt_rwdvender").selectpicker('val', '');
+        $('#btn_submit').show();
+        $('#btn_download').hide();
+        $('#btn_reward').hide();
+        $('#div_allot').hide();
+        editMode = 'A';
+    }
+
+    function goClear() {
+
+        $("#div_bar :input[type=text]").val('');
+    }
+
+    function goCancel() {
+        $("#div_content").hide();
+        $("#div_bar").show();
+        $('#div_info').show();
+        $("#div_table").fadeIn(500);
+        editMode = '';
+    }
+
+    function getRemoteRow() {
+        showLoadingBar();
+        var data = { key: editRow };
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")rewardmanage/SingleRewardData',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+                if (jDatas.length == 1) {
+                    $('#form1')[0].reset();
+                    MYKEY = jDatas[0].AEP001;
+                    //EVENT_KEY = jDatas[0].AEP002;
+                    $("#txt_event_no").val(jDatas[0].AE002);
+                    $("#lbl_event_name").text(jDatas[0].AE003);
+                    $("#txt_vender").val(jDatas[0].VM003);
+                    $("#txt_ptype").val(jDatas[0].AEP003).change();
+                    $("#txt_level").val(jDatas[0].AEP004);
+                    $("#txt_name").val(jDatas[0].AEP005);
+                    $("#txt_number").val(jDatas[0].AEP006);
+                    $("#txt_sms").val(jDatas[0].AEP013);
+                    $("#txt_memo").val(jDatas[0].AEP007);
+                    $("#txt_image").val(jDatas[0].AEP011);
+                    $("#txt_completed").val(jDatas[0].AEP008);
+                    $("#txt_rwdvender").val(jDatas[0].AEP009).change();
+                    $("#txt_assign").val(jDatas[0].AEP010);
+                    $("#txt_effective_time").val(jDatas[0].AEP012);
+                    editMode = 'U';
+
+                    if ($("#txt_completed").val().length > 0) {
+                        $("#txt_ptype").prop('readonly', true);
+                        $("#txt_rwdvender").attr("disabled", true);
+                        $("#txt_level").prop('readonly', true);
+                        $("#txt_name").prop('readonly', true);
+                        $("#txt_number").prop('readonly', true);
+                        $("#div_allot").hide();
+
+                    } else {
+                        $("#div_allot").show();
+                        $('#btn_download').show();
+                        $('#btn_reward').hide();
+                    }
+                    resetFileUpload();
+
+                } else {
+                    if (jDatas.ErrorMessage) {
+                        //alert(jDatas.ErrorMessage);
+                        showQMoal('e', false, jDatas.ErrorMessage, 0, null);
+                    }
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function doAdd() {
+
+        showLoadingBar();
+        $formData = $("#form1").serialize() + "&event_key=" + EVENT_KEY;
+
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")rewardmanage/NewEventReward',
+            data: $formData,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+                if (jDatas.length == 1) {
+                    MYKEY = jDatas[0].NewId;
+                    tableRow = table.row.add({
+                        "AEP001": jDatas[0].NewId,
+                        "AEP002": EVENT_KEY,
+                        "RT002": $("#txt_ptype").find('option:selected').text(),
+                        "AEP004": $("#txt_level").val(),
+                        "AEP005": $("#txt_name").val(),
+                        "AEP006": $("#txt_number").val(),
+                        "AEP011": $("#txt_image").val(),
+                        "AEP008": '',
+                        "AEP012": $("#txt_effective_time").val(),
+                        "RDWV002": $("#txt_rwdvender").find('option:selected').text()
+                    });
+                    tableRow.draw();
+                    editRow = jDatas[0].NewId;
+                    $('#rwdFile').val('');
+                    $('#div_allot').show();
+                    $("#btn_upload").show();
+                    $("#btn_reward").hide();
+
+                } else {
+                    if (jDatas.ErrorMessage) {
+                        showQMoal('e', false, jDatas.ErrorMessage, 0, null);
+                        peddingHide();
+                    }
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function doUpdate() {
+
+        showLoadingBar();
+        $formData = $("#form1").serialize();
+        $formData += "&rwd_key=" + MYKEY;
+        $formData += "&txt_rwdvender=" + $("#txt_rwdvender").val();
+
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")rewardmanage/UpdateEventReward',
+            data: $formData,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+                if (jDatas.length == 1) {
+
+                    var rowData = tableRow.data();
+                    rowData.RT002 = $("#txt_ptype").find('option:selected').text();
+                    rowData.AEP004 = $("#txt_level").val();
+                    rowData.AEP005 = $("#txt_name").val();
+                    rowData.AEP006 = $("#txt_number").val();
+                    rowData.AEP011 = $("#txt_image").val();
+                    rowData.AEP012 = $("#txt_effective_time").val();
+                    rowData.RDWV002 = $("#txt_rwdvender").find('option:selected').text();
+                    tableRow.data(rowData).draw();
+                    //goCancel();
+
+                } else {
+                    if (jDatas.ErrorMessage) {
+                        showQMoal('e', false, jDatas.ErrorMessage, 0, null);
+                        peddingHide();
+                    }
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function doDelete() {
+
+        showLoadingBar();
+        var data = "key=" + editRow;;
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")rewardmanage/DeleteEventReward/',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+                if (jDatas.length == 1) {
+                    table.row(tableRow).remove().draw();
+                    $('#btn_add').show();
+                } else {
+                    if (jDatas.ErrorMessage) {
+                        showQMoal('e', false, jDatas.ErrorMessage, 0, null);
+                        peddingHide();
+                    }
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function getTargetRow(key) {
+        var count = table.data().count();
+        for (var i = 0; i < count; i++) {
+            var r = table.row(i).data();
+            if (r.AEP001 === key) {
+                tableRow = table.row(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function getRewardCheck() {
+        /*
+        var selected = '';
+        $('.funkyradio input:checked').each(function () {
+            selected = $(this).attr('name');
+
+        });
+
+        if (selected.length == 0) {
+
+        } else {
+            ajaxFileUpload2();
+        }
+        */
+        var rwd_vender = $("#txt_rwdvender").val();
+        if (rwd_vender.length > 0) {
+            ajaxFileUpload2();
+        }
+    }
+
+    function ajaxFileUpload2() {
+
+        var uploadFile = $("#rwdFile").val();
+        if (uploadFile.length == 0) {
+            showQMoal('e', true, '請選擇上傳檔案', 0, null);
+            return false;
+        }
+        var rwd_vender = $("#txt_rwdvender").val();
+        var data = { vender: rwd_vender };
+
+        $.ajaxFileUpload(
+            {
+                url: '@Url.Content("~/")rewardmanage/RewardUpload',
+                secureuri: false,
+                data: data,
+                fileElementId: 'rwdFile',
+                dataType: 'json',
+                success: function (data, status) {
+                    var jsState = $.parseJSON(data);
+
+                    if (jDatas.ErrorMessage) {
+                        showQMoal('e', false, jDatas.ErrorMessage, 0, null);
+                    } else {
+                        if (jsState.result == 'ok') {
+                            //alert(jsState.job);
+                            showQMoal('i', true, '@lan.MsgUploadOK', 0, null);
+                            JOB_ID = jsState.job;
+                            $('#btn_reward').show();
+                        } else {
+                            showQMoal('w', true, jsState.state, 0, null);
+                        }
+                    }
+                    /*
+                    if (typeof (jsState.error) != 'undefined') {
+                        if (data.error != '') {
+                            alert(data.error);
+                        } else {
+                        }
+                    }
+                    */
+                },
+                error: function (data, status, e) {
+                    showQMoal('e', true, e, 0, null);
+                }
+            }
+        );
+        return false;
+    }
+
+    function checkAllotReward() {
+
+        showQMoal('q', false, '@lan.RwdCheckAllot', CHECK_ALLOT_ACTION, onQuestion);
+    }
+
+    function doAllotReward() {
+        //AllotReward
+        showLoadingBar();
+        var data = "key=" + MYKEY + "&event_key=" + EVENT_KEY + "&jobid=" + JOB_ID;
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")rewardmanage/AllotReward',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+                if (jDatas.length == 1) {
+                    //table.row(tableRow).remove().draw();
+                    timer_handle = setInterval(queryRewardState, 2000);
+
+                } else {
+                    if (jDatas.ErrorMessage) {
+                        showQMoal('e', true, jDatas.ErrorMessage, 0, null);
+                    }
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function queryRewardState() {
+
+        $formData = "job_id=" + JOB_ID;
+
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")rewardmanage/GetRewardState',
+            data: $formData,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+
+                if (jDatas.HasError) {
+                    $("#sng_state").css('color', 'red');
+                    $("#sng_state").text(jDatas.State);
+                    $('#btn_submit').show();
+                    $('#btn_back').show();
+                    clearTimeout(timer_handle);
+
+                } else {
+
+                    var width = jDatas.PreogressValue + '%';
+                    $('.progress-bar').css('width', width)
+                                    .attr('aria-valuenow', jDatas.PreogressValue)
+                                    .text(width);
+
+                    if (jDatas.IsCompleted) {
+                        $("#sng_state").text('Done');
+                        clearTimeout(timer_handle);
+                        $('#btn_back').show();
+                        $('#btn_download').show();
+                        $("#txt_finish").val(jDatas.State);
+                        $("#btn_upload").hide();
+                        $("#btn_reward").hide();
+
+                        var rowData = tableRow.data();
+                        rowData.AEP008 = jDatas.State;
+                        tableRow.data(rowData).draw();
+                    }
+                }
+            },
+            error: function (request, error) {
+                clearTimeout(timer_handle);
+                alert(error + " : " + request.responseText);
+
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function getQRTableData() {
+
+        showLoadingBar();
+        var data = "event_key=" + EVENT_KEY;
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")codegen/GetCodeGenList',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+
+                if (jDatas.length >= 0) {
+
+                    qr_table.clear().draw();
+                    $.each(jDatas, function (k, v) {
+
+                        qrRow = qr_table.row.add({
+                            "EQCH001": v.EQCH001,
+                            "EQCH003": v.EQCH003,
+                            "EQCH007": v.EQCH007,
+                            "EQCH008": v.EQCH008,
+                            "EQCH009": v.EQCH009,
+
+                        });
+                        qrRow.draw();
+                    });
+
+                    var targeted_popup_class = $("#btn_assign").attr('data-popup-open');
+                    $('[data-popup="' + targeted_popup_class + '"]').fadeIn(350);
+
+                } else {
+                    if (jDatas.ErrorMessage) {
+                        //alert(jDatas.ErrorMessage);
+                        showQMoal('e', false, jDatas.ErrorMessage, 0, null);
+                    }
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+
+</script>
+
+
+
+
+
