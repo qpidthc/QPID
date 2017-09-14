@@ -1,0 +1,11 @@
+strSQL = string.Format("select count(*) from gdaily where rid='{0}' and gdate='{1}' and gstate2 not like '%³X%'",
+                                                                    strRid, lblTargetDate.Text);
+
+                                    mReader = mSqlDB.GetReader(strSQL, null);
+                                    mReader.Read();
+                                    string mCount = mReader[0].ToString();
+                                    mReader.Close();
+
+                                    strSQL = string.Format("update srtable set lcount={0} where rid='{1}' and rkey='{2}' and grtardate='{3}'",
+                                                                    mCount, strRid, strKeys, lblTargetDate.Text);
+                                    mSqlDB.ExecuteCommad(strSQL, null);

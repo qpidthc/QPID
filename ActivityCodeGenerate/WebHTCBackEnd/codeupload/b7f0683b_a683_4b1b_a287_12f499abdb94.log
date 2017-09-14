@@ -1,0 +1,38 @@
+
+
+Version:	3.6
+CmdLine:	E:\CarHome.exe --l4j-debug
+WOW64:		yes
+Working dir:	E:\.
+64-bit search:	SOFTWARE\JavaSoft\Java Runtime Environment...
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.7
+Ignore:		1.7
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.7.0_45
+Ignore:		1.7.0_45
+32-bit search:	SOFTWARE\JavaSoft\Java Runtime Environment...
+64-bit search:	SOFTWARE\JavaSoft\Java Development Kit...
+32-bit search:	SOFTWARE\JavaSoft\Java Development Kit...
+64-bit search:	SOFTWARE\IBM\Java2 Runtime Environment...
+32-bit search:	SOFTWARE\IBM\Java2 Runtime Environment...
+64-bit search:	SOFTWARE\IBM\Java Development Kit...
+32-bit search:	SOFTWARE\IBM\Java Development Kit...
+Error msg:	This application requires a Java Runtime Environment 1.7.1
+Open URL:	http://java.com/download
+
+
+Version:	3.6
+CmdLine:	E:\CarHome.exe --l4j-debug
+WOW64:		yes
+Working dir:	E:\.
+64-bit search:	SOFTWARE\JavaSoft\Java Runtime Environment...
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.7
+Ignore:		1.7
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.7.0_45
+Check launcher:	C:\Program Files\Java\jre7\bin\javaw.exe (OK)
+Match:		1.7.0_45
+64-bit search:	SOFTWARE\JavaSoft\Java Development Kit...
+Runtime used:	1.7.0_45 (64-bit)
+Launcher:	C:\Program Files\Java\jre7\bin\javaw.exe
+Launcher args:	-jar "E:\CarHome.exe"
+Args length:	21/32768 chars
+Exit code:	0
