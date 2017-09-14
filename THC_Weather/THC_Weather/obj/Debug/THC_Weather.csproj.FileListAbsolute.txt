@@ -1,0 +1,11 @@
+C:\Users\ken\Desktop\WebHTCBackEnd\THC_Weather\THC_Weather\bin\Debug\THC_Weather.exe.config
+C:\Users\ken\Desktop\WebHTCBackEnd\THC_Weather\THC_Weather\bin\Debug\THC_Weather.exe
+C:\Users\ken\Desktop\WebHTCBackEnd\THC_Weather\THC_Weather\bin\Debug\THC_Weather.pdb
+C:\Users\ken\Desktop\WebHTCBackEnd\THC_Weather\THC_Weather\bin\Debug\Newtonsoft.Json.dll
+C:\Users\ken\Desktop\WebHTCBackEnd\THC_Weather\THC_Weather\bin\Debug\Newtonsoft.Json.xml
+C:\Users\ken\Desktop\WebHTCBackEnd\THC_Weather\THC_Weather\obj\Debug\THC_Weather.csprojResolveAssemblyReference.cache
+C:\Users\ken\Desktop\WebHTCBackEnd\THC_Weather\THC_Weather\obj\Debug\THC_Weather.Form1.resources
+C:\Users\ken\Desktop\WebHTCBackEnd\THC_Weather\THC_Weather\obj\Debug\THC_Weather.Properties.Resources.resources
+C:\Users\ken\Desktop\WebHTCBackEnd\THC_Weather\THC_Weather\obj\Debug\THC_Weather.csproj.GenerateResource.Cache
+C:\Users\ken\Desktop\WebHTCBackEnd\THC_Weather\THC_Weather\obj\Debug\THC_Weather.exe
+C:\Users\ken\Desktop\WebHTCBackEnd\THC_Weather\THC_Weather\obj\Debug\THC_Weather.pdb
