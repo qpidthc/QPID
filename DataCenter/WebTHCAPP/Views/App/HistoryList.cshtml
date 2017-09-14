@@ -1,0 +1,155 @@
+﻿
+@{    
+    Layout = "~/Views/Shared/_THC.cshtml";
+}
+@model System.Data.DataTable
+@using System.Data;
+@using System.Collections.Generic;
+
+<style>
+        
+    #scroll::-webkit-scrollbar {
+        width: 8px;        
+    }
+
+    #scroll::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 10px;
+    }
+
+    #scroll::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    }
+
+    .cp{
+        color:#cc3300;
+    }
+</style>
+
+    <div class="content inputcontent text-center">
+        <div style="clear:both"></div>
+        <h3 class="blk">活動中獎紀錄</h3>
+        <div class="listpanel" id="scroll" style="height:575px;overflow-x:hidden ;overflow-y: scroll;border: 1px solid #fff;">
+            <div>
+                
+                @{
+                    if (Model != null)
+                    {
+                        foreach (DataRow row in @Model.Rows)
+                        {
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="listheader">
+                                        <div class="title col-xs-9">@row["AE003"]</div>
+                                        <div class="link col-xs-3"><strong class="cp">恭喜中獎</strong></div>
+                                    </div>
+                                    <div class="listcontent">
+                                        <div class="thumb"><img src="~/images/bonuse.png" /></div>
+                                        <div class="description">
+                                            活動期間 @row["AE005"] ~ @row["AE006"] <br />                                            
+                                            活動系列 @row["AE008"]<br />
+                                            掃描時間 @row["EUR004"]<br />
+                                            得獎獎項 @row["EUR013"]<br />
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                }
+
+                <!-- 
+                     <div class="row">
+                    <div class="col-xs-12">
+                        <div class="listheader">
+                            <div class="title col-xs-9">99Happy Family 快樂加入中友家族</div>
+                            <div class="link col-xs-3"><a href="">如何加入</a></div>
+                        </div>
+                        <div class="listcontent" >
+                            <div class="thumb"><img src="~/images/bonuse.png" /></div>
+                            <div class="description">
+                                只要滿18歲以上，填寫資料，...<br />
+                                只要滿18歲以上，填寫資料，...<br />
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="listheader">
+                            <div class="title col-xs-9">99Happy Family 快樂加入中友家族</div>
+                            <div class="link col-xs-3"><a href="">如何加入</a></div>
+                        </div>
+                        <div class="listcontent">
+                            <div class="thumb"><img src="images/bonuse.png" /></div>
+                            <div class="description">
+                                只要滿18歲以上，填寫資料，...<br />
+                                只要滿18歲以上，填寫資料，...<br />
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                                只要滿18歲以上，填寫資料，...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                -->
+               
+                             
+            </div>
+
+        </div><!--end listpanel-->
+        <!-- 
+        <div style="clear:both;"></div>
+        <div class="row" id="div_botton">
+            <div class="col-xs-10 col-xs-offset-1">
+                <button class="form-control qpid-btn">OK</button>
+            </div>
+        </div>
+        -->
+        
+        <div style="clear:both;"></div>
+    </div>
+
+<script>
+
+    $(document).ready(function () {
+            
+
+        var screenHigth = (typeof window.outerHeight != 'undefined') ?
+            Math.max(window.outerHeight, $(window).height()) : $(window).height();
+
+        var fixedHeader = $("#div_header").height();
+
+        var title = $(".blk").height();
+               
+        var contentHeight = screenHigth - fixedHeader - title - 50;
+                
+        $("#scroll").height(contentHeight + 'px');
+
+
+    });
+
+
+
+</script>

@@ -326,14 +326,14 @@ namespace WebTHCAPP.Models
                 else
                 {
                     error.Number = 100;
-                    error.ErrorMessage = "系統錯誤";
+                    error.ErrorMessage = sqlEx.ToString(); //"系統錯誤";
                 }
             }
             catch (Exception ex)
             {
                 error = new Error();
                 error.Number = 100;
-                error.ErrorMessage = "系統錯誤";
+                error.ErrorMessage = ex.ToString();// "系統錯誤";
             }
             finally
             {
@@ -372,6 +372,11 @@ namespace WebTHCAPP.Models
                     accInfo.Number = 0;
                     accInfo.ErrorMessage = "";
                 }
+                else
+                {
+                    dataReader.Close();
+                    throw new THCException(102, "無效的帳號資訊");
+                }
                 dataReader.Close();
                                 
             }            
@@ -392,7 +397,7 @@ namespace WebTHCAPP.Models
 
         public void newRecord(string eventkey, string qrcode, string date, string account,
                                 string age, string gender, string area, string temp, string weather,
-                                string tk, out Error error)
+                                string lat, string lng, string reward, string tk, out Error error)
         {           
             error = null;
             AccountInfo accInfo = null;
@@ -423,8 +428,9 @@ namespace WebTHCAPP.Models
                     throw new THC_Library.THCException(801, "無效的帳號資料");
                 }
 
-                strSQL = "insert into event_user_records (EUR002,EUR003,EUR004,EUR005,EUR006,EUR007,EUR008,EUR009,EUR010) values " +
-                        "(@EUR002,@EUR003,@EUR004,@EUR005,@EUR006,@EUR007,@EUR008,@EUR009,@EUR010);SELECT CAST(scope_identity() AS int);";
+                strSQL = "insert into event_user_records (EUR002,EUR003,EUR004,EUR005,EUR006,EUR007,EUR008,EUR009,EUR010,EUR011,EUR012,EUR013) values " +
+                        "(@EUR002,@EUR003,@EUR004,@EUR005,@EUR006,@EUR007,@EUR008,@EUR009,@EUR010,@EUR011,@EUR012,@EUR013);" + 
+                        "SELECT CAST(scope_identity() AS int);";
 
                 paraList.Clear();
                 sqlParam = new SqlParameter("@EUR002", SqlDbType.Int);
@@ -446,14 +452,31 @@ namespace WebTHCAPP.Models
                 sqlParam.Value = gender; //性別
                 paraList.Add(sqlParam);
                 sqlParam = new SqlParameter("@EUR008", SqlDbType.NVarChar);
-                sqlParam.Value = ""; //地區
+                sqlParam.Value = area; //地區
                 paraList.Add(sqlParam);
                 sqlParam = new SqlParameter("@EUR009", SqlDbType.SmallInt);
-                sqlParam.Value = -199; //溫度
+                sqlParam.Value = temp; //溫度
                 paraList.Add(sqlParam);
-                sqlParam = new SqlParameter("@EUR010", SqlDbType.Char);
-                sqlParam.Value = ""; //天氣
+                sqlParam = new SqlParameter("@EUR010", SqlDbType.Int);
+                sqlParam.Value = weather; //天氣
                 paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@EUR011", SqlDbType.Float);
+                sqlParam.Value = lat; //緯度
+                paraList.Add(sqlParam);               
+                sqlParam = new SqlParameter("@EUR012", SqlDbType.Float);
+                sqlParam.Value = lng; //經度
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@EUR013", SqlDbType.NVarChar);
+                if (reward == null)
+                {
+                    sqlParam.Value = DBNull.Value;
+                }
+                else
+                {
+                    sqlParam.Value = reward; //獎項名稱
+                }                
+                paraList.Add(sqlParam);
+
 
                 dbCtl.ExecuteScalar(strSQL, paraList);
 
@@ -469,7 +492,7 @@ namespace WebTHCAPP.Models
             {
                 error = new Error();
                 error.Number = 100;
-                error.ErrorMessage = "系統錯誤";
+                error.ErrorMessage = ex.ToString();// "系統錯誤";
             }
             finally
             {
@@ -512,6 +535,8 @@ namespace WebTHCAPP.Models
                     paraList.Add(new SqlParameter("@CM002", acc));
 
                     dbCtl.ExecuteCommad(strSQL, paraList);
+
+                    
                 }
                 else
                 {
@@ -537,6 +562,193 @@ namespace WebTHCAPP.Models
             }
 
             return newTicket;
+        }
+
+        public DataTable getRewardGain(string acc, out Error error)
+        {
+            error = null;
+            DataTable resultTable = null;
+            SqlParameter sqlParam;
+            IList<SqlParameter> paraList = new System.Collections.Generic.List<SqlParameter>();
+            string strSQL = "select AE003,AE005,AE006,AE008,EUR004,EUR013 " + 
+                            "from event_user_records inner join activity_event " +  
+                            "on EUR002=AE001 " +
+                            "where EUR005=@EUR005 and EUR013 is not NULL and LEN(EUR013)>0 " + 
+                            "order by AE001";
+
+            THC_Library.DataBase.DataBaseControl dbCtl = new THC_Library.DataBase.DataBaseControl();
+
+            try
+            {
+                sqlParam = new SqlParameter("@EUR005", SqlDbType.VarChar);
+                sqlParam.Value = acc;
+                paraList.Add(sqlParam);
+
+                dbCtl.Open();
+
+                resultTable = dbCtl.GetDataTable(strSQL, paraList);
+            }
+            catch (Exception ex)
+            {
+                error = new Error();
+                error.Number = 301;
+                error.ErrorMessage = ex.ToString();
+            }
+            return resultTable;
+        } 
+
+        public void requestResetPassword(string acc, out string access_code, out Error error)
+        {
+            error = null;
+            access_code = Guid.NewGuid().ToString().Replace("-", "").Trim(); ;
+
+            SqlParameter sqlParam;
+            IList<SqlParameter> paraList = new System.Collections.Generic.List<SqlParameter>();
+            string strSQL = "insert into password_temp (PT001,PT002,PT003) values " +
+                            "(@PT001,@PT002,@PT003) ";
+
+            THC_Library.DataBase.DataBaseControl dbCtl = new THC_Library.DataBase.DataBaseControl();
+
+            try
+            {
+                sqlParam = new SqlParameter("@PT001", SqlDbType.VarChar);
+                sqlParam.Value = acc;
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@PT002", SqlDbType.Char);
+                sqlParam.Value = access_code;
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@PT003", SqlDbType.VarChar);
+                sqlParam.Value = DateTime.Now.ToString("yyyy/MM/dd");
+                paraList.Add(sqlParam);
+
+                dbCtl.Open();
+                dbCtl.ExecuteCommad(strSQL, paraList);
+            }
+            catch (Exception ex)
+            {
+                error = new Error();
+                error.Number = 301;
+                error.ErrorMessage = ex.ToString();
+            }
+
+        }
+
+        public bool accessResetPassword(string acc, string access_code, out Error error)
+        {
+            error = null;
+            bool bCodeExist = false;
+
+            SqlParameter sqlParam;
+            IList<SqlParameter> paraList = new System.Collections.Generic.List<SqlParameter>();
+            string strSQL = "select PT001 from password_temp where PT001=@PT001 and PT002=@PT002";
+
+            THC_Library.DataBase.DataBaseControl dbCtl = new THC_Library.DataBase.DataBaseControl();
+
+            try
+            {
+                sqlParam = new SqlParameter("@PT001", SqlDbType.VarChar);
+                sqlParam.Value = acc;
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@PT002", SqlDbType.Char);
+                sqlParam.Value = access_code;
+                paraList.Add(sqlParam);
+
+                
+                dbCtl.Open();
+                IDataReader dataReader = dbCtl.GetReader(strSQL, paraList);
+                if(dataReader.Read())
+                {
+                    bCodeExist = true;
+                }
+                dataReader.Close();
+            }
+            catch (Exception ex)
+            {
+                error = new Error();
+                error.Number = 301;
+                error.ErrorMessage = ex.ToString();
+            }
+
+            return bCodeExist;
+        }
+
+
+        public void doResetPassword(string acc, string access_code, string pwd, out Error error)
+        {
+            error = null;
+            bool bCodeExist = false;
+
+            SqlParameter sqlParam;
+            IList<SqlParameter> paraList = new System.Collections.Generic.List<SqlParameter>();
+            string strSQL = "select PT001 from password_temp where PT001=@PT001 and PT002=@PT002";
+
+            THC_Library.DataBase.DataBaseControl dbCtl = new THC_Library.DataBase.DataBaseControl();
+
+            try
+            {
+                sqlParam = new SqlParameter("@PT001", SqlDbType.VarChar);
+                sqlParam.Value = acc;
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@PT002", SqlDbType.Char);
+                sqlParam.Value = access_code;
+                paraList.Add(sqlParam);
+
+
+                dbCtl.Open();
+                IDataReader dataReader = dbCtl.GetReader(strSQL, paraList);
+                if (dataReader.Read())
+                {
+                    bCodeExist = true;
+                }
+                dataReader.Close();
+
+                if (bCodeExist)
+                {
+                    byte[] pwdBytes = System.Text.Encoding.Default.GetBytes(pwd); //將字串來源轉為Byte[] 
+                    System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create(); //使用MD5 
+                    pwdBytes = md5.ComputeHash(pwdBytes);//進行加密 
+                    pwd = Convert.ToBase64String(pwdBytes);//將加密後的字串從byte[]轉回string
+
+                    dbCtl.BeginTransaction();
+                    strSQL = "update consumer_member set CM007=@CM007 where CM002=@CM002";
+                    paraList.Clear();
+                    sqlParam = new SqlParameter("@CM007", SqlDbType.VarChar);
+                    sqlParam.Value = pwd;
+                    paraList.Add(sqlParam);
+                    sqlParam = new SqlParameter("@CM002", SqlDbType.VarChar);
+                    sqlParam.Value = acc;
+                    paraList.Add(sqlParam);
+                    dbCtl.ExecuteCommad(strSQL, paraList);
+
+                    strSQL = "delete password_temp where PT001=@PT001";
+                    paraList.Clear();
+                    sqlParam = new SqlParameter("@PT001", SqlDbType.VarChar);
+                    sqlParam.Value = acc;
+                    paraList.Add(sqlParam);
+                    dbCtl.ExecuteCommad(strSQL, paraList);
+
+                    dbCtl.CommintTransaction();
+                }
+                else
+                {
+                    throw new THC_Library.THCException(330, "無效的授權");
+                }
+            }
+            catch (THCException thcEx)
+            {
+                dbCtl.RollBackTransaction();
+                error = new Error();
+                error.Number = thcEx.Number;
+                error.ErrorMessage = thcEx.Message;
+            }
+            catch (Exception ex)
+            {
+                dbCtl.RollBackTransaction();
+                error = new Error();
+                error.Number = 301;
+                error.ErrorMessage = ex.ToString();
+            }
+                        
         }
     }
 }

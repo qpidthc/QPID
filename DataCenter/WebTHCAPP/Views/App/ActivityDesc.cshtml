@@ -1,0 +1,59 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_THC.cshtml";
+}
+
+
+
+<style>
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    }
+</style>
+
+<div class="content inputcontent text-center">
+    <div style="clear:both"></div>
+    <h3 class="blk">活動說明</h3>
+
+    <iframe class="listpanel" id="scroll" style="height:575px;overflow-x:hidden ;overflow-y: scroll;border: 1px solid #fff;" src="@Url.Content("~/")Activity/@ViewBag.PAGE"></iframe>
+   
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+
+        var screenHigth = (typeof window.outerHeight != 'undefined') ?
+            Math.max(window.outerHeight, $(window).height()) : $(window).height();
+
+        var fixedHeader = $("#div_header").height();
+
+        var title = $(".blk").height();
+
+        var contentHeight = screenHigth - fixedHeader - title - 50;
+
+        $("#scroll").height(contentHeight + 'px');
+
+
+        $("#a_menu").css("display", "none");//.hide();
+        $("#i_reply").show();
+
+        $("#i_reply").click(function () {
+            window.history.back();
+        });
+    });
+
+
+
+</script>

@@ -1,0 +1,225 @@
+﻿
+@{
+ 
+    Layout = "~/Views/Shared/_THC.cshtml";
+}
+
+@model System.Data.DataTable
+@using System.Data;
+@using System.Collections.Generic;
+
+<style>
+    #scroll::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #scroll::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 10px;
+    }
+
+    #scroll::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    }
+
+    .cp {
+        color: #cc3300;
+    }
+
+    h3 {
+        color:#808080;
+    }
+
+    .link{
+         color:#42A8DF;
+    }
+
+    span{
+        text-decoration:none;
+    }
+</style>
+
+<div class="content inputcontent text-center">
+    <div style="clear:both"></div>
+    <h3 class="blk">常見問題</h3>
+    <div class="listpanel" id="scroll" style="height:575px;overflow-x:hidden ;overflow-y: scroll;border: 1px solid #fff;">
+        <div style="text-align:left;">
+
+            <ul>                
+                <li><a href="#Q1" style="text-decoration:none;"><h3 class="link">Q1.如何加入會員呢 ?</h3></a></li>
+                <li><a href="#Q2" style="text-decoration:none;"><h3 class="link">Q2.忘記密碼怎麼辦 ?</h3></a></li>
+                <li><a href="#Q3" style="text-decoration:none;"><h3 class="link">Q3.如何掃描順利瓶蓋 ?</h3></a></li>
+                <li><a href="#Q4" style="text-decoration:none;"><h3 class="link">Q4.如何掃描順利瓶蓋 ?</h3></a></li>
+                <li><a href="#Q5" style="text-decoration:none;"><h3 class="link">Q5.如何掃描順利瓶蓋 ?</h3></a></li>
+
+            </ul>
+
+            <div class="row text-center">
+                <div class="col-xs-10 col-xs-offset-1">
+                    <hr class="style-one" />
+                </div>
+            </div>
+                
+            <div class="row" name="Q1">
+                <div class="col-xs-10 col-xs-offset-1">
+                   <h3><a id="Q1" style="text-decoration: none;">Q1.如何加入會員呢 ?</a></h3>
+                    <section>
+                        宏全公司從草創時期的家庭代工生產吸管與瓶蓋內墊產品，隨著台灣經濟發展的腳步開始轉型跨及飲料相關包材及代工領域，經營團隊認真務實，績效不斷創新突破。
+                    </section>
+                </div>
+            </div>
+
+            <div class="row text-center">
+                <div class="col-xs-10 col-xs-offset-1">
+                    <hr class="style-one" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-10 col-xs-offset-1">
+                    <h3><a id="Q2" style="text-decoration: none;">Q2.忘記密碼怎麼辦 ?</a></h3>
+                    <section>
+                        宏全公司從草創時期的家庭代工生產吸管與瓶蓋內墊產品，隨著台灣經濟發展的腳步開始轉型跨及飲料相關包材及代工領域，經營團隊認真務實，績效不斷創新突破。
+                    </section>
+                </div>
+            </div>
+
+            <div class="row text-center">
+                <div class="col-xs-10 col-xs-offset-1">
+                    <hr class="style-one" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-10 col-xs-offset-1">
+                    <h3><a id="Q3" style="text-decoration: none;">Q3.如何掃描順利瓶蓋 ?</a></h3>
+                    <section>
+                        宏全公司從草創時期的家庭代工生產吸管與瓶蓋內墊產品，隨著台灣經濟發展的腳步開始轉型跨及飲料相關包材及代工領域，經營團隊認真務實，績效不斷創新突破。
+                    </section>
+                </div>
+            </div>
+
+            <div class="row text-center">
+                <div class="col-xs-10 col-xs-offset-1">
+                    <hr class="style-one" />
+                </div>
+            </div>
+
+            <div class="row" name="Q4">
+                <div class="col-xs-10 col-xs-offset-1">
+                    <h3><a id="Q4" style="text-decoration: none;">Q4.如何掃描順利瓶蓋 ?</a></h3>
+                    <section>
+                        宏全公司從草創時期的家庭代工生產吸管與瓶蓋內墊產品，隨著台灣經濟發展的腳步開始轉型跨及飲料相關包材及代工領域，經營團隊認真務實，績效不斷創新突破。
+                    </section>
+                </div>
+            </div>
+
+            <div class="row text-center">
+                <div class="col-xs-10 col-xs-offset-1">
+                    <hr class="style-one" />
+                </div>
+            </div>
+
+            <div class="row" name="Q5">
+                <div class="col-xs-10 col-xs-offset-1">
+                    <h3><a id="Q5" style="text-decoration: none;">Q5.如何掃描順利瓶蓋 ?</a></h3>
+                    <section>
+                        宏全公司從草創時期的家庭代工生產吸管與瓶蓋內墊產品，隨著台灣經濟發展的腳步開始轉型跨及飲料相關包材及代工領域，經營團隊認真務實，績效不斷創新突破。
+                    </section>
+                </div>
+            </div>
+
+                <!--
+             <div class="row">
+            <div class="col-xs-12">
+                <div class="listheader">
+                    <div class="title col-xs-9">99Happy Family 快樂加入中友家族</div>
+                    <div class="link col-xs-3"><a href="">如何加入</a></div>
+                </div>
+                <div class="listcontent" >
+                    <div class="thumb"><img src="~/images/bonuse.png" /></div>
+                    <div class="description">
+                        只要滿18歲以上，填寫資料，...<br />
+                        只要滿18歲以上，填寫資料，...<br />
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="listheader">
+                    <div class="title col-xs-9">99Happy Family 快樂加入中友家族</div>
+                    <div class="link col-xs-3"><a href="">如何加入</a></div>
+                </div>
+                <div class="listcontent">
+                    <div class="thumb"><img src="images/bonuse.png" /></div>
+                    <div class="description">
+                        只要滿18歲以上，填寫資料，...<br />
+                        只要滿18歲以上，填寫資料，...<br />
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                        只要滿18歲以上，填寫資料，...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        -->
+
+
+            </div>
+
+    </div><!--end listpanel-->
+    <!--
+    <div style="clear:both;"></div>
+    <div class="row" id="div_botton">
+        <div class="col-xs-10 col-xs-offset-1">
+            <button class="form-control qpid-btn">OK</button>
+        </div>
+    </div>
+    -->
+
+    <div style="clear:both;"></div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+
+        var screenHigth = (typeof window.outerHeight != 'undefined') ?
+            Math.max(window.outerHeight, $(window).height()) : $(window).height();
+
+        var fixedHeader = $("#div_header").height();
+
+        var title = $(".blk").height();
+
+        var contentHeight = screenHigth - fixedHeader - title - 50;
+
+        $("#scroll").height(contentHeight + 'px');
+
+
+    });
+
+
+
+</script>

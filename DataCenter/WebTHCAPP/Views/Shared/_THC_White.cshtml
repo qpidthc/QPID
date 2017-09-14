@@ -16,69 +16,69 @@
     <script type="text/javascript" src="~/jQuery.mmenu-master/dist/jquery.mmenu.js"></script>
 
     <style>
-
         nav i {
-            padding-left:20px;
+            padding-left: 20px;
         }
 
         nav img {
-            padding-left:20px;
+            padding-left: 20px;
         }
 
         nav div {
-            padding-left:20px;
+            padding-left: 20px;
         }
 
-        nav span{
-            font-size:18px;
-            padding-left:20px;
+        nav span {
+            font-size: 18px;
+            padding-left: 20px;
         }
-        
     </style>
 </head>
 
-<body class="bg2">
+<body class="bg1">
     <div id="page">
 
         <nav id="menu">
-            <ul >
-                <li >
+            <ul>
+                <li>
                     <a>
                         <img src="~/images/user-175.png" class="userpic" /><br>
                         <div class="userphone">@ViewBag.ACC</div>
                     </a>
                     <hr class="divsion" />
                 </li>
-                <li ><a href="@Url.Content("~/")App/HistoryList" ><i class="fa fa-fw fa-qrcode" ></i><span >掃瞄 | 中獎記錄</span></a></li>
+                <li><a href="@Url.Content("~/")App/HistoryList"><i class="fa fa-fw fa-qrcode"></i><span>掃瞄 | 中獎記錄</span></a></li>
                 <li><a href="@Url.Content("~/")App/Activities"><i class="fa fa-fw fa-commenting-o"></i><span>活動說明</span></a></li>
                 <li><a href="@Url.Content("~/")App/UsrInfo"><i class="fa fa-fw fa-user-o"></i><span>個人資料</span></a></li>
                 <li><a href="@Url.Content("~/")App/Question"><i class="fa fa-fw fa-info-circle"></i><span>常見問題</span></a></li>
                 <li><a href="@Url.Content("~/")App/About"><i class="fa fa-fw fa-question-circle-o"></i><span>關於我們</span></a></li>
-                <!-- 
+                <!--
                 <li><a href="form1.html"><i class="fa fa-fw fa-list-alt" ></i><span>表單元件1</span></a></li>
                 <li><a href="form2.html"><i class="fa fa-fw fa-list-alt" ></i><span>表單元件2</span></a></li>
                 <li><a href="listview.html"><i class="fa fa-fw fa-list-ul" ></i><span>LIST BOX</span></a></li>
                 -->
-                
+
             </ul>
         </nav>
 
         <div class="header-bar fixed" id="div_header">
             <a id="a_menu" href="#menu"><span></span></a><i class="backbtn fa fa-times pull-right" aria-hidden="true" style="display:none;"></i>
-            <i id="i_reply" class="backbtn fa fa-reply pull-left" aria-hidden="true" style="display:none;margin-left:-40px;"></i>            
-            <div class="logo w30"><img src="~/images/logo.png" class="logo-img" /></div>
+            <i id="i_reply" class="backbtn fa fa-reply pull-left" aria-hidden="true" style="display:none;margin-left:-40px;"></i>
+            <div class="logo w30"></div>
         </div>
 
         @RenderBody()
-            
+
     </div>
 
     <script type="text/javascript">
             $(function() {
                 $('nav#menu').mmenu();
             });
-                    
+
     </script>
 </body>
 
 </html>
+
+

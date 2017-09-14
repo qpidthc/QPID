@@ -13,8 +13,7 @@ namespace WebTHCAPP.Controllers
         {
             return View();
         }
-
-
+        
         public ActionResult MyInfo()
         {
             var reqAcc= Request.Form["acc"];
@@ -293,11 +292,15 @@ namespace WebTHCAPP.Controllers
                 var reqArea = Request.Form["area"];
                 var reqTempture = Request.Form["temp"];
                 var reqWeather = Request.Form["weather"];
+                var reqLat = Request.Form["lat"];
+                var reqLong = Request.Form["lng"];
+                var reqRewardName = Request.Form["rwd"];
                 var reqTicket = Request.Form["tk"];
+                
 
                 Models.Member member = new Models.Member();
                 member.newRecord( reqEventKey, reqCode, reqDate, reqAcc, reqAge, reqGender, reqArea,
-                                    reqTempture, reqWeather, reqTicket, out error);
+                                    reqTempture, reqWeather, reqLat, reqLong, reqRewardName, reqTicket, out error);
 
                 if (error == null)
                 {
@@ -328,6 +331,202 @@ namespace WebTHCAPP.Controllers
             return Json(result, "application/json", JsonRequestBehavior.AllowGet);
         }
 
+        //login from activity
+        //[HttpPost]
+        public ActionResult THC_Member_07(string acc, string tk)
+        {
+            THC_Library.Error error = null;
+            //string strTick = Request.Headers["QPID-TICK"];
+            //string strData = Request.Headers["QPID-DATA"];
+            //error = WebTHCAPP.Models.RequestChecker.CheckRequest(strTick, strData);
+            Models.Result result = new Models.Result();
 
+            if (string.IsNullOrEmpty(acc) || string.IsNullOrEmpty(tk))
+            {
+                return View("../Error/NotAllow");
+            }
+
+            Models.Member member = new Models.Member();
+            long newTicket = member.loginFromActivity(acc, tk, out error);
+
+            if (error == null)
+            {
+                Models.AppSession appSession = new Models.AppSession();
+                appSession.Account = acc;
+                appSession.Ticket = newTicket;
+
+                Session["tk"] = appSession;
+                ViewBag.ACC = acc;
+                ViewBag.TICKET = newTicket;
+                return View("../App/index");
+            }
+            else
+            {
+                //result.Number = error.Number;
+                //result.Verify = 0;
+                //result.ErrorMessage = error.ErrorMessage;
+                ViewBag.NUMBER = error.Number;
+                ViewBag.ERROR = error.ErrorMessage;
+
+                return View("../Error/SystemError");
+            }
+            
+        }
+
+        [HttpPost]
+        public ActionResult RenewUserInfo()
+        {
+            THC_Library.Error error;
+            Models.Result result = new Models.Result();
+
+            //if (Session["tk"] == null)
+            //{
+            //    result.Number = 10;
+            //    result.Verify = 0;
+            //    result.ErrorMessage = "無效的操作";
+            //    return Json(result, "application/json", JsonRequestBehavior.AllowGet);
+            //}
+
+            var reqMail = Request.Form["ml"];
+            var reqTicket = Request.Form["tk"];
+            var reqMobil = Request.Form["m"];
+            var reqGender = Request.Form["g"];
+            var reqAge = Request.Form["a"];
+            var reqIId = Request.Form["iid"];
+            var reqAddr = Request.Form["addr"];
+
+            Models.Member member = new Models.Member();
+            int iRowCount = member.updateAccount(reqMail, reqTicket, reqMobil, reqGender,
+                                reqAge, reqIId, reqAddr, out error);
+
+            if (error == null)
+            {
+
+                if (iRowCount > 0)
+                {
+                    result.Number = 0;
+                    result.Verify = 1;
+                    result.Addition = iRowCount.ToString();
+                }
+                else
+                {
+                    result.Number = 20;
+                    result.Verify = 0;
+                    result.ErrorMessage = "資料未更新錯誤";
+                }
+            }
+            else
+            {
+                result.Number = error.Number;
+                result.ErrorMessage = error.ErrorMessage;
+            }
+
+            return Json(result, "application/json", JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult ForgestPassword()
+        {
+            THC_Library.Error error;
+            Models.Result result = new Models.Result();
+
+            var reqMail = Request.Form["ml"];
+            string accessCode;           
+
+            Models.Member member = new Models.Member();
+            member.requestResetPassword(reqMail, out accessCode, out error);
+
+            if (error == null)
+            {
+                String strPathAndQuery = Request.Url.PathAndQuery;
+                String strUrl = Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
+
+                Models.MailClass mail = new Models.MailClass();
+                mail.Send(reqMail, accessCode, strUrl, out error);
+
+                if (error != null)
+                {
+                    result.Number = error.Number;
+                    result.ErrorMessage = error.ErrorMessage;
+                }
+                else
+                {
+                    result.Number = 0;
+                    result.ErrorMessage = "";
+                }
+            }
+            else
+            {
+                result.Number = error.Number;
+                result.ErrorMessage = error.ErrorMessage;
+            }
+
+            return Json(result, "application/json", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AccessRestPassword(string acc, string access)
+        {
+            THC_Library.Error error;
+            Models.Result result = new Models.Result();
+
+            if (string.IsNullOrEmpty(acc) || string.IsNullOrEmpty(access))
+            {
+                return View("../Error/NotAllow");
+            }
+
+            Models.Member member = new Models.Member();
+            bool bCodeExist = member.accessResetPassword(acc, access, out error);
+
+            if (error == null)
+            {
+                if (bCodeExist)
+                {
+                    ViewBag.ACCESS_CODE = access;
+                    ViewBag.ACC = acc;
+                    return View();
+
+                }
+                else
+                {
+                    return View("../Error/NotAllow");
+                }
+            }
+            else
+            {
+                ViewBag.NUMBER = 201;
+                ViewBag.ERROR = "系統錯誤";
+                return View("../Error/SystemError");
+            }
+           
+        }
+
+        [HttpPost]
+        public ActionResult DoRestPassword(string acc, string access, string pwd)
+        {
+            THC_Library.Error error;
+            Models.Result result = new Models.Result();
+
+            if (string.IsNullOrEmpty(acc) || string.IsNullOrEmpty(access) || string.IsNullOrEmpty(pwd))
+            {
+                result.Number = 201;
+                result.ErrorMessage = "無效的請求";
+                return Json(result, "application/json", JsonRequestBehavior.AllowGet);
+            }
+
+            Models.Member member = new Models.Member();
+            member.doResetPassword(acc, access, pwd, out error);
+
+            if (error == null)
+            {
+                result.Number = 0;
+                result.ErrorMessage = "";
+            }
+            else
+            {
+                result.Number = 201;
+                result.ErrorMessage = "系統錯誤";
+            }
+            return Json(result, "application/json", JsonRequestBehavior.AllowGet);
+        }
     }
 }
