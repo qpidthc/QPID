@@ -218,25 +218,25 @@
                                 <div class="col-xs-6">
                                     <div class="form-group">
                                         <label for="txt_lane">巷</label>
-                                        <input id="txt_lane" name="txt_lane" type="text" class="form-control qpid-input" style="width: 100%" />
+                                        <input id="txt_lane" name="txt_lane" type="number" class="form-control qpid-input" style="width: 100%" />
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
                                     <div class="form-group">
                                         <label for="txt_alley">弄</label>
-                                        <input id="txt_alley" name="txt_alley" type="text" class="form-control qpid-input" style="width: 100%" />
+                                        <input id="txt_alley" name="txt_alley" type="number" class="form-control qpid-input" style="width: 100%" />
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
                                     <div class="form-group">
                                         <label id="lbl_no" for="txt_no">號</label>
-                                        <input id="txt_no" name="txt_no" type="text" class="form-control qpid-input" style="width: 100%" />
+                                        <input id="txt_no" name="txt_no" type="number" class="form-control qpid-input" style="width: 100%" />
                                     </div>
                                 </div>
                                 <div class="col-xs-6">
                                     <div class="form-group">
                                         <label id="lbl_floor" for="txt_floor">樓</label>
-                                        <input id="txt_floor" name="txt_floor" type="text" class="form-control qpid-input" style="width: 100%" />
+                                        <input id="txt_floor" name="txt_floor" type="number" class="form-control qpid-input" style="width: 100%" />
                                     </div>
                                 </div>
 
@@ -271,6 +271,9 @@
     var address = '';
     var coup_number = '';
     var log = '';
+    var CITY = '';
+    var LAT = -999999;
+    var LONG = -999999;
 
     $(document).ready(function () {
 
@@ -342,16 +345,37 @@
             if (!string.IsNullOrEmpty(ViewBag.LOG_KEY))
             {
                 <text>
-            log = '@ViewBag.LOG_KEY';
-            </text>
+        log = '@ViewBag.LOG_KEY';
+        </text>
             }
 
             if (!string.IsNullOrEmpty(ViewBag.RWD_COUPNUMBER))
             {
                 <text>
-            coup_number = '@ViewBag.RWD_COUPNUMBER';
-            </text>
+        coup_number = '@ViewBag.RWD_COUPNUMBER';
+        </text>
             }
+
+            if (!string.IsNullOrEmpty(ViewBag.CITY))
+             {
+                 <text>
+        CITY = '@ViewBag.CITY';
+        </text>
+             }
+
+            if (!string.IsNullOrEmpty(ViewBag.LAT))
+             {
+                 <text>
+        LAT = '@ViewBag.LAT';
+        </text>
+             }
+
+            if (!string.IsNullOrEmpty(ViewBag.LONG))
+             {
+                 <text>
+            LONG = '@ViewBag.LONG';
+            </text>
+             }
 
         }
 
@@ -513,7 +537,8 @@
     function nextStep() {
 
         window.location.href = '@Url.Content("~/")THC/get?act=' + act + '&code=' + code + '&tk=' + tk +
-                        '&ml=' + acc + '&m=' + m + "&lk=" + log + "&coup=" + coup_number + "&type=1";
+                        '&ml=' + acc + '&m=' + m + "&lk=" + log + "&coup=" + coup_number + "&type=1" +
+                        '&city=' + CITY + '&lat=' + LAT + '&lng=' + LONG;
 
         //window.location.href = 'http://60.251.140.166/WebTHCApp';
 

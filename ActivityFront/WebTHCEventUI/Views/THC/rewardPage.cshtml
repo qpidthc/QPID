@@ -67,7 +67,7 @@
                             @{
                                 if (string.IsNullOrEmpty(ViewBag.MOBIL))
                                 {
-                                    <input id="txt_mobil" name="txt_mobil" type="text" class="form-control qpid-input" style="width:100%;" placeholder="輸入手機" />
+                                    <input id="txt_mobil" name="txt_mobil" type="number" class="form-control qpid-input" style="width:100%;" placeholder="輸入手機" />
                                 }
                                 else
                                 {
@@ -234,176 +234,201 @@
 
     <script>
 
-        var act = '';
-        var code = '';
-        var acc = '';
-        var tk = '';
-        var m = '';
-        var g = '';
-        var a = '';
-        var coup_number = '';
-        var log = '';
+    var act = '';
+    var code = '';
+    var acc = '';
+    var tk = '';
+    var m = '';
+    var g = '';
+    var a = '';
+    var coup_number = '';
+    var log = '';
+    var CITY = '';
+    var LAT = -999999;
+    var LONG = -999999;
 
-        $(document).ready(function () {
+    $(document).ready(function () {
 
-            @{
+        @{
 
              if (!string.IsNullOrEmpty(ViewBag.ACTIVITY))
             {
                 <text>
-            act = '@ViewBag.ACTIVITY';
-            </text>
+        act = '@ViewBag.ACTIVITY';
+        </text>
             }
 
              if (!string.IsNullOrEmpty(ViewBag.CODE))
             {
                 <text>
-            code = '@ViewBag.CODE';
-            </text>
+        code = '@ViewBag.CODE';
+        </text>
             }
 
             if (!string.IsNullOrEmpty(ViewBag.ACC))
             {
                 <text>
-            acc = '@ViewBag.ACC';
-            </text>
+        acc = '@ViewBag.ACC';
+        </text>
             }
 
             if (!string.IsNullOrEmpty(ViewBag.TICKET))
             {
                 <text>
-            tk = '@ViewBag.TICKET';
-            </text>
+        tk = '@ViewBag.TICKET';
+        </text>
             }
 
             if (!string.IsNullOrEmpty(ViewBag.MOBIL))
             {
                 <text>
-            m = '@ViewBag.MOBIL';
-            </text>
+        m = '@ViewBag.MOBIL';
+        </text>
             }
 
             if (!string.IsNullOrEmpty(ViewBag.GENDER))
             {
                 <text>
-            g = '@ViewBag.GENDER';
-            </text>
+        g = '@ViewBag.GENDER';
+        </text>
             }
 
             if (!string.IsNullOrEmpty(ViewBag.AGE))
             {
                 <text>
-            a = '@ViewBag.AGE';
-            </text>
+        a = '@ViewBag.AGE';
+        </text>
             }
 
             if (!string.IsNullOrEmpty(ViewBag.LOG_KEY))
             {
                 <text>
-            log = '@ViewBag.LOG_KEY';
-            </text>
+        log = '@ViewBag.LOG_KEY';
+        </text>
             }
 
             if (!string.IsNullOrEmpty(ViewBag.RWD_COUPNUMBER))
             {
                 <text>
-            coup_number = '@ViewBag.RWD_COUPNUMBER';
-            </text>
+        coup_number = '@ViewBag.RWD_COUPNUMBER';
+        </text>
             }
 
+            if (!string.IsNullOrEmpty(ViewBag.CITY))
+             {
+                 <text>
+        CITY = '@ViewBag.CITY';
+        </text>
+             }
+
+            if (!string.IsNullOrEmpty(ViewBag.LAT))
+             {
+                 <text>
+        LAT = '@ViewBag.LAT';
+        </text>
+             }
+
+            if (!string.IsNullOrEmpty(ViewBag.LONG))
+             {
+                 <text>
+            LONG = '@ViewBag.LONG';
+            </text>
+             }
+
         }
 
-            $("#btn_next").click(function () {
+        $("#btn_next").click(function () {
 
-                var mobil = $("#txt_mobil").val();
-                var gender = $("#sel_gender").val();
-                var age = $("#sel_age").val();
+            var mobil = $("#txt_mobil").val();
+            var gender = $("#sel_gender").val();
+            var age = $("#sel_age").val();
 
 
-                if (mobil.length == 0) {
-                    $("#lbl_mobil").css('color', 'red');
-                    return false;
+            if (mobil.length == 0) {
+                $("#lbl_mobil").css('color', 'red');
+                return false;
+            } else {
+                $("#lbl_mobil").css('color', 'black');
+            }
+
+            if (gender.length == 0) {
+                $("#lbl_gender").css('color', 'red');
+                return false;
+            } else {
+                $("#lbl_gender").css('color', 'black');
+            }
+
+            if (age.length == 0) {
+                $("#lbl_age").css('color', 'red');
+                return false;
+            } else {
+                $("#lbl_age").css('color', 'black');
+            }
+
+            var needUpdate = false;
+
+            if (m != mobil) {
+                needUpdate = true;
+            }
+            if (g != gender) {
+                needUpdate = true;
+            }
+            if (a != age) {
+                needUpdate = true;
+            }
+
+            if (needUpdate) {
+
+                var data = "ml=" + acc + "&tk=" + tk + "&m=" + mobil +
+                         "&g=" + gender + "&a=" + age;
+
+                updateInfo(data);
+            } else {
+
+                nextStep();
+            }
+
+        });
+    });
+
+    function updateInfo(data) {
+
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")Register/renewAccountInfo',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+                if (jDatas.length == 1) {
+                    if (jDatas[0].VERIFY == "1") {
+                        nextStep();
+                    }
                 } else {
-                    $("#lbl_mobil").css('color', 'black');
+                    if (jDatas.ErrorMessage) {
+                        alert(jDatas.ErrorMessage);
+                    }
                 }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
 
-                if (gender.length == 0) {
-                    $("#lbl_gender").css('color', 'red');
-                    return false;
-                } else {
-                    $("#lbl_gender").css('color', 'black');
-                }
-
-                if (age.length == 0) {
-                    $("#lbl_age").css('color', 'red');
-                    return false;
-                } else {
-                    $("#lbl_age").css('color', 'black');
-                }
-
-                var needUpdate = false;
-
-                if (m != mobil) {
-                    needUpdate = true;
-                }
-                if (g != gender) {
-                    needUpdate = true;
-                }
-                if (a != age) {
-                    needUpdate = true;
-                }
-
-                if (needUpdate) {
-
-                    var data = "ml=" + acc + "&tk=" + tk + "&m=" + mobil +
-                             "&g=" + gender + "&a=" + age;
-
-                    updateInfo(data);
-                } else {
-
-                    nextStep();
-                }
-
-            });
+            }
         });
 
-        function updateInfo(data) {
+    }
 
-            $.ajax({
-                async: false,
-                type: "POST",
-                url: '@Url.Content("~/")Register/renewAccountInfo',
-                data: data,
-                dataType: 'json',
-                success: function (data, status, xhr) {
+    function nextStep() {
 
-                    jDatas = jQuery.parseJSON(data);
-                    if (jDatas.length == 1) {
-                        if (jDatas[0].VERIFY == "1") {
-                            nextStep();
-                        }
-                    } else {
-                        if (jDatas.ErrorMessage) {
-                            alert(jDatas.ErrorMessage);
-                        }
-                    }
-                },
-                error: function (request, error) {
-                    alert(error + " : " + request.responseText);
-                },
-                complete: function () {
+        window.location.href = '@Url.Content("~/")THC/get?act=' + act + '&code=' + code + '&tk=' + tk +
+                        '&ml=' + acc + '&m=' + m + "&lk=" + log + "&coup=" + coup_number + "&type=0" +
+                        '&city=' + CITY + '&lat=' + LAT + '&lng=' + LONG;
 
-                }
-            });
-
-        }
-
-        function nextStep() {
-
-            window.location.href = '@Url.Content("~/")THC/get?act=' + act + '&code=' + code + '&tk=' + tk +
-                            '&ml=' + acc + '&m=' + m + "&lk=" + log + "&coup=" + coup_number + "&type=0";
-
-        }
+    }
 
     </script>
 

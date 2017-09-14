@@ -1,4 +1,4 @@
-﻿#define REMOTE_1
+﻿#define REMOTE
 using System;
 using System.Collections.Generic;
 using System.Linq;

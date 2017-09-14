@@ -1,42 +1,240 @@
 ﻿
 @{
     Layout = "~/Views/Shared/_THCUI.cshtml";
-
 }
+
+<style>
+    .loading {
+        border: 3px solid #808080;
+        border-right: 3px solid #000;
+        border-bottom: 3px solid #000;
+        height: 50px;
+        width: 50px;
+        margin: auto;
+        border-radius: 50%;
+        -webkit-animation: loading 1s infinite linear;
+        -moz-animation: loading 1s infinite linear;
+        -o-animation: loading 1s infinite linear;
+        animation: loading 1s infinite linear;
+    }
+
+    @@-webkit-keyframes loading {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @@-moz-keyframes loading {
+        from {
+            -moz-transform: rotate(0deg);
+        }
+
+        to {
+            -moz-transform: rotate(360deg);
+        }
+    }
+
+    @@-o-keyframes loading {
+        from {
+            -o-transform: rotate(0deg);
+        }
+
+        to {
+            -o-transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes loading {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
 <body class=" bg4">
     <div id="page">
 
         <nav id="menu">
-        </nav>
-        <div class="header-bar" style="margin-top: 1em">
-            <i class="fa fa-backward fa-2x barFixed" aria-hidden="true"></i>
-        </div>
+        </nav>        
         <div class="content">
 
             <div class="logo w50">
                 <img src="~/images/logo_blk.png" class="logo-img" />
             </div>
             <section id="msg">
-                <div class="container">
+                <div class="container"> 
+                  
+                    <div class="row">&nbsp;</div>
+                    <div class="row">&nbsp;</div>
                     <div class="row">
-                        <div class="col-xs-12" style="text-align:center;">
-                            <p style="font-size:2.5em;margin-top:2.5em;color:#595959!Important;">連線中</p>
+                        <div class="col-xs-12" style="text-align:center;display:block;">
+                            <div class="loading"></div>
                         </div>
                     </div>
+
+                    <!--
+                      <div class="row">
+                        <div id="dv_connect" class="col-xs-12" style="text-align:center;">                            
+                            <label style="font-size:2.5em;margin-top:2.5em;color:#e2701f!Important;">連線中</label>
+                        </div>
+                    </div>   
+                    -->                                       
 
                 </div>
             </section>
         </div>
     </div>
-
+            
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&language=zh-TW&key=AIzaSyApgg7HJG9Cqx_MZgysXFEgHWN5OKGOZh4"></script>
     <script>
 
         var ACTIVITY = '';
         var CODE = '';
         var timeHandle;
+        //var lat, long;
+        var LAT = -999999, LONG = -999999;
+        var geocoder;
+        var CITY = '';
+        var CITY_DEF = ["基隆","台北市","新北市","桃園市","新竹","苗栗","台中", "彰化", "雲林","嘉義", "台南", "高雄", "屏東", "宜蘭","花蓮","台東", "南投"];
+                
+        // 取得 Gears 定位發生錯誤
+        function errorCallback(err) {
+            var msg = 'Error retrieving your location: ' + err.message;
+            alert(msg);
+        }
+
+        // 成功取得 Gears 定位
+        function successCallback(p) {
+            mapServiceProvider(p.latitude, p.longitude);
+        }
+
+        // 顯示經緯度
+        function mapServiceProvider(latitude, longitude) {
+            LAT = latitude; //緯度
+            LONG = longitude; //經度 
+            getCity(LAT, LONG);            
+        }
+
+        function getCity(lat, long) {
+          
+            var latlng = new google.maps.LatLng(lat, long);
+                        
+            geocoder.geocode({ 'latLng': latlng }, function (results, status) {
+
+                if (status == google.maps.GeocoderStatus.OK) {
+                    
+                    var len = results[0].address_components.length;
+                    var len2 = CITY_DEF.length;
+                    for (var i = 0 ; i < len; i++) {
+                        var locCity = results[0].address_components[i].long_name;
+                        
+                        for (var j = 0 ; j < len2; j++) {
+                            if (locCity.startsWith(CITY_DEF[j])) {                                
+                                CITY = CITY_DEF[j];  
+                                redirectLogin();
+                                return true;
+                            }
+                        }                                            
+                    }
+                    redirectLogin();
+
+                } else {
+                    alert('Geocoder failed due to: ' + status);
+                    redirectLogin();
+                }
+            });
+
+
+        }
+
+       
+        window.onload = function () {
+            var startPos;
+            var geoOptions = {
+                maximumAge: 5 * 60 * 1000,
+            }
+
+            var geoSuccess = function (position) {
+                startPos = position;                                
+                mapServiceProvider(position.coords.latitude, position.coords.longitude);               
+            };
+            var geoError = function (error) {
+                console.log('Error occurred. Error code: ' + error.code);
+                // error.code can be:
+                //   0: unknown error
+                //   1: permission denied
+                //   2: position unavailable (error response from location provider)
+                //   3: timed out
+                alert('無法取得位置 錯誤碼 ' + error.code);
+                redirectLogin();
+            };
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
+            } else {
+                alert('不支援定位');
+            }
+            
+        };
+
 
         $(document).ready(function () {
+                        
+            geocoder = new google.maps.Geocoder();
 
+            /*
+            geocoder = new google.maps.Geocoder();
+            //25.0439892, 121.5212213 台北市
+            //23.820823, 120.652914 南投
+            //getCity(23.820823, 120.652914);
+
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    mapServiceProvider(position.coords.latitude, position.coords.longitude);
+                },
+                    function (error) {
+                        switch (error.code) {
+                            case error.TIMEOUT:
+                                alert('連線逾時');
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                alert('無法取得定位');
+                                break;
+                            case error.PERMISSION_DENIED: // 拒絕
+                                alert('想要參加本活動，\n記得允許手機的GPS定位功能喔!');
+                                break;
+                            case error.UNKNOWN_ERROR:
+                                alert('不明的錯誤，請稍候再試');
+                                break;
+                        }
+                        redirectLogin();
+                    });
+            } else { // 不支援 HTML5 定位
+                // 若支援 Google Gears
+                if (window.google && google.gears) {
+                    try {
+                        // 嘗試以 Gears 取得定位
+                        var geo = google.gears.factory.create('beta.geolocation');
+                        geo.getCurrentPosition(successCallback, errorCallback, { enableHighAccuracy: true, gearsRequestAddress: true });
+                    } catch (e) {
+                        //alert('定位失敗請稍候再試');
+                        redirectLogin();
+                    }
+                } else {
+                    //alert('想要參加本活動，\n記得允許手機的GPS定位功能喔!');
+                    redirectLogin();
+                }
+            }
+            */
+            
+            
             @{
              if (!string.IsNullOrEmpty(ViewBag.CODE))
              {
@@ -57,13 +255,17 @@
          }
 
             if (CODE.length > 0 && ACTIVITY.length > 0) {
-                timeHandle = window.setTimeout(redirectLogin, 1000);
+                //timeHandle = window.setTimeout(redirectLogin, 1000);
             }
         });
 
         function redirectLogin() {
 
-            window.location.href = '@Url.Action("/")preLogin?ac=' + ACTIVITY + '&code=' + CODE;
+            //CITY = '台北市';
+            //LAT = 25.0439892; 
+            //LONG = 121.5212213;           
+            window.location.href = '@Url.Action("/")preLogin?ac=' + ACTIVITY + '&code=' + CODE +
+                            '&city=' + CITY + '&lat=' + LAT + '&lng=' + LONG;
         }
 
 

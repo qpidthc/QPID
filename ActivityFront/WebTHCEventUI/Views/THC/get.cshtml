@@ -73,16 +73,42 @@
 
     <script>
 
+    var acc = '';
+    var tk = '';
+    var m = '';
 
+    $(document).ready(function () {
 
-        function done() {
+        @{
+                if (!string.IsNullOrEmpty(ViewBag.ACC))
+                {
+                    <text>
+        acc = '@ViewBag.ACC';
+        </text>
+                }
 
-            window.location.href = 'http://60.251.140.166/WebTHCApp';
+                if (!string.IsNullOrEmpty(ViewBag.TICKET))
+                {
+                    <text>
+        tk = '@ViewBag.TICKET';
+        </text>
+                }
 
-            //window.location.href = 'http://localhost:51323/THC/get?act=' + act + '&code=' + code + '&tk=' + tk +
-            //                '&ml=' + acc + '&m=' + m + "&lk=" + log + "&coup=" + coup_number;
+                if (!string.IsNullOrEmpty(ViewBag.MOBIL))
+                {
+                    <text>
+                m = '@ViewBag.MOBIL';
+                    </text>
+                }
+         }
 
-        }
+        
+    });
+
+    function done() {
+
+        window.location.href = '@ViewBag.DOMAIN' + '?acc=' + acc + '&tk=' + tk;       
+    }
 
     </script>
 

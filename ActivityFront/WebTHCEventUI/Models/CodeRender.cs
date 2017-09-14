@@ -10,9 +10,9 @@ namespace WebTHCEventUI.Models
 {
     public class CodeRender
     {
-        public bool go(string ac, string code, string tk, string ml, out string gender, out string age, 
-                            out string mobil, out string iid, out string addr, out THC_Library.Reward.RewardConvertor rwd, 
-                            out int logkey, out THC_Library.Error error)
+        public bool go(string ac, string code, string tk, string ml, string city, string lat, string lng, 
+                            out string gender, out string age, out string mobil, out string iid, out string addr, 
+                            out THC_Library.Reward.RewardConvertor rwd, out int logkey, out THC_Library.Error error)
         {
             error = null;
             rwd = null;
@@ -24,7 +24,7 @@ namespace WebTHCEventUI.Models
             logkey = -1;
             DateTime datNow = DateTime.Now;
             DateTime datNowDate = new DateTime(datNow.Year, datNow.Month, datNow.Day);
-            int iIdentityKey;
+            //int iIdentityKey;
             int eventKey = -1;
             string eventName = "";
             DateTime startTime = DateTime.MaxValue;
@@ -121,7 +121,8 @@ namespace WebTHCEventUI.Models
                     int iScanCounter = int.Parse(dataReader["QRC012"].ToString());
                     if (iScanCounter == 0)
                     {
-                        //中獎
+                        //未掃描過
+                        //中獎與否
                         EC = dataReader["QRC008"];
                         if (EC != DBNull.Value)
                         {
@@ -172,6 +173,7 @@ namespace WebTHCEventUI.Models
                     }
                     else
                     {
+                        //重覆掃描
                         DateTime lastTime;
                         DateTime.TryParse(dataReader["QRC013"].ToString(), out lastTime);                       
                         dataReader.Close();
@@ -191,6 +193,73 @@ namespace WebTHCEventUI.Models
                 }
                 if (!bWin)
                 {
+                    //取得地區溫度與天氣代碼
+                    Int16 iTemp = -200;
+                    int iWeather = 3200;
+                    if (city.Length > 0)
+                    {
+                        strSQL = "select WH002,WH003 from weather where WH001 like @WH001 + '%'";
+                        paraList.Clear();
+                        sqlParam = new SqlParameter("@WH001", SqlDbType.NVarChar);
+                        sqlParam.Value = city;
+                        paraList.Add(sqlParam);
+                        dataReader = dbCtl.GetReader(strSQL, paraList);
+                        if (dataReader.Read())
+                        {
+                            if (!Int16.TryParse(dataReader["WH002"].ToString(), out iTemp))
+                            {
+                                iTemp = -200;
+                            }
+                            if (!int.TryParse(dataReader["WH003"].ToString(), out iWeather))
+                            {
+                                iWeather = 3200;
+                            }                            
+                        }
+                        dataReader.Close();
+                    }
+
+                    dbCtl.BeginTransaction();
+                    //未中獎 log 紀錄
+                    strSQL = "insert into event_user_records (EUR002,EUR003,EUR004,EUR005,EUR006,EUR007,EUR008,EUR009,EUR010,EUR011,EUR012) values " +
+                        "(@EUR002,@EUR003,@EUR004,@EUR005,@EUR006,@EUR007,@EUR008,@EUR009,@EUR010,@EUR011,@EUR012);";
+
+                    paraList.Clear();
+                    sqlParam = new SqlParameter("@EUR002", SqlDbType.Int);
+                    sqlParam.Value = eventKey;
+                    paraList.Add(sqlParam);
+                    sqlParam = new SqlParameter("@EUR003", SqlDbType.VarChar);
+                    sqlParam.Value = code;
+                    paraList.Add(sqlParam);
+                    sqlParam = new SqlParameter("@EUR004", SqlDbType.DateTime);
+                    sqlParam.Value = datNow;
+                    paraList.Add(sqlParam);
+                    sqlParam = new SqlParameter("@EUR005", SqlDbType.VarChar);
+                    sqlParam.Value = ml; //帳號
+                    paraList.Add(sqlParam);
+                    sqlParam = new SqlParameter("@EUR006", SqlDbType.Char);
+                    sqlParam.Value = age; //年紀
+                    paraList.Add(sqlParam);
+                    sqlParam = new SqlParameter("@EUR007", SqlDbType.Char);
+                    sqlParam.Value = gender; //性別
+                    paraList.Add(sqlParam);
+                    sqlParam = new SqlParameter("@EUR008", SqlDbType.NVarChar);
+                    sqlParam.Value = city; //地區
+                    paraList.Add(sqlParam);
+                    sqlParam = new SqlParameter("@EUR009", SqlDbType.SmallInt);
+                    sqlParam.Value = iTemp; //溫度
+                    paraList.Add(sqlParam);
+                    sqlParam = new SqlParameter("@EUR010", SqlDbType.Int);
+                    sqlParam.Value = iWeather; //天氣
+                    paraList.Add(sqlParam);                  
+                    sqlParam = new SqlParameter("@EUR011", SqlDbType.Float);
+                    sqlParam.Value = lat; //緯度
+                    paraList.Add(sqlParam);                    
+                    sqlParam = new SqlParameter("@EUR012", SqlDbType.Float);
+                    sqlParam.Value = lng; //經度
+                    paraList.Add(sqlParam);
+
+                    dbCtl.ExecuteScalar(strSQL, paraList);
+
                     //未中獎
                     strSQL = "update qr_record set QRC012=QRC012+1, QRC013=@QRC013 where QRC015=@QRC015;";
                     paraList.Clear();
@@ -200,12 +269,20 @@ namespace WebTHCEventUI.Models
                     sqlParam = new SqlParameter("@QRC015", SqlDbType.VarChar);
                     sqlParam.Value = code;
                     paraList.Add(sqlParam);
-                    dbCtl.ExecuteCommad(strSQL, paraList);
+                    dbCtl.ExecuteCommad(strSQL, paraList);                   
+
+                    dbCtl.CommintTransaction();
+
+                    jsonString = THC_Library.APPCURL.ScanRecord(eventKey.ToString(), code,
+                            datNow.ToString(), ml, age, gender, city, iTemp.ToString(), iWeather.ToString(),
+                            lat, lng, tk);
+                    jsonResult = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
                 }
 
             }
             catch (THC_Library.CodeRenderException codeex)
             {
+                dbCtl.RollBackTransaction();
                 error = new THC_Library.Error();
                 error.Number = codeex.Number;
                 error.ErrorMessage = codeex.AdditionalMessage;
@@ -225,7 +302,7 @@ namespace WebTHCEventUI.Models
             return bWin;
         }
 
-        public bool done(string ac, string code, string tk, string ml,  
+        public bool done(string ac, string code, string tk, string ml, string city, string lat, string lng,
                         string coupnumber , string logkey, out THC_Library.Error error)
         {
             error = null;                       
@@ -292,16 +369,18 @@ namespace WebTHCEventUI.Models
                     throw codeException;
                 }
 
-                strSQL = "select QRC009,QRC012,QRC013 from qr_record where QRC008=@QRC008 and QRC015=@QRC015";
+                strSQL = "select QRC009,QRC011,QRC012,QRC013 from qr_record where QRC008=@QRC008 and QRC015=@QRC015";
                 paraList.Clear();
                 paraList.Add(new SqlParameter("@QRC008", coupnumber));
                 paraList.Add(new SqlParameter("@QRC015", code));
                 dataReader = dbCtl.GetReader(strSQL, paraList);
 
                 string rwardType = "";
+                string rwardName = "";
                 if (dataReader.Read())
                 {
                     rwardType = dataReader["QRC009"].ToString();
+                    rwardName = dataReader["QRC011"].ToString();
                     int iScanCounter = int.Parse(dataReader["QRC012"].ToString());
 
                     if (iScanCounter > 0)
@@ -323,11 +402,37 @@ namespace WebTHCEventUI.Models
                     throw codeException;
                 }
                 dataReader.Close();
-                             
+
+                //取得地區溫度與天氣代碼
+                Int16 iTemp = -200;
+                int iWeather = 3200;
+                if (city.Length > 0)
+                {
+                    strSQL = "select WH002,WH003 from weather where WH001 like @WH001 + '%'";
+                    paraList.Clear();
+                    sqlParam = new SqlParameter("@WH001", SqlDbType.NVarChar);
+                    sqlParam.Value = city;
+                    paraList.Add(sqlParam);
+                    dataReader = dbCtl.GetReader(strSQL, paraList);
+                    if (dataReader.Read())
+                    {
+                        if (!Int16.TryParse(dataReader["WH002"].ToString(), out iTemp))
+                        {
+                            iTemp = -200;
+                        }
+                        if (!int.TryParse(dataReader["WH003"].ToString(), out iWeather))
+                        {
+                            iWeather = 3200;
+                        }
+                    }
+                    dataReader.Close();
+                }
+
                 dbCtl.BeginTransaction();
 
-                strSQL = "insert into event_user_records (EUR002,EUR003,EUR004,EUR005,EUR006,EUR007,EUR008,EUR009,EUR010) values " +
-                        "(@EUR002,@EUR003,@EUR004,@EUR005,@EUR006,@EUR007,@EUR008,@EUR009,@EUR010);SELECT CAST(scope_identity() AS int);";
+                strSQL = "insert into event_user_records (EUR002,EUR003,EUR004,EUR005,EUR006,EUR007,EUR008,EUR009,EUR010,EUR011,EUR012) values " +
+                        "(@EUR002,@EUR003,@EUR004,@EUR005,@EUR006,@EUR007,@EUR008,@EUR009,@EUR010,@EUR011,@EUR012);" + 
+                        "SELECT CAST(scope_identity() AS int);";
 
                 paraList.Clear();
                 sqlParam = new SqlParameter("@EUR002", SqlDbType.Int);
@@ -349,15 +454,20 @@ namespace WebTHCEventUI.Models
                 sqlParam.Value = gender; //性別
                 paraList.Add(sqlParam);
                 sqlParam = new SqlParameter("@EUR008", SqlDbType.NVarChar);
-                sqlParam.Value = ""; //地區
+                sqlParam.Value = city; //地區
                 paraList.Add(sqlParam);
                 sqlParam = new SqlParameter("@EUR009", SqlDbType.SmallInt);
-                sqlParam.Value = -200; //溫度
+                sqlParam.Value = iTemp; //溫度
                 paraList.Add(sqlParam);
-                sqlParam = new SqlParameter("@EUR010", SqlDbType.Char);
-                sqlParam.Value = ""; //天氣
+                sqlParam = new SqlParameter("@EUR010", SqlDbType.Int);
+                sqlParam.Value = iWeather; //天氣
+                paraList.Add(sqlParam);               
+                sqlParam = new SqlParameter("@EUR011", SqlDbType.Float);
+                sqlParam.Value = lat; //緯度
+                paraList.Add(sqlParam);                
+                sqlParam = new SqlParameter("@EUR012", SqlDbType.Float);
+                sqlParam.Value = lng; //經度
                 paraList.Add(sqlParam);
-
 
                 object newId = dbCtl.ExecuteScalar(strSQL, paraList);
                                
@@ -382,14 +492,15 @@ namespace WebTHCEventUI.Models
 
                 if (rwardType == "0")
                 {
-                    //bool bSMS_OK = THC_Library.SMSHelper.SendTo(ml, mobil, "恭喜中獎 " + coupnumber);
+                    bool bSMS_OK = THC_Library.SMSHelper.SendTo(ml, mobil, "恭喜中獎 " + coupnumber);
                     //if (bSMS_OK)
                     //{
-                    //}     
-                }
-                        
+                    //}
+                }                        
 
-                jsonString = THC_Library.APPCURL.ScanRecord(eventKey.ToString(), code, datNow.ToString(), ml, age, gender, "", "", "", tk);
+                jsonString = THC_Library.APPCURL.ScanRecord(eventKey.ToString(), code, 
+                                            datNow.ToString(), ml, age, gender, city, iTemp.ToString(), iWeather.ToString(), 
+                                            lat, lng, rwardName, tk);
                 jsonResult = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
 
                 //if (jsonResult.Number != 0)

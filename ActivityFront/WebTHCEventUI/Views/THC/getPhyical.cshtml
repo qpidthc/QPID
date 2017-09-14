@@ -40,21 +40,48 @@
     </div>
 
     <script>
-        
-        var timeHandle;
 
-        $(document).ready(function () {
+    var timeHandle;
+    var acc = '';
+    var tk = '';
+    var m = '';
 
-            if (CODE.length > 0 && ACTIVITY.length > 0) {
-                timeHandle = window.setTimeout(redirectLogin, 10);
+    $(document).ready(function () {
+
+        @{
+                if (!string.IsNullOrEmpty(ViewBag.ACC))
+                {
+                    <text>
+        acc = '@ViewBag.ACC';
+        </text>
+                }
+
+                if (!string.IsNullOrEmpty(ViewBag.TICKET))
+                {
+                    <text>
+        tk = '@ViewBag.TICKET';
+        </text>
+                }
+
+                 if (!string.IsNullOrEmpty(ViewBag.MOBIL))
+                {
+                    <text>
+        m = '@ViewBag.MOBIL';
+                    </text>
+                }
             }
-        });
 
-        function done() {
 
-            window.location.href = 'http://60.251.140.166/WebTHCApp';
 
+        if (CODE.length > 0 && ACTIVITY.length > 0) {
+            timeHandle = window.setTimeout(redirectLogin, 10);
         }
+    });
+
+    function done() {
+
+        window.location.href = '@ViewBag.DOMAIN' + '?acc=' + acc + '&tk=' + tk;                   
+    }
 
     </script>
 

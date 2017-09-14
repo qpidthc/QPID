@@ -94,28 +94,37 @@ namespace WebTHCEventUI.Controllers
            
         }
 
-        public ActionResult preLogin(string ac, string code)
+        public ActionResult preLogin(string ac, string code, string city, string lat, string lng)
         {
             ViewBag.ACTIVITY = ac;
             ViewBag.CODE = code;
+            ViewBag.CITY = city;
+            ViewBag.LAT = lat;
+            ViewBag.LONG = lng;
             return View("preLoginPage");
         }
 
-        public ActionResult login(string ac, string code)
+        public ActionResult login(string ac, string code, string city, string lat, string lng)
         {
             ViewBag.ACTIVITY = ac;
             ViewBag.CODE = code;
+            ViewBag.CITY = city;
+            ViewBag.LAT = lat;
+            ViewBag.LONG = lng;
             return View("loginPage");
         }
-             
-        public ActionResult regAccount(string ac, string code)
+
+        public ActionResult regAccount(string ac, string code, string city, string lat, string lng)
         {
             ViewBag.ACTIVITY = ac;
             ViewBag.CODE = code;
+            ViewBag.CITY = city;
+            ViewBag.LAT = lat;
+            ViewBag.LONG = lng;
             return View("regAccount");
         }
-        
-        public ActionResult go(string ac, string code, string tk, string ml)
+
+        public ActionResult go(string ac, string code, string tk, string ml, string city, string lat, string lng)
         {
             THC_Library.Error error;
             THC_Library.Reward.RewardConvertor reward;
@@ -123,8 +132,9 @@ namespace WebTHCEventUI.Controllers
             int iLogKey;
 
             Models.CodeRender codeRender = new Models.CodeRender();
-            bool bWin = codeRender.go(ac, code, tk, ml, out gender, out age,
-                                out Mobil, out iid, out addr, out reward, out iLogKey, out error);
+            bool bWin = codeRender.go(ac, code, tk, ml, city, lat, lng, 
+                                    out gender, out age, out Mobil, out iid, out addr, out reward, 
+                                    out iLogKey, out error);
 
             if (error != null)
             {
@@ -148,10 +158,14 @@ namespace WebTHCEventUI.Controllers
                         break;
                     //return View("wrongPage");                       
                     case THC_Library.CodeRenderException.REPEAT_SCAN:
+                        ViewBag.TICKET = tk;
+                        ViewBag.ACC = ml;
+                        ViewBag.CITY = city;
                         ViewBag.Message = "已掃描";
                         string[] strSplit =  error.ErrorMessage.Split(' ');
                         ViewBag.RepeatDate = strSplit[0];
                         ViewBag.RepeatTime = strSplit[1];
+                        ViewBag.DOMAIN = Models.Domain.REMOTE_ACCESS_DOMAIN;
                         return View("repeatPage");
                     case THC_Library.CodeRenderException.LOGIN_INVALID:
                         ViewBag.Message = "無效的登入";
@@ -176,6 +190,10 @@ namespace WebTHCEventUI.Controllers
                     ViewBag.IID = iid;
                     ViewBag.ADDRESS = addr;
                     ViewBag.LOG_KEY = iLogKey.ToString();
+
+                    ViewBag.CITY = city;
+                    ViewBag.LAT = lat;
+                    ViewBag.LONG = lng;
 
                     ViewBag.RWD_NAME = reward.RewardName;
                     ViewBag.RWD_IMG = reward.RewardImage;
@@ -205,6 +223,9 @@ namespace WebTHCEventUI.Controllers
                 }
                 else
                 {
+                    ViewBag.TICKET = tk;
+                    ViewBag.ACC = ml;
+                    ViewBag.DOMAIN = Models.Domain.REMOTE_ACCESS_DOMAIN;
                     return View("tryAgain");
                 }               
             }            
@@ -222,8 +243,13 @@ namespace WebTHCEventUI.Controllers
             var reqCoupNumber = Request.QueryString["coup"];
             var reqRwdType = Request.QueryString["type"];
 
+            var reqCity = Request.QueryString["city"];
+            var reqLat = Request.QueryString["lat"];
+            var reqLong = Request.QueryString["lng"];
+
             Models.CodeRender codeRender = new Models.CodeRender();
-            bool bOK = codeRender.done(reqActivity, reqCode, reqTimestamp, reqAccount, reqCoupNumber, reqLogKey, out error);
+            bool bOK = codeRender.done(reqActivity, reqCode, reqTimestamp, reqAccount, reqCity, reqLat, reqLong, 
+                                reqCoupNumber, reqLogKey, out error);
 
             if (error != null)
             {                                
@@ -237,10 +263,18 @@ namespace WebTHCEventUI.Controllers
 
                 if (reqRwdType == "0")
                 {
+                    ViewBag.ACC = reqAccount;
+                    ViewBag.TICKET = reqTimestamp;
+                    ViewBag.MOBIL = reqMobil;
+                    ViewBag.DOMAIN = Models.Domain.REMOTE_ACCESS_DOMAIN;
                     return View("get");
                 }
                 else if (reqRwdType == "1")
                 {
+                    ViewBag.ACC = reqAccount;
+                    ViewBag.TICKET = reqTimestamp;
+                    ViewBag.MOBIL = reqMobil;
+                    ViewBag.DOMAIN = Models.Domain.REMOTE_ACCESS_DOMAIN;
                     return View("getPhyical");
                 }
                 else

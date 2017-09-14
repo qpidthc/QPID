@@ -157,5 +157,37 @@ namespace WebTHCEventUI.Controllers
 
             return Json(retJson, "application/json", JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public JsonResult requestForget()
+        {
+            var reqMail = Request.Form["ml"];           
+
+            THC_Library.Error error;
+
+            Models.Member member = new Models.Member();
+            bool bResult = member.requestForgetPassword(reqMail, out error);
+
+            string retJson;
+            if (error != null)
+            {
+                retJson = Newtonsoft.Json.JsonConvert.SerializeObject(error);
+            }
+            else
+            {
+                if (bResult)
+                {
+                    retJson = string.Format("[{{ \"VERIFY\" : 1 }} ]");
+                }
+                else
+                {
+                    retJson = "[{ \"VERIFY\" : 0 , \"MESSAGE\" : \"資料未更新錯誤\"} ]";
+                }
+            }
+
+            return Json(retJson, "application/json", JsonRequestBehavior.AllowGet);
+        }
+
+                
     }
 }

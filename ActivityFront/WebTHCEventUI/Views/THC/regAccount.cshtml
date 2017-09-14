@@ -8,9 +8,9 @@
     <div id="page">
 
         <nav id="menu">
-        </nav>
+        </nav>  
         <div class="header-bar" style="margin-top: 1em">
-            <i class="fa fa-backward fa-2x barFixed" aria-hidden="true"></i>
+            <i id="i_back" class="fa fa-reply fa-2x barFixed" aria-hidden="true" style="color:#ff6a00;"></i>           
         </div>
         <div class="content">
 
@@ -65,116 +65,143 @@
 
     <script>
 
-        var ACTIVITY = '';
-        var CODE = '';
+    var ACTIVITY = '';
+    var CODE = '';
+    var CITY = '';
+    var LAT = -999999;
+    var LONG = -999999;
 
-        $(document).ready(function () {
+    $(document).ready(function () {
 
-            @{
+        @{
              if (!string.IsNullOrEmpty(ViewBag.CODE))
              {
                  <text>
-            CODE = '@ViewBag.CODE';
+        CODE = '@ViewBag.CODE';
 
-            </text>
+        </text>
              }
 
              if (!string.IsNullOrEmpty(ViewBag.ACTIVITY))
              {
                  <text>
-            ACTIVITY = '@ViewBag.ACTIVITY';
+        ACTIVITY = '@ViewBag.ACTIVITY';
 
+        </text>
+             }
+
+             if (!string.IsNullOrEmpty(ViewBag.CITY))
+             {
+                 <text>
+        CITY = '@ViewBag.CITY';
+        </text>
+             }
+
+            if (!string.IsNullOrEmpty(ViewBag.LAT))
+             {
+                 <text>
+        LAT = '@ViewBag.LAT';
+        </text>
+             }
+
+            if (!string.IsNullOrEmpty(ViewBag.LONG))
+             {
+                 <text>
+            LONG = '@ViewBag.LONG';
             </text>
              }
 
          }
 
-            $("#btn_submit").click(function () {
+        $("#btn_submit").click(function () {
 
 
-                var hasEmpty = false;
-                var mail = $("#txt_mail").val();
-                if (mail.length == 0) {
-                    $("#lbl_mail").css('color', 'red');
-                    hasEmpty = true;
-                } else {
-                    $("#lbl_mail").css('color', 'black');
-                }
+            var hasEmpty = false;
+            var mail = $("#txt_mail").val();
+            if (mail.length == 0) {
+                $("#lbl_mail").css('color', 'red');
+                hasEmpty = true;
+            } else {
+                $("#lbl_mail").css('color', 'black');
+            }
 
-                var pwd = $("#txt_pwd").val();
-                if (pwd.length == 0) {
-                    $("#lbl_pwd").css('color', 'red');
-                    hasEmpty = true;
-                } else {
-                    $("#lbl_pwd").css('color', 'black');
-                }
+            var pwd = $("#txt_pwd").val();
+            if (pwd.length == 0) {
+                $("#lbl_pwd").css('color', 'red');
+                hasEmpty = true;
+            } else {
+                $("#lbl_pwd").css('color', 'black');
+            }
 
-                var e = isEmail(mail);
-               
-                if (!e) {
-                    $("#lbl_mail").css('color', 'red');
-                    hasEmpty = true;
-                } else {
-                    $("#lbl_mail").css('color', 'black');
-                }
+            var e = isEmail(mail);
 
+            if (!e) {
+                $("#lbl_mail").css('color', 'red');
+                hasEmpty = true;
+            } else {
+                $("#lbl_mail").css('color', 'black');
+            }
+            
+            var data = "";
 
+            if (e) {
+                data = "mail=" + mail + "&pwd=" + pwd;
+            } else if (m) {
+                data = "mobil=" + mail + "&pwd=" + pwd;
+            }
 
-                var data = "";
+            if (data.length == 0) {
+                $("#lbl_mail").css('color', 'red');
+                hasEmpty = true;
+            }
 
-                if (e) {
-                    data = "mail=" + mail + "&pwd=" + pwd;
-                } else if (m) {
-                    data = "mobil=" + mail + "&pwd=" + pwd;
-                }
+            if (hasEmpty) {
+                return false;
+            }
 
-                if (data.length == 0) {
-                    $("#lbl_mail").css('color', 'red');
-                    hasEmpty = true;
-                }
+            $.ajax({
+                async: false,
+                type: "POST",
+                url: '@Url.Content("~/")register/newAccount',
+                data: data,
+                dataType: 'json',
+                success: function (data, status, xhr) {
 
-                if (hasEmpty) {
-                    return false;
-                }
-
-                $.ajax({
-                    async: false,
-                    type: "POST",
-                    url: '@Url.Content("~/")register/newAccount',
-                    data: data,
-                    dataType: 'json',
-                    success: function (data, status, xhr) {
-
-                        jDatas = jQuery.parseJSON(data);
-                        if (jDatas.length == 1) {
-                            window.location.href = '@Url.Content("~/")THC/go?ac=' + ACTIVITY + '&code=' + CODE + '&tk=' + jDatas[0].TICKET +
-                                            '&ml=' + jDatas[0].ACC;;
-                        } else {
-                            if (jDatas.ErrorMessage) {
-                                alert(jDatas.ErrorMessage);
-                            }
+                    jDatas = jQuery.parseJSON(data);
+                    if (jDatas.length == 1) {
+                        window.location.href = '@Url.Content("~/")THC/go?ac=' + ACTIVITY + '&code=' + CODE + '&tk=' + jDatas[0].TICKET +
+                                        '&ml=' + jDatas[0].ACC +
+                                        '&city=' + CITY + '&lat=' + LAT + '&lng=' + LONG;
+                    } else {
+                        if (jDatas.ErrorMessage) {
+                            alert(jDatas.ErrorMessage);
                         }
-                    },
-                    error: function (request, error) {
-                        alert(error + " : " + request.responseText);
-                    },
-                    complete: function () {
-
                     }
-                });
+                },
+                error: function (request, error) {
+                    alert(error + " : " + request.responseText);
+                },
+                complete: function () {
+
+                }
             });
         });
 
-        function isEmail(email) {
-            var regex = /^([a-zA-Z0-9_.+-])+\@@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-            return regex.test(email);
-        }
+        $("#i_back").click(function () {
+            window.history.back();
+        });
+    });
 
-        function isMobilNumber(mobil) {
+    function isEmail(email) {
+        var regex = /^([a-zA-Z0-9_.+-])+\@@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        return regex.test(email);
+    }
 
-            var regex = /^[09]{2}[0-9]{8}$/;
-            return regex.test(mobil);
-        }
+    function isMobilNumber(mobil) {
+
+        var regex = /^[09]{2}[0-9]{8}$/;
+        return regex.test(mobil);
+    }
 
     </script>
 
