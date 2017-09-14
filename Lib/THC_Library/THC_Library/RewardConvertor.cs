@@ -20,15 +20,23 @@ namespace THC_Library.Reward
             get;
             set;
         }
-    }
 
-    public class Edenred : RewardConvertor
-    {
+        public string RewardImage
+        {
+            get;
+            set;
+        }
+
         public string CouponNumber
         {
             get;
             set;
         }
+    }
+
+    public class Edenred : RewardConvertor
+    {
+       
 
         public string ValidPeriod
         {
@@ -36,6 +44,17 @@ namespace THC_Library.Reward
             set;
         }
     }
+
+    public class Phyicalenred : RewardConvertor
+    {
+        public string Description
+        {
+            get;
+            set;
+        }                
+    }
+
+
 
     public enum RewardType
     {

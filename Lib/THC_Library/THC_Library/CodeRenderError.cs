@@ -13,6 +13,11 @@ namespace THC_Library
         public THCException(string error) : base(error)
         {
         }
+        public THCException(int number, string error)
+            : base(error)
+        {
+            errNumber = number;
+        }
         public int Number
         {
             get
@@ -29,7 +34,7 @@ namespace THC_Library
         public const int INVAILD_CODE = 0x04;
         public const int REPEAT_SCAN = 0x05;
         public const int LOGIN_INVALID = 0x06;
-
+        
                 
         public CodeRenderException(int number,  string error)
             : base(error)

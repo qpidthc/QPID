@@ -14,7 +14,9 @@ namespace THC_Library
     public class APPCURL
     {
 
-        public static string APP_ENDPOINT
+        private static string APP_ENDPOINT;
+
+        public static string APP_URL
         {
             get;
             set;
@@ -26,7 +28,7 @@ namespace THC_Library
             string strData = string.Format("acc={0}&mail={1}&mobil={2}&pwd={3}",
                         account, mail, mobil, pwd);
 
-            APP_ENDPOINT = "http://localhost:51323/" + METHOD;
+            APP_ENDPOINT = APP_URL + METHOD;
             return SendPost(strData);
 
         }
@@ -36,7 +38,7 @@ namespace THC_Library
             const string METHOD = "Members/THC_Member_02";
             string strData = string.Format("mail={0}&pwd={1}",
                               mail, pwd);
-            APP_ENDPOINT = "http://localhost:51323/" + METHOD;
+            APP_ENDPOINT = APP_URL + METHOD;
             return SendPost(strData);
         }
 
@@ -45,7 +47,7 @@ namespace THC_Library
             const string METHOD = "Members/THC_Member_03";
             string strData = string.Format("ac={0}&code={1}&fb={2}&name={3}&gender={4}",
                               ac, code, fb, name, gender);
-            APP_ENDPOINT = "http://localhost:51323/" + METHOD;
+            APP_ENDPOINT = APP_URL + METHOD;
             return SendPost(strData);
         }
 
@@ -62,7 +64,7 @@ namespace THC_Library
             const string METHOD = "Members/THC_Member_04";
             string strData = string.Format("ml={0}&tk={1}&m={2}&g={3}&a={4}&iid={5}&addr={6}",
                               ml, tk, m, g, a, iid, addr);
-            APP_ENDPOINT = "http://localhost:51323/" + METHOD;
+            APP_ENDPOINT = APP_URL + METHOD;
             return SendPost(strData);
         }
 
@@ -70,14 +72,71 @@ namespace THC_Library
         {
             const string METHOD = "Members/THC_Member_05";
             string strData = string.Format("acc={0}&tk={1}", acc, tk);
-            APP_ENDPOINT = "http://localhost:51323/" + METHOD;
+            APP_ENDPOINT = APP_URL + METHOD;
             return SendPost(strData);
         }
 
-        public static void ScanRecord()
+        public static string ScanRecord(string eventkey, string qrcode, string date, string account,
+                                string age, string gender, string area, string temp, string weather,
+                               string lat, string lng, string tk)
         {
+            //EUR001
+            //EUR002
+            //EUR003
+            //EUR004
+            //EUR005
+            //EUR006
+            //EUR007
+            //EUR008
+            //EUR009
+            //EUR010
+            //EUR011
+            //EUR012
+
+            const string METHOD = "Members/THC_Member_06";
+            string strData = string.Format("eventkey={0}&code={1}&date={2}&acc={3}&age={4}&gender={5}&area={6}&temp={7}&weather={8}&lat={9}&lng={10}&tk={11}",
+                             eventkey, qrcode, date, account, age, gender, area, temp, weather, lat, lng, tk);
+            APP_ENDPOINT = APP_URL + METHOD;
+            return SendPost(strData);
 
         }
+
+
+        public static string ScanRecord(string eventkey, string qrcode, string date, string account,
+                                string age, string gender, string area, string temp, string weather,
+                                string lat, string lng, string rewardname, string tk)
+        {
+            //EUR001
+            //EUR002
+            //EUR003
+            //EUR004
+            //EUR005
+            //EUR006
+            //EUR007
+            //EUR008
+            //EUR009
+            //EUR010
+            //EUR011
+            //EUR012
+            //EUR013
+
+            const string METHOD = "Members/THC_Member_06";
+            string strData = string.Format("eventkey={0}&code={1}&date={2}&acc={3}&age={4}&gender={5}&area={6}&temp={7}&weather={8}&lat={9}&lng={10}&rwd={11}&tk={12}",
+                             eventkey, qrcode, date, account, age, gender, area, temp, weather, lat, lng, rewardname, tk);
+            APP_ENDPOINT = APP_URL + METHOD;
+            return SendPost(strData);
+
+        }
+
+
+        public static string RequestResetPassword(string account)
+        {          
+            const string METHOD = "Members/ForgestPassword";
+            string strData = string.Format("ml={0}", account);
+            APP_ENDPOINT = APP_URL + METHOD;
+            return SendPost(strData);
+        }
+
 
         private static string SendPost(string values)
         {                        
