@@ -1,0 +1,453 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="./css/nice-select.css">
+    <link rel="stylesheet" href="./css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="./css/dataTables.jqueryui.min.css">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.3/themes/redmond/jquery-ui.css">   
+    <link rel="stylesheet" href="./css/side-bar.css"> 
+    <link rel="stylesheet" href="./css/datagrid.css">
+
+    <script src="./js/jquery-2.1.1.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/jquery.nice-select.min.js"></script>
+    <script src="./js/bootstrap-select.min.js"></script>
+    <script src="./js/bootstrap-datepicker.min.js"></script>
+    <script src="./js/bootstrap-datepicker.zh-TW.min.js" charset="UTF-8"></script>
+    <script src="./js/jquery.dataTables.min.js"></script>
+    <script src="./js/dataTables.jqueryui.min.js"></script>
+    <style>
+        
+
+       
+
+    </style>
+
+
+</head>
+<body>
+    <nav id="menu" class="left">
+        <ul>
+            <li><a href="#" class="active"><i class="fa fa-home"></i>Home</a></li>
+            <li><a href="#"><i class="fa fa-info-circle"></i>About</a></li>
+            <li>
+                <a href="#" ><i class="fa fa-laptop"></i>Services <i class="fa fa-caret-down"></i></a>
+                <ul>
+                    <li><a href="#">Service</a></li>
+                    <li><a href="#" >Service</a></li>
+                    <li><a href="#">Service</a></li>
+                </ul>
+            </li>
+            <li><a href="#"><i class="fa fa-phone"></i>Contact</a></li>
+        </ul>
+        <p href="#" id="showmenu"> <i class="fa fa-align-justify"></i> </p>
+    </nav>
+
+    <div id="wrapper">
+        <div class="overlay"></div>
+      
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <!-- nav bar -->
+            <nav class="navbar navbar-default navbar-fixed-top bg-primary">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed " data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                   
+                    <a class="navbar-brand" href="#" style="margin-left:40px;"><img alt="Brand" src="../logo.png" style="margin-top:-7px;" /></a>
+                    <label class="navbar-text text-center text-primary" style="vertical-align:10px;font-size:x-large;color:#fff;margin-top:5px;margin-left:0px;">宏全國際行銷管理平台</label>
+                </div>
+                <!-- navbar -->
+                <div id="navbar" class="navbar-collapse collapse navbar-custom">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">作業管理 <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li class="dropdown-header">Nav header</li>
+                                <li><a href="#">Separated link</a></li>
+                                <li><a href="#">One more separated link</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="../navbar/">Default</a></li>
+                        <li><a href="../navbar-static-top/">Static top</a></li>
+                        <li class="active"><a href="./">登出<span class="sr-only">(current)</span></a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                            <ul class="dropdown-menu pull-right">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li><a href="#">Separated link</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- nav bar end -->
+           
+            <div class="container-fluid">
+
+                <div class="panel panel-primary span8 offset2">
+
+                    <div class="panel-heading">
+                        <div class="panel-title pull-left">Default</div>
+                        <div class="panel-title pull-right">
+                            <a href="javascript::(0)" id="a_chk_def"><span class="glyphicon glyphicon-minus icon-success"></span></a>&nbsp;&nbsp;
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="panel-body">
+                        <form>
+
+                            <div class="row">
+                                <div class="form-group col-xs-3">
+                                    <label for="email">Email:</label>
+                                    <input type="email" class="form-control" id="email" placeholder="Enter email">
+                                </div>
+
+                                <div class="form-group col-xs-3">
+                                    <label for="pwd">Password:</label>
+                                    <input type="password" class="form-control" id="pwd" placeholder="Enter password">
+                                </div>
+
+                            </div>
+                            <div class="row">
+
+                                <div class="form-group col-xs-3">
+                                    <label for="sel">Select:</label>
+                                    <select class="selectpicker form-control" id="sel">
+                                        <optgroup label="Picnic">
+                                            <option>Mustard</option>
+                                            <option>Ketchup</option>
+                                            <option>Relish</option>
+                                        </optgroup>
+                                        <optgroup label="Camping">
+                                            <option>Tent</option>
+                                            <option>Flashlight</option>
+                                            <option>Toilet Paper</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+
+                                <div class="form-group col-xs-3">
+                                    <label for="datetimepicker1">Date:</label>
+                                    <div class="input-group date" id='datetimepicker1'>
+                                        <input type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="checkbox">
+                                <label><input type="checkbox"> Remember me</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+
+                        </form>
+                    </div>
+                </div>
+
+                <div class="pane panel-primary span8 offset2">
+
+                    <div class="panel-body">
+
+                        <div class="col-xs-12">
+                            <table id="example" class="ui celled table" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>名稱</th>
+                                        <th>地區</th>
+                                        <th>辦公室</th>
+                                        <th>年齡</th>
+                                        <th>開始日期</th>
+                                        <th>薪資</th>
+                                        <th>編輯</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Position</th>
+                                        <th>Office</th>
+                                        <th>Age</th>
+                                        <th>Start date</th>
+                                        <th>Salary</th>
+                                        <th>edit</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                    <tr>
+                                        <td>Tiger Nixon</td>
+                                        <td>System Architect</td>
+                                        <td>Edinburgh</td>
+                                        <td>61</td>
+                                        <td>2011/04/25</td>
+                                        <td>$320,800</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Garrett Winters</td>
+                                        <td>Accountant</td>
+                                        <td>Tokyo</td>
+                                        <td>63</td>
+                                        <td>2011/07/25</td>
+                                        <td>$170,750</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ashton Cox</td>
+                                        <td>Junior Technical Author</td>
+                                        <td>San Francisco</td>
+                                        <td>66</td>
+                                        <td>2009/01/12</td>
+                                        <td>$86,000</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cedric Kelly</td>
+                                        <td>Senior Javascript Developer</td>
+                                        <td>Edinburgh</td>
+                                        <td>22</td>
+                                        <td>2012/03/29</td>
+                                        <td>$433,060</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cedric Kelly</td>
+                                        <td>Senior Javascript Developer</td>
+                                        <td>Edinburgh</td>
+                                        <td>22</td>
+                                        <td>2012/03/29</td>
+                                        <td>$433,060</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cedric Kelly</td>
+                                        <td>Senior Javascript Developer</td>
+                                        <td>Edinburgh</td>
+                                        <td>22</td>
+                                        <td>2012/03/29</td>
+                                        <td>$433,060</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cedric Kelly</td>
+                                        <td>Senior Javascript Developer</td>
+                                        <td>Edinburgh</td>
+                                        <td>22</td>
+                                        <td>2012/03/29</td>
+                                        <td>$433,060</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cedric Kelly</td>
+                                        <td>Senior Javascript Developer</td>
+                                        <td>Edinburgh</td>
+                                        <td>22</td>
+                                        <td>2012/03/29</td>
+                                        <td>$433,060</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cedric Kelly</td>
+                                        <td>Senior Javascript Developer</td>
+                                        <td>Edinburgh</td>
+                                        <td>22</td>
+                                        <td>2012/03/29</td>
+                                        <td>$433,060</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cedric Kelly</td>
+                                        <td>Senior Javascript Developer</td>
+                                        <td>Edinburgh</td>
+                                        <td>22</td>
+                                        <td>2012/03/29</td>
+                                        <td>$433,060</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cedric Kelly</td>
+                                        <td>Senior Javascript Developer</td>
+                                        <td>Edinburgh</td>
+                                        <td>22</td>
+                                        <td>2012/03/29</td>
+                                        <td>$433,060</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cedric Kelly</td>
+                                        <td>Senior Javascript Developer</td>
+                                        <td>Edinburgh</td>
+                                        <td>22</td>
+                                        <td>2012/03/29</td>
+                                        <td>$433,060</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cedric Kelly</td>
+                                        <td>Senior Javascript Developer</td>
+                                        <td>Edinburgh</td>
+                                        <td>22</td>
+                                        <td>2012/03/29</td>
+                                        <td>$433,060</td>
+                                        <td></td>
+                                    <tr>
+                                        <td>Cedric Kelly</td>
+                                        <td>Senior Javascript Developer</td>
+                                        <td>Edinburgh</td>
+                                        <td>22</td>
+                                        <td>2012/03/29</td>
+                                        <td>$433,060</td>
+                                        <td></td>
+                                    </tr>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <!-- Page Content End-->
+    </div>
+
+    <script>
+        $("#showmenu").click(function (e) {
+           
+            e.preventDefault();
+            overlay = $('.overlay');
+            $("#menu").toggleClass("show");
+
+            if ($("#menu").hasClass("show")) {
+                $('#menu').css("boxShadow", "10px 0px 40px #2F2F2F");
+                overlay.show();
+            } else {
+                $('#menu').css("boxShadow", "0px 0px 0px #2F2F2F");
+                overlay.hide();
+            }
+                       
+            //if ($('#menu').hasClass("boxShadow")) {
+            //    $('#menu').removeClass("boxShadow");
+           // } else {
+           //     $('#menu').css("boxShadow", "10px 0px 40px #888888");
+           // }           
+        });
+
+        $("#menu a").click(function (event) {
+           
+            //alert($(this).text());
+            
+            event.preventDefault();
+            if ($(this).next('ul').length) {
+                $(this).next().toggle('fast');
+                $(this).children('i:last-child').toggleClass('fa-caret-down fa-caret-left');
+            }
+           
+        });
+
+
+        $(document).ready(function () {
+            var trigger = $('.hamburger'),
+              overlay = $('.overlay'),
+                isClosed = false;
+
+            trigger.click(function () {
+                hamburger_cross();
+            });
+
+            function hamburger_cross() {
+
+                if (isClosed == true) {
+                    overlay.hide();
+                    trigger.removeClass('is-open');
+                    trigger.addClass('is-closed');
+                    isClosed = false;
+                } else {
+                    overlay.show();
+                    trigger.removeClass('is-closed');
+                    trigger.addClass('is-open');
+                    isClosed = true;
+                }
+            }
+
+            $('[data-toggle="offcanvas"]').click(function () {
+                $('#wrapper').toggleClass('toggled');
+            });
+
+            $('#datetimepicker1').datepicker({
+                format: "yyyy/mm/dd",
+                language: 'zh-TW',
+                autoclose: true
+
+            });
+            loadTable();
+        });
+
+        function loadTable() {
+            $('#example').DataTable({
+                info: false,
+                bLengthChange: false,
+                searching: false,
+                "language": {
+                    "lengthMenu": "顯示 _MENU_ 紀錄 每頁",
+                    "zeroRecords": "Nothing found - sorry",
+                    "info": "目前頁數 _PAGE_ / _PAGES_",
+                    "infoEmpty": "No records available",
+                    "infoFiltered": "(filtered from _MAX_ total records)",
+                    "paginate": {
+                        "next": ">>",
+                        "previous": "<<"
+                    }
+                },
+                "columns":
+                [
+                    { "data": "名稱", bVisible: false },
+                    { "data": "地區" },
+                    { "data": "辦公室" },
+                    { "data": "年齡" },
+                    { "data": "開始日期" },
+                    { "data": "薪資" },
+                    {
+                        mRender: function (data, type, row) {
+                            console.log(row.info);
+                            var editLink = '<a  data-id="' + row.名稱 + '" onclick="rowClick(\'' + row.薪資 + '\');" ><span class="glyphicon glyphicon-pencil"></span></a>';
+                            var delLink = '<a  data-id="' + row.名稱 + '" onclick="rowClick(\'' + row.薪資 + '\');" ><span class="glyphicon glyphicon-trash"></a>';
+                            return editLink + ' | ' + delLink;
+                        },
+                        orderable: false
+                    }
+                ],
+            });
+        }
+
+        function rowClick(row) {
+            alert(row);
+        }
+
+    </script>
+</body>
+</html>
