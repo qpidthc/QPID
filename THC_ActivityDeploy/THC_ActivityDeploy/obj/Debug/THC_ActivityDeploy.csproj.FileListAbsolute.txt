@@ -1,0 +1,11 @@
+C:\Users\ken\Desktop\WebHTCBackEnd\THC_ActivityDeploy\THC_ActivityDeploy\bin\Debug\THC_ActivityDeploy.exe.config
+D:\THC\WebHTCBackEnd\THC_ActivityDeploy\THC_ActivityDeploy\bin\Debug\THC_ActivityDeploy.exe.config
+D:\THC\WebHTCBackEnd\THC_ActivityDeploy\THC_ActivityDeploy\bin\Debug\THC_ActivityDeploy.exe
+D:\THC\WebHTCBackEnd\THC_ActivityDeploy\THC_ActivityDeploy\bin\Debug\THC_ActivityDeploy.pdb
+D:\THC\WebHTCBackEnd\THC_ActivityDeploy\THC_ActivityDeploy\obj\Debug\THC_ActivityDeploy.FrmMain.resources
+D:\THC\WebHTCBackEnd\THC_ActivityDeploy\THC_ActivityDeploy\obj\Debug\THC_ActivityDeploy.Properties.Resources.resources
+D:\THC\WebHTCBackEnd\THC_ActivityDeploy\THC_ActivityDeploy\obj\Debug\THC_ActivityDeploy.csproj.GenerateResource.Cache
+D:\THC\WebHTCBackEnd\THC_ActivityDeploy\THC_ActivityDeploy\obj\Debug\THC_ActivityDeploy.exe
+D:\THC\WebHTCBackEnd\THC_ActivityDeploy\THC_ActivityDeploy\obj\Debug\THC_ActivityDeploy.pdb
+D:\THC\WebHTCBackEnd\THC_ActivityDeploy\THC_ActivityDeploy\bin\Debug\Newtonsoft.Json.dll
+D:\THC\WebHTCBackEnd\THC_ActivityDeploy\THC_ActivityDeploy\bin\Debug\Newtonsoft.Json.xml
