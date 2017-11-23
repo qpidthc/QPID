@@ -46,7 +46,7 @@ namespace WebHTCBackEnd.classes
             }
         }
 
-        public static NameValueCollection GetProductType(Language.Lan_Zone lan)
+        public static NameValueCollection GetProductType(THC_Library.Language.Lan_Zone lan)
         {
             short index = (short)lan;
             return proTypes[index];
@@ -94,7 +94,7 @@ namespace WebHTCBackEnd.classes
             }
         }
 
-        public static NameValueCollection GetRewardType(Language.Lan_Zone lan)
+        public static NameValueCollection GetRewardType(THC_Library.Language.Lan_Zone lan)
         {
             short index = (short)lan;
             return rwdTypes[index];
@@ -142,7 +142,7 @@ namespace WebHTCBackEnd.classes
             }
         }
 
-        public static NameValueCollection GetRewardVender(Language.Lan_Zone lan)
+        public static NameValueCollection GetRewardVender(THC_Library.Language.Lan_Zone lan)
         {
             short index = (short)lan;
             return rwdVender[index];
