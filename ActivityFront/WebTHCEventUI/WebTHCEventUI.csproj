@@ -160,13 +160,18 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BackendController.cs" />
+    <Compile Include="Controllers\ControlController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controllers\THCController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CodeRender.cs" />
+    <Compile Include="Models\Domain.cs" />
     <Compile Include="Models\Member.cs" />
+    <Compile Include="Models\MyEvent.cs" />
+    <Compile Include="Models\SystemControl.cs" />
     <Compile Include="Models\TaiwanAddress.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -223,9 +228,23 @@
     <Content Include="Views\THC\preRewardPage.cshtml" />
     <Content Include="Views\THC\rewardPhyicalPage.cshtml" />
     <Content Include="Views\THC\getPhyical.cshtml" />
+    <Content Include="Views\Shared\_THCControl.cshtml" />
+    <Content Include="Views\Backend\DataAnalysis.cshtml" />
+    <Content Include="Views\Shared\_THCBackend.cshtml" />
+    <Content Include="Views\Backend\EventActivities.cshtml" />
+    <Content Include="Views\Backend\Error.cshtml" />
+    <Content Include="Views\Backend\EventRewards.cshtml" />
+    <Content Include="Views\Backend\test.cshtml" />
+    <Content Include="Views\Backend\RewardEarnList.cshtml" />
+    <Content Include="Views\Backend\DataDashboard.cshtml" />
+    <Content Include="Views\Control\Index.cshtml" />
+    <Content Include="Views\Control\UserControl.cshtml" />
+    <Content Include="Views\Control\ChangeCode.cshtml" />
+    <Content Include="Views\Control\ImportActivity.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="exports\" />
     <Folder Include="Views\Register\" />
   </ItemGroup>
   <ItemGroup>

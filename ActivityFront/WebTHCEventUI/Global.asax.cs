@@ -21,8 +21,8 @@ namespace WebTHCEventUI
             THC_Library.DataBase.DataBaseControl.ResetDatabase("60.251.140.166", "THC_ACTIVITY");
 
 #if(REMOTE)
-          
-                 THC_Library.APPCURL.APP_URL = "http://60.251.140.166/WebTHCApp/";
+
+            THC_Library.APPCURL.APP_URL = "http://oqid.ddns.net/WebTHCApp/";
 #else
 
             THC_Library.APPCURL.APP_URL = "http://localhost:51323/";
