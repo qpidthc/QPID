@@ -122,8 +122,8 @@ namespace WebHTCBackEnd.Models.Events
                              "where AEP002=@AEP002 and RT001=@RT001 and RDWV001=@RDWV001";
 
                     paraList.Add(new SqlParameter("@AEP002", eventkey));
-                    paraList.Add(new SqlParameter("@RT001", Language.LanguageBase.CURRENT_LANGUAGE));
-                    paraList.Add(new SqlParameter("@RDWV001", Language.LanguageBase.CURRENT_LANGUAGE));
+                    paraList.Add(new SqlParameter("@RT001", THC_Library.Language.LanguageBase.CURRENT_LANGUAGE));
+                    paraList.Add(new SqlParameter("@RDWV001", THC_Library.Language.LanguageBase.CURRENT_LANGUAGE));
                     returnTable = dbControl.GetDataTable(strSQL, paraList);
                 }
 
@@ -155,36 +155,69 @@ namespace WebHTCBackEnd.Models.Events
 
         public int addNewReward(string event_key, string rwd_type, string rwd_level, string rwd_name,
                         string rwd_number, string rwd_memo, string rwd_vender, string assign, string rwd_image,
-                        string rwd_effective, string rwd_sms, out Error.Error error)
+                        string rwd_effective, string rwd_sms, string rwd_win_desc, out Error.Error error)
         {
             error = null;
             int iNewId = -1;
+            SqlParameter sqlParam;
             paraList.Clear();
 
-            string strSQL = strSQL = "insert into activity_event_prize (AEP002,AEP003,AEP004,AEP005,AEP006,AEP007,AEP009,AEP010,AEP011,AEP012,AEP013) " +
-                            "values (@AEP002,@AEP003,@AEP004,@AEP005,@AEP006,@AEP007,@AEP009,@AEP010,@AEP011,@AEP012,@AEP013);" +
+            string strSQL = strSQL = "insert into activity_event_prize (AEP002,AEP003,AEP004,AEP005,AEP006,AEP007,AEP009,AEP010,AEP011,AEP012,AEP013,AEP014) " +
+                            "values (@AEP002,@AEP003,@AEP004,@AEP005,@AEP006,@AEP007,@AEP009,@AEP010,@AEP011,@AEP012,@AEP013,@AEP014);" +
                             "select SCOPE_IDENTITY();";
             
             try
             {   
-                paraList.Add(new SqlParameter("@AEP002", event_key));
-                paraList.Add(new SqlParameter("@AEP003", rwd_type));
-                paraList.Add(new SqlParameter("@AEP004", rwd_level));
-                paraList.Add(new SqlParameter("@AEP005", rwd_name));
-                paraList.Add(new SqlParameter("@AEP006", rwd_number));
-                paraList.Add(new SqlParameter("@AEP007", rwd_memo));
-                paraList.Add(new SqlParameter("@AEP009", rwd_vender));
-                if (assign.Length == 0)
+                sqlParam = new SqlParameter("@AEP002", SqlDbType.Int);
+                sqlParam.Value = event_key;
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@AEP003", SqlDbType.Char);
+                sqlParam.Value = rwd_type;
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@AEP004", SqlDbType.TinyInt);
+                sqlParam.Value = rwd_level;
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@AEP005", SqlDbType.NVarChar);
+                sqlParam.Value = rwd_name;
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@AEP006", SqlDbType.Int);
+                sqlParam.Value = rwd_number;
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@AEP007", SqlDbType.NVarChar);
+                sqlParam.Value = rwd_memo;
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@AEP009", SqlDbType.Int);
+                if (rwd_vender.Trim().Length == 0)
                 {
-                    paraList.Add(new SqlParameter("@AEP010", DBNull.Value));
+                    sqlParam.Value = rwd_vender;
                 }
                 else
                 {
-                    paraList.Add(new SqlParameter("@AEP010", assign));
+                    sqlParam.Value = rwd_vender;
                 }
-                paraList.Add(new SqlParameter("@AEP011", rwd_image));
-                paraList.Add(new SqlParameter("@AEP012", rwd_effective));
-                paraList.Add(new SqlParameter("@AEP013", rwd_sms));
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@AEP010", SqlDbType.Int);
+                if (assign.Length == 0)
+                {
+                    sqlParam.Value = DBNull.Value;
+                }
+                else
+                {
+                    sqlParam.Value = assign;
+                }
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@AEP011", SqlDbType.VarChar);
+                sqlParam.Value = rwd_image;
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@AEP012", SqlDbType.VarChar);
+                sqlParam.Value = rwd_effective;
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@AEP013", SqlDbType.Text);
+                sqlParam.Value = rwd_sms;
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@AEP014", SqlDbType.VarChar);
+                sqlParam.Value = rwd_win_desc;
+                paraList.Add(sqlParam);                
 
                 dbControl.Open();
                 
@@ -208,33 +241,58 @@ namespace WebHTCBackEnd.Models.Events
 
         public int updateReward(string rwd_key, string rwd_type, string rwd_level, string rwd_name,
                         string rwd_number, string rwd_memo, string rwd_vender, string assign, string rwd_image, 
-                        string rwd_effective, string rwd_sms, out Error.Error error)
+                        string rwd_effective, string rwd_sms, string rwd_win_desc, out Error.Error error)
         {
             error = null;
+            SqlParameter sqlParam;
             int iAffectedCount = -1;
             paraList.Clear();
-            string strSQL = "update activity_event_prize set AEP003=@AEP003,AEP004=@AEP004,AEP005=@AEP005 " +
-                            ",AEP006=@AEP006,AEP007=@AEP007,AEP009=@AEP009,AEP010=@AEP010,AEP011=@AEP011 " +
-                            ",AEP012=@AEP012,AEP013=@AEP013 where AEP001=@AEP001";
-            paraList.Add(new SqlParameter("@AEP003", rwd_type));
-            paraList.Add(new SqlParameter("@AEP004", rwd_level));
-            paraList.Add(new SqlParameter("@AEP005", rwd_name));
-            paraList.Add(new SqlParameter("@AEP006", rwd_number));
-            paraList.Add(new SqlParameter("@AEP007", rwd_memo));
-            paraList.Add(new SqlParameter("@AEP009", rwd_vender));
+            string strSQL = "update activity_event_prize set AEP003=@AEP003,AEP004=@AEP004,AEP005=@AEP005" +
+                            ",AEP006=@AEP006,AEP007=@AEP007,AEP009=@AEP009,AEP010=@AEP010,AEP011=@AEP011" +
+                            ",AEP012=@AEP012,AEP013=@AEP013,AEP014=@AEP014 where AEP001=@AEP001";
+            sqlParam = new SqlParameter("@AEP003", SqlDbType.Char);
+            sqlParam.Value = rwd_type;
+            paraList.Add(sqlParam);
+            sqlParam = new SqlParameter("@AEP004", SqlDbType.TinyInt);
+            sqlParam.Value = rwd_level;
+            paraList.Add(sqlParam);
+            sqlParam = new SqlParameter("@AEP005", SqlDbType.NVarChar);
+            sqlParam.Value = rwd_name;
+            paraList.Add(sqlParam);
+            sqlParam = new SqlParameter("@AEP006", SqlDbType.Int);
+            sqlParam.Value = rwd_number;
+            paraList.Add(sqlParam);
+            sqlParam = new SqlParameter("@AEP007", SqlDbType.NVarChar);
+            sqlParam.Value = rwd_memo;
+            paraList.Add(sqlParam);
+            sqlParam = new SqlParameter("@AEP009", SqlDbType.Int);
+            sqlParam.Value = rwd_vender;
+            paraList.Add(sqlParam);
+            sqlParam = new SqlParameter("@AEP010", SqlDbType.Int);
             if (assign.Length == 0)
             {
-                paraList.Add(new SqlParameter("@AEP010", DBNull.Value));
+                sqlParam.Value = DBNull.Value;               
             }
             else
             {
-                paraList.Add(new SqlParameter("@AEP010", assign));
+                sqlParam.Value = assign;
             }
-            paraList.Add(new SqlParameter("@AEP011", rwd_image));
-            paraList.Add(new SqlParameter("@AEP012", rwd_effective));
-            paraList.Add(new SqlParameter("@AEP013", rwd_sms));
-            paraList.Add(new SqlParameter("@AEP001", rwd_key));
-            
+            paraList.Add(sqlParam);
+            sqlParam = new SqlParameter("@AEP011", SqlDbType.VarChar);
+            sqlParam.Value = rwd_image;
+            paraList.Add(sqlParam);
+            sqlParam = new SqlParameter("@AEP012", SqlDbType.VarChar);
+            sqlParam.Value = rwd_effective;
+            paraList.Add(sqlParam);
+            sqlParam = new SqlParameter("@AEP013", SqlDbType.Text);
+            sqlParam.Value = rwd_sms;
+            paraList.Add(sqlParam);
+            sqlParam = new SqlParameter("@AEP014", SqlDbType.VarChar);
+            sqlParam.Value = rwd_win_desc;
+            paraList.Add(sqlParam);
+            sqlParam = new SqlParameter("@AEP001", SqlDbType.Int);
+            sqlParam.Value = rwd_key;
+            paraList.Add(sqlParam);            
 
             try
             {
@@ -312,7 +370,7 @@ namespace WebHTCBackEnd.Models.Events
             paraList.Clear();
             string strSQL = "select RDWV002 from reward_vender where RDWV004=@RDWV004 and RDWV001=@RDWV001";
             paraList.Add(new SqlParameter("@RDWV004", vid));
-            paraList.Add(new SqlParameter("@RDWV001", Language.LanguageBase.CURRENT_LANGUAGE));
+            paraList.Add(new SqlParameter("@RDWV001", THC_Library.Language.LanguageBase.CURRENT_LANGUAGE));
 
             try
             {

@@ -156,14 +156,14 @@ namespace WebHTCBackEnd.Models.Events
             DateTime datNow = DateTime.Now;
             now = datNow.ToString();
             paraList.Clear();
+            string strSQL;
+            //string strSQL = "select EQC001,EQC002,EQC003,EQC004,EQC005,EC,AEP003,AEP004,AEP005,AEP006,AEP011,AEP012,AEP013,AEP014,AE002,AE003,AE013,AE014,AE019 " +
+            //                "from event_qrcode_d as a left join activity_event_prize as b " +
+            //                "on a.EQC007 = b.AEP001 inner join activity_event as c on a.EQC001=c.AE001 " +
+            //                "where AE001=@AE001 ";
+            //paraList.Add(new SqlParameter("@AE001", event_key));
 
-            string strSQL = "select EQC001,EQC002,EQC003,EQC004,EQC005,EC,AEP003,AEP004,AEP005,AEP006,AEP011,AEP012,AEP013,AE002,AE003,AE013,AE014,AE019 " +
-                            "from event_qrcode_d as a left join activity_event_prize as b " +
-                            "on a.EQC007 = b.AEP001 inner join activity_event as c on a.EQC001=c.AE001 " +
-                            "where AE001=@AE001 ";
-            paraList.Add(new SqlParameter("@AE001", event_key));
-
-            //事件key,序號,QR碼,序號補碼,QR補碼,EC,獎項型態,獎項層級,獎項名稱,獎項數量,獎項圖檔檔名,有效時間,簡訊內容,事件代碼,事件名稱,商品系列,AE014
+            //事件key,序號,QR碼,序號補碼,QR補碼,EC,獎項型態,獎項層級,獎項名稱,獎項數量,獎項圖檔檔名,有效時間,簡訊內容,兌獎網址,事件代碼,事件名稱,商品系列,AE014
 
             try
             {
@@ -195,7 +195,10 @@ namespace WebHTCBackEnd.Models.Events
                 smWriter.WriteLine("reward:" + rewardJson);
 
                 //發碼
-                strSQL = "select EQC001,EQC002,EQC003,EQC004,EQC005,EC from event_qrcode_d where EQC001=@EQC001 ";
+                strSQL = "select EQC001,EQC002,EQC003,EQC004,EQC005,EQC007,EC,AEP003,AEP004,AEP005,AEP011,AEP012,AEP013 " +
+                         "from event_qrcode_d left join activity_event_prize " + 
+                         "on EQC007=AEP001 " +
+                         "where EQC001=@EQC001 ";
                 paraList.Clear();
                 paraList.Add(new SqlParameter("@EQC001", event_key));
                 returnTable = dbControl.GetDataTable(strSQL, paraList);

@@ -182,7 +182,7 @@ namespace WebHTCBackEnd.Models.Events
                                 "where EQCH002=@EQCH002 and PT001=@PT001 " +
                                 "order by EQCH001";
                     paraList.Add(new SqlParameter("@EQCH002", event_key));
-                    paraList.Add(new SqlParameter("@PT001", Language.LanguageBase.CURRENT_LANGUAGE));
+                    paraList.Add(new SqlParameter("@PT001", THC_Library.Language.LanguageBase.CURRENT_LANGUAGE));
                     returnTable = dbControl.GetDataTable(strSQL, paraList);
                 }
 
@@ -268,14 +268,14 @@ namespace WebHTCBackEnd.Models.Events
                 {
                     throw new Exception("Event is not opened");
                 }
-                else if (datNow.Subtract(datBegin).TotalDays < 0)
-                {
-                    throw new Exception("Event Activity not been actived");
-                }
-                else if (datExpired.Subtract(datNow).TotalDays < 0)
-                {
-                    throw new Exception("Event Activity has been closed");
-                }
+                //else if (datNow.Subtract(datBegin).TotalDays < 0)
+                //{
+                //    throw new Exception("Event Activity not been actived");
+                //}
+                //else if (datExpired.Subtract(datNow).TotalDays < 0)
+                //{
+                //    throw new Exception("Event Activity has been closed");
+                //}
                    
                 paraList.Clear();
                 strSQL = "insert into event_qrcode_h (EQCH002,EQCH003,EQCH004,EQCH005,EQCH006,EQCH007,EQCH008) " +
@@ -425,9 +425,10 @@ namespace WebHTCBackEnd.Models.Events
 
         }
 
-        public DataTable downloadCode(string event_key, string id, out string url, out Error.Error error)
+        public DataTable downloadCode(string event_key, string id, out string activity_name, out string url, out Error.Error error)
         {
             error = null;
+            activity_name = "";
             url = "";
             DataTable codeTable = null;
             paraList.Clear();
@@ -442,10 +443,11 @@ namespace WebHTCBackEnd.Models.Events
                 codeTable = dbControl.GetDataTable(strSQL, paraList);
 
                 paraList.Clear();
-                strSQL = "select AE014 from activity_event where AE001=@AE001";
+                strSQL = "select AE002,AE014 from activity_event where AE001=@AE001";
                 paraList.Add(new SqlParameter("@AE001", event_key));
                 IDataReader dataReader = dbControl.GetReader(strSQL, paraList);
                 dataReader.Read();
+                activity_name = dataReader["AE002"].ToString();
                 url = dataReader["AE014"].ToString();
                 dataReader.Close();
                
