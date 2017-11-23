@@ -18,5 +18,13 @@ namespace THC_Library
             get;
             set;
         }
+
+        public static Error AbortError()
+        {
+            Error error = new Error();
+            error.Number = 1001;
+            error.ErrorMessage = "abort";
+            return error;
+        } 
     }
 }

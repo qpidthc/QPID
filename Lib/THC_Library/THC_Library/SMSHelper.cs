@@ -18,7 +18,7 @@ namespace THC_Library
             //使用者帳號
             string username = "58176511";
             //使用者密碼
-            string password = "Aa1234Bb";
+            string password = "Aa123456Bb";
 
             //// 三竹 Http 發送 URL
             string URL = "http://smexpress.mitake.com.tw/SmSendPost.asp?username=" + username + "&password=" + password;
@@ -32,6 +32,7 @@ namespace THC_Library
 
             postData = "[102]\r\n" + "DestName=" + account + "\r\n" + "dstaddr=" + mobil + "\r\n" + "smbody=" + content + "\r\n";
             //postData = postData + "[103]\r\n" + "DestName=三寶\r\n" + "dstaddr=0999999999\r\n" + "smbody=我是測試3\r\n";
+            
             byte[] bData = System.Text.Encoding.GetEncoding("Big5").GetBytes(postData);
 
 
