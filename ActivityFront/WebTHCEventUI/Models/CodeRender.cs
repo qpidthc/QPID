@@ -10,12 +10,13 @@ namespace WebTHCEventUI.Models
 {
     public class CodeRender
     {
-        public bool go(string ac, string code, string tk, string ml, string city, string lat, string lng, 
+        public bool go(string ac, string code, string tk, string ml, string city, string lat, string lng, out int event_no,
                             out string gender, out string age, out string mobil, out string iid, out string addr, 
                             out THC_Library.Reward.RewardConvertor rwd, out int logkey, out THC_Library.Error error)
         {
             error = null;
             rwd = null;
+            event_no = -1;
             gender = "";
             age = "";
             mobil = "";
@@ -25,7 +26,7 @@ namespace WebTHCEventUI.Models
             DateTime datNow = DateTime.Now;
             DateTime datNowDate = new DateTime(datNow.Year, datNow.Month, datNow.Day);
             //int iIdentityKey;
-            int eventKey = -1;
+            //int eventKey = -1;
             string eventName = "";
             DateTime startTime = DateTime.MaxValue;
             DateTime endTime = DateTime.MinValue;
@@ -50,7 +51,7 @@ namespace WebTHCEventUI.Models
                 if (dataReader.Read())
                 {
                     bRightEvent = true;
-                    eventKey = int.Parse(dataReader["AE001"].ToString());
+                    event_no = int.Parse(dataReader["AE001"].ToString());
                     eventName = dataReader["AE003"].ToString();
                     startTime = Convert.ToDateTime(dataReader["AE005"]);
                     endTime = Convert.ToDateTime(dataReader["AE006"]);
@@ -95,7 +96,7 @@ namespace WebTHCEventUI.Models
                     addr = jsonResult.Address;
                     iid = jsonResult.IId;
                     gender = jsonResult.Gender;
-                    age = jsonResult.Age;                    
+                    age = jsonResult.Age;           
                 }
                 else
                 {
@@ -110,41 +111,50 @@ namespace WebTHCEventUI.Models
                     throw codeException;
                 }
 
-                strSQL = "select * from qr_record where QRC015=@QRC015";
+                //
+
+                //strSQL = "select * from qr_record where QRC015=@QRC015";
+                strSQL = "select qr_record.*,AEP003,AEP005,AEP007,AEP011,AEP012 " + 
+                         "from qr_record left join activity_rewards on QRC018=AEP001 where QRC015=@QRC015";
+
                 paraList.Clear();
                 paraList.Add(new SqlParameter("@QRC015", code));
                 dataReader = dbCtl.GetReader(strSQL, paraList);
                 object EC = "";
+                string rwdType = "";
 
                 if (dataReader.Read())
                 {
+                    rwdType = dataReader["AEP003"].ToString();
                     int iScanCounter = int.Parse(dataReader["QRC012"].ToString());
                     if (iScanCounter == 0)
                     {
                         //未掃描過
                         //中獎與否
                         EC = dataReader["QRC008"];
-                        if (EC != DBNull.Value)
+                        if (EC != DBNull.Value && EC.ToString().Length > 0)
                         {
                             bWin = true;
-                            THC_Library.Reward.RewardConvertor rwdConvertor; 
-                            if (dataReader["QRC009"].ToString() == "0")
+                            THC_Library.Reward.RewardConvertor rwdConvertor;
+                            if (dataReader["AEP003"].ToString() == "0")
                             {
                                 //虛擬
                                 rwdConvertor = new THC_Library.Reward.Edenred();
                                 THC_Library.Reward.Edenred edenred = rwdConvertor as THC_Library.Reward.Edenred;
-                                edenred.RewardName = dataReader["QRC011"].ToString();
+                                edenred.RewardName = dataReader["AEP005"].ToString(); //dataReader["QRC011"].ToString();
                                 edenred.RewardType = THC_Library.Reward.RewardType.ElectricCoupon;
                                 edenred.CouponNumber = EC.ToString();
-                                if (dataReader["QRC017"] != DBNull.Value)
+                                if (dataReader["QRC018"] != DBNull.Value)
                                 {
-                                    string strJSon = dataReader["QRC017"].ToString();
-                                    if (strJSon.Length > 0)
-                                    {
-                                        dynamic jsonReward = Newtonsoft.Json.JsonConvert.DeserializeObject(strJSon);
-                                        edenred.ValidPeriod = jsonReward.v_date;
-                                        edenred.RewardImage = jsonReward.img;
-                                    }
+                                    edenred.ValidPeriod = dataReader["AEP012"].ToString();
+                                    edenred.RewardImage = dataReader["AEP011"].ToString();
+                                    //string strJSon = dataReader["QRC017"].ToString();
+                                    //if (strJSon.Length > 0)
+                                    //{
+                                    //    dynamic jsonReward = Newtonsoft.Json.JsonConvert.DeserializeObject(strJSon);
+                                    //    edenred.ValidPeriod = jsonReward.v_date;
+                                    //    edenred.RewardImage = jsonReward.img;
+                                    //}
                                 }       
                             }
                             else
@@ -152,18 +162,20 @@ namespace WebTHCEventUI.Models
                                 //實體
                                 rwdConvertor = new THC_Library.Reward.Phyicalenred();
                                 THC_Library.Reward.Phyicalenred phyenred = rwdConvertor as THC_Library.Reward.Phyicalenred;
-                                phyenred.RewardName = dataReader["QRC011"].ToString();
+                                phyenred.RewardName = dataReader["AEP005"].ToString();
                                 phyenred.RewardType = THC_Library.Reward.RewardType.PhyicalReward;
                                 phyenred.CouponNumber = EC.ToString();
-                                if (dataReader["QRC017"] != DBNull.Value)
+                                if (dataReader["QRC018"] != DBNull.Value)
                                 {
-                                    string strJSon = dataReader["QRC017"].ToString();
-                                    if (strJSon.Length > 0)
-                                    {
-                                        dynamic jsonReward = Newtonsoft.Json.JsonConvert.DeserializeObject(strJSon);
-                                        phyenred.Description = jsonReward.desc;
-                                        phyenred.RewardImage = jsonReward.img;
-                                    }
+                                    phyenred.Description = dataReader["AEP007"].ToString();
+                                    phyenred.RewardImage = dataReader["AEP011"].ToString();
+                                    //string strJSon = dataReader["QRC017"].ToString();
+                                    //if (strJSon.Length > 0)
+                                    //{
+                                    //    dynamic jsonReward = Newtonsoft.Json.JsonConvert.DeserializeObject(strJSon);
+                                    //    phyenred.Description = jsonReward.desc;
+                                    //    phyenred.RewardImage = jsonReward.img;
+                                    //}
                                 }       
                             }
 
@@ -194,7 +206,7 @@ namespace WebTHCEventUI.Models
                 if (!bWin)
                 {
                     //取得地區溫度與天氣代碼
-                    Int16 iTemp = -200;
+                    Int16 iTemp = 15;
                     int iWeather = 3200;
                     if (city.Length > 0)
                     {
@@ -208,12 +220,26 @@ namespace WebTHCEventUI.Models
                         {
                             if (!Int16.TryParse(dataReader["WH002"].ToString(), out iTemp))
                             {
-                                iTemp = -200;
+                                iTemp = 15;
                             }
                             if (!int.TryParse(dataReader["WH003"].ToString(), out iWeather))
                             {
                                 iWeather = 3200;
-                            }                            
+                            }
+                        }
+                        dataReader.Close();
+                    }
+                    else
+                    {
+                        strSQL = "select WH002,WH003 from weather where WH001='平均'";
+                        paraList.Clear();
+                        dataReader = dbCtl.GetReader(strSQL, paraList);
+                        if (dataReader.Read())
+                        {
+                            if (!Int16.TryParse(dataReader["WH002"].ToString(), out iTemp))
+                            {
+                                iTemp = 15;
+                            }
                         }
                         dataReader.Close();
                     }
@@ -225,7 +251,7 @@ namespace WebTHCEventUI.Models
 
                     paraList.Clear();
                     sqlParam = new SqlParameter("@EUR002", SqlDbType.Int);
-                    sqlParam.Value = eventKey;
+                    sqlParam.Value = event_no;
                     paraList.Add(sqlParam);
                     sqlParam = new SqlParameter("@EUR003", SqlDbType.VarChar);
                     sqlParam.Value = code;
@@ -273,9 +299,9 @@ namespace WebTHCEventUI.Models
 
                     dbCtl.CommintTransaction();
 
-                    jsonString = THC_Library.APPCURL.ScanRecord(eventKey.ToString(), code,
+                    jsonString = THC_Library.APPCURL.ScanRecord(event_no.ToString(), code,
                             datNow.ToString(), ml, age, gender, city, iTemp.ToString(), iWeather.ToString(),
-                            lat, lng, tk);
+                            lat, lng, rwdType, tk);
                     jsonResult = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
                 }
 
@@ -303,9 +329,10 @@ namespace WebTHCEventUI.Models
         }
 
         public bool done(string ac, string code, string tk, string ml, string city, string lat, string lng,
-                        string coupnumber , string logkey, out THC_Library.Error error)
+                        string coupnumber, string logkey, out int event_key, out THC_Library.Error error)
         {
-            error = null;                       
+            error = null;
+            event_key = -1;
             
             IDataReader dataReader;
             SqlParameter sqlParam;
@@ -315,7 +342,7 @@ namespace WebTHCEventUI.Models
             DataBaseControl dbCtl = new DataBaseControl();
 
             DateTime datNow = DateTime.Now;
-            int eventKey = -1;
+            
             string eventName;
             string mobil = "";
             string gender = "";
@@ -330,7 +357,7 @@ namespace WebTHCEventUI.Models
                 if (dataReader.Read())
                 {
                     bRightEvent = true;
-                    eventKey = int.Parse(dataReader["AE001"].ToString());
+                    event_key = int.Parse(dataReader["AE001"].ToString());
                     eventName = dataReader["AE003"].ToString();                    
                 }
                 dataReader.Close();
@@ -369,7 +396,20 @@ namespace WebTHCEventUI.Models
                     throw codeException;
                 }
 
-                strSQL = "select QRC009,QRC011,QRC012,QRC013 from qr_record where QRC008=@QRC008 and QRC015=@QRC015";
+//QRC009	char(1)	獎項型態
+//QRC010	tinyint	獎項層級
+//QRC011	nvarchar(20)	獎項名稱
+//QRC012	int	掃描次數
+
+//AEP003	char(1)	獎項型態
+//AEP004	tinyint 	獎項層級
+//AEP005	nvarchar(20)	獎項名稱
+
+                //strSQL = "select QRC009,QRC011,QRC012,QRC013 from qr_record where QRC008=@QRC008 and QRC015=@QRC015";
+                strSQL = "select QRC008,QRC012,QRC013,AEP003,AEP004,AEP005,AEP011,AEP013,AEP014 " +
+                        "from qr_record left join activity_rewards on QRC018=AEP001 " +
+                        "where QRC008=@QRC008 and QRC015=@QRC015";
+
                 paraList.Clear();
                 paraList.Add(new SqlParameter("@QRC008", coupnumber));
                 paraList.Add(new SqlParameter("@QRC015", code));
@@ -377,10 +417,19 @@ namespace WebTHCEventUI.Models
 
                 string rwardType = "";
                 string rwardName = "";
+                string rwardImg = "";
+                string rwardEC = "";
+                string winDesc = "";
+                string SMSContent = "";
                 if (dataReader.Read())
                 {
-                    rwardType = dataReader["QRC009"].ToString();
-                    rwardName = dataReader["QRC011"].ToString();
+                    rwardEC = dataReader["QRC008"].ToString();
+                    rwardType = dataReader["AEP003"].ToString();
+                    rwardImg = dataReader["AEP011"].ToString();
+                    rwardName = dataReader["AEP005"].ToString();
+
+                    SMSContent = dataReader["AEP013"].ToString();
+                    winDesc = dataReader["AEP014"].ToString();
                     int iScanCounter = int.Parse(dataReader["QRC012"].ToString());
 
                     if (iScanCounter > 0)
@@ -404,7 +453,7 @@ namespace WebTHCEventUI.Models
                 dataReader.Close();
 
                 //取得地區溫度與天氣代碼
-                Int16 iTemp = -200;
+                Int16 iTemp = 15;
                 int iWeather = 3200;
                 if (city.Length > 0)
                 {
@@ -418,11 +467,25 @@ namespace WebTHCEventUI.Models
                     {
                         if (!Int16.TryParse(dataReader["WH002"].ToString(), out iTemp))
                         {
-                            iTemp = -200;
+                            iTemp = 15;
                         }
                         if (!int.TryParse(dataReader["WH003"].ToString(), out iWeather))
                         {
                             iWeather = 3200;
+                        }
+                    }
+                    dataReader.Close();
+                }
+                else
+                {
+                    strSQL = "select WH002,WH003 from weather where WH001='平均'";
+                    paraList.Clear();
+                    dataReader = dbCtl.GetReader(strSQL, paraList);
+                    if (dataReader.Read())
+                    {
+                        if (!Int16.TryParse(dataReader["WH002"].ToString(), out iTemp))
+                        {
+                            iTemp = 15;
                         }
                     }
                     dataReader.Close();
@@ -436,7 +499,7 @@ namespace WebTHCEventUI.Models
 
                 paraList.Clear();
                 sqlParam = new SqlParameter("@EUR002", SqlDbType.Int);
-                sqlParam.Value = eventKey;
+                sqlParam.Value = event_key;
                 paraList.Add(sqlParam);
                 sqlParam = new SqlParameter("@EUR003", SqlDbType.VarChar);
                 sqlParam.Value = code;
@@ -492,15 +555,17 @@ namespace WebTHCEventUI.Models
 
                 if (rwardType == "0")
                 {
-                    bool bSMS_OK = THC_Library.SMSHelper.SendTo(ml, mobil, "恭喜中獎 " + coupnumber);
-                    //if (bSMS_OK)
-                    //{
-                    //}
-                }                        
+                    //虛擬獎品 簡訊發送
+                    char line = Convert.ToChar(6);
+                    SMSContent = SMSContent.Replace("%s%", coupnumber);
+                    SMSContent = SMSContent.Replace(System.Environment.NewLine, Convert.ToChar(6).ToString());
+                    bool bSMS_OK = THC_Library.SMSHelper.SendTo(ml, mobil, SMSContent);
+                    
+                }
 
-                jsonString = THC_Library.APPCURL.ScanRecord(eventKey.ToString(), code, 
+                jsonString = THC_Library.APPCURL.ScanRecord(event_key.ToString(), code, 
                                             datNow.ToString(), ml, age, gender, city, iTemp.ToString(), iWeather.ToString(), 
-                                            lat, lng, rwardName, tk);
+                                            lat, lng, rwardName, rwardEC, rwardType, winDesc, tk);
                 jsonResult = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
 
                 //if (jsonResult.Number != 0)
@@ -519,7 +584,7 @@ namespace WebTHCEventUI.Models
                 //dbCtl.RollBackTransaction();
                 error = new THC_Library.Error();
                 error.Number = THC_Library.THCException.SYSTEM_ERROR;
-                error.ErrorMessage = "系統發生異常錯誤，請紀錄您的中獎序號，並與客服人員聯絡，我們會盡訊處理這問題。";
+                error.ErrorMessage = ex.ToString(); //"系統發生異常錯誤，請紀錄您的中獎序號，並與客服人員聯絡，我們會盡訊處理這問題。";
             }
             finally
             {
