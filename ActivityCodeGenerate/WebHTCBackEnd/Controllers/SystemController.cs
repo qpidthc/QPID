@@ -11,6 +11,12 @@ namespace WebHTCBackEnd.Controllers
         // GET: System
         public ActionResult Index()
         {
+            if (Session["acc"] == null)
+            {
+                return View("../Register/index");
+            }
+            ViewBag.ACCOUNT = Session["acc"].ToString();
+
             return View();
         }
 
@@ -18,15 +24,15 @@ namespace WebHTCBackEnd.Controllers
         {
             if(lan == "TW")
             {
-                Language.LanguageBase.CURRENT_LANGUAGE = Language.Lan_Zone.TW;
+                THC_Library.Language.LanguageBase.CURRENT_LANGUAGE = THC_Library.Language.Lan_Zone.TW;
             }
             else if(lan == "EN")
             {
-                 Language.LanguageBase.CURRENT_LANGUAGE = Language.Lan_Zone.EN;
+                THC_Library.Language.LanguageBase.CURRENT_LANGUAGE = THC_Library.Language.Lan_Zone.EN;
             }
             else
             {
-                 Language.LanguageBase.CURRENT_LANGUAGE = Language.Lan_Zone.CN;
+                THC_Library.Language.LanguageBase.CURRENT_LANGUAGE = THC_Library.Language.Lan_Zone.CN;
             }           
             string  retJson = WebHTCBackEnd.Utility.JsonResponeUtility.ResultOK();
             return Json(retJson, "application/json", JsonRequestBehavior.AllowGet);

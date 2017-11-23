@@ -12,11 +12,23 @@ namespace WebHTCBackEnd.Controllers
         // GET: SystemBase
         public ActionResult Index()
         {
+            if (Session["acc"] == null)
+            {
+                return View("../Register/index");
+            }
+            ViewBag.ACCOUNT = Session["acc"].ToString();
+
             return View();
         }
 
         public ActionResult VenderIndex()
         {
+            if (Session["acc"] == null)
+            {
+                return View("../Register/index");
+            }
+            ViewBag.ACCOUNT = Session["acc"].ToString();
+
             return View();
             
         }
@@ -121,19 +133,25 @@ namespace WebHTCBackEnd.Controllers
             DataTable venderData = vender.queryVenderList();
                        
             var lanSet = new Language.Vender_Lan();
-            lanSet.CurrentZone = Language.LanguageBase.CURRENT_LANGUAGE;
+            lanSet.CurrentZone = THC_Library.Language.LanguageBase.CURRENT_LANGUAGE;
             ViewData["lan"] = lanSet;
             return View(venderData);
         }
 
         public ActionResult VenderDataSearch(string accno, string accname, string accbon)
         {
+            if (Session["acc"] == null)
+            {
+                return View("../Register/index");
+            }
+            ViewBag.ACCOUNT = Session["acc"].ToString();
+
             string accNo = Request.QueryString["accno"];
             WebHTCBackEnd.Models.SystemBase.THC_Vender vender = new Models.SystemBase.THC_Vender();
             DataTable venderData = vender.queryVenderSearch(accno, accname, accbon);
                        
             var lanSet = new Language.Vender_Lan();
-            lanSet.CurrentZone = Language.LanguageBase.CURRENT_LANGUAGE;
+            lanSet.CurrentZone = THC_Library.Language.LanguageBase.CURRENT_LANGUAGE;
             ViewData["lan"] = lanSet;
 
             ViewBag.s_acc_no = accno;

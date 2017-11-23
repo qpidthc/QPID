@@ -12,11 +12,22 @@ namespace WebHTCBackEnd.Controllers
         // GET: CodeGen
         public ActionResult Index()
         {
+            if (Session["acc"] == null)
+            {
+                return View("../Register/index");
+            }
+            ViewBag.ACCOUNT = Session["acc"].ToString();
             return View();
         }
 
         public ActionResult CodeGenData()
         {
+            if (Session["acc"] == null)
+            {
+                return View("../Register/index");
+            }
+            ViewBag.ACCOUNT = Session["acc"].ToString();
+
             Error.Error error = null;
             string[] top10Events;
 
@@ -32,9 +43,9 @@ namespace WebHTCBackEnd.Controllers
             {
                 DataTable codegenData = null;
                 var lanSet = new Language.Event_Code_Gen();
-                lanSet.CurrentZone = Language.LanguageBase.CURRENT_LANGUAGE;
+                lanSet.CurrentZone = THC_Library.Language.LanguageBase.CURRENT_LANGUAGE;
                 ViewData["lan"] = lanSet;
-                ViewBag.product_types = classes.ProductType.GetProductType(Language.LanguageBase.CURRENT_LANGUAGE);                
+                ViewBag.product_types = classes.ProductType.GetProductType(THC_Library.Language.LanguageBase.CURRENT_LANGUAGE);                
                 ViewBag.TOP10_EVENTS = top10Events;
                 return View(codegenData);
             }            
@@ -42,6 +53,12 @@ namespace WebHTCBackEnd.Controllers
 
         public ActionResult CodeGenSearch(string event_no, string event_name)
         {
+            if (Session["acc"] == null)
+            {
+                return View("../Register/index");
+            }
+            ViewBag.ACCOUNT = Session["acc"].ToString();
+
             Error.Error error = null;
             string strEventKey, strEventNo, strEventName, strVenderNo, strVenderName;
             string[] top10Events;
@@ -59,7 +76,7 @@ namespace WebHTCBackEnd.Controllers
             else
             {
                 var lanSet = new Language.Event_Code_Gen();
-                lanSet.CurrentZone = Language.LanguageBase.CURRENT_LANGUAGE;
+                lanSet.CurrentZone = THC_Library.Language.LanguageBase.CURRENT_LANGUAGE;
                 ViewData["lan"] = lanSet;               
                 ViewBag.s_event_no = event_no;
                 ViewBag.s_event_name = event_name;
@@ -69,7 +86,7 @@ namespace WebHTCBackEnd.Controllers
                 ViewBag.VENDER_NO = strVenderNo;
                 ViewBag.VENDER_NAME = strVenderName;
                 ViewBag.TOP10_EVENTS = top10Events;
-                ViewBag.product_types = classes.ProductType.GetProductType(Language.LanguageBase.CURRENT_LANGUAGE);                
+                ViewBag.product_types = classes.ProductType.GetProductType(THC_Library.Language.LanguageBase.CURRENT_LANGUAGE);                
                 return View("CodeGenData", codegenData);
             }
             
@@ -257,10 +274,10 @@ namespace WebHTCBackEnd.Controllers
             var Id = Request.Form["id"];
 
             Error.Error error;
-            string eventURL;
+            string eventURL, activityName;
 
             WebHTCBackEnd.Models.Events.THC_EventCodeGen objCodeGen = new Models.Events.THC_EventCodeGen();
-            DataTable codeTable = objCodeGen.downloadCode(EventKey, id, out eventURL, out error);
+            DataTable codeTable = objCodeGen.downloadCode(EventKey, id, out activityName, out eventURL, out error);
 
             string retJson;
             if (error != null)
@@ -284,9 +301,11 @@ namespace WebHTCBackEnd.Controllers
                     writer = new System.IO.StreamWriter(tmpFileName, false);
                     foreach (DataRow codeRow in codeTable.Rows)
                     {
-                        writer.WriteLine(string.Format("{0}/{1}{2}{3}", eventURL, codeRow["EQC003"], 
+                        writer.WriteLine(string.Format("{0}/THC?ac={1}&code={2}{3}{4}",
+                                        eventURL, activityName, codeRow["EQC003"], 
                                         codeRow["EQC004"], codeRow["EQC005"]));
                     }
+                    //http://localhost:54416/THC?ac=THC600&code=Bq3oZ0B
                     writer.Close();
 
                     /*
@@ -321,12 +340,12 @@ EQC006	varchar (10)	產生日期 	yyyy/MM/dd
         }
 
         [HttpGet]
-        public ActionResult DownloadCode(string event_no, string id, string filename)
+        public ActionResult DownloadCode(string event_no, string event_name, string id, string filename)
         {
             string tmpFileName = string.Format("{0}\\{1}",
                                        Server.MapPath("~/codefiles"),//Server.MapPath("/codefiles"),
                                        filename);
-            string strDownloadName = string.Format("{0}_{1}.txt", event_no, id);
+            string strDownloadName = string.Format("{0}_{1}_{2}.txt", event_no, event_name, id);
             return File(tmpFileName, "text/plain", strDownloadName);          
         }
        

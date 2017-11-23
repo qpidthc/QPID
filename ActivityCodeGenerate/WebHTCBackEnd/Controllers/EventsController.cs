@@ -13,12 +13,18 @@ namespace WebHTCBackEnd.Controllers
         // GET: Events
         public ActionResult Index()
         {
+            if (Session["acc"] == null)
+            {
+                return View("../Register/index");
+            }
+            ViewBag.ACCOUNT = Session["acc"].ToString();
+
             return View();
         }
 
         [HttpPost]
         public JsonResult SingleEventData(string event_no)
-        {
+        {           
             Error.Error error = null;
             WebHTCBackEnd.Models.Events.THC_Event objEvent = new Models.Events.THC_Event();
             DataTable eventData = objEvent.queryEventByEventNo(event_no, out error);
@@ -77,12 +83,18 @@ namespace WebHTCBackEnd.Controllers
         }
 
         public ActionResult EventData()
-        {           
+        {
+            if (Session["acc"] == null)
+            {
+                return View("../Register/index");
+            }
+            ViewBag.ACCOUNT = Session["acc"].ToString();
+
             WebHTCBackEnd.Models.Events.THC_Event objEvent = new Models.Events.THC_Event();
             DataSet eventSet = objEvent.queryEventListAndVender();
                       
             var lanSet = new Language.Activity_Event_Lan();
-            lanSet.CurrentZone = Language.LanguageBase.CURRENT_LANGUAGE;
+            lanSet.CurrentZone = THC_Library.Language.LanguageBase.CURRENT_LANGUAGE;
             ViewData["lan"] = lanSet;
             return View(eventSet);
         }
@@ -148,12 +160,18 @@ namespace WebHTCBackEnd.Controllers
 
 
         public ActionResult EventDataSearch(string event_no, string event_name, string vender)
-        {            
+        {
+            if (Session["acc"] == null)
+            {
+                return View("../Register/index");
+            }
+            ViewBag.ACCOUNT = Session["acc"].ToString();
+
             WebHTCBackEnd.Models.Events.THC_Event objEvent = new Models.Events.THC_Event();
             DataSet eventData = objEvent.queryEventSearch(event_no, event_name, vender);
 
             var lanSet = new Language.Activity_Event_Lan();
-            lanSet.CurrentZone = Language.LanguageBase.CURRENT_LANGUAGE;
+            lanSet.CurrentZone = THC_Library.Language.LanguageBase.CURRENT_LANGUAGE;
             ViewData["lan"] = lanSet;
 
             ViewBag.s_event_no = event_no;

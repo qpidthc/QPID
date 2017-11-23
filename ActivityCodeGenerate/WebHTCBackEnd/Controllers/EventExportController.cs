@@ -12,11 +12,23 @@ namespace WebHTCBackEnd.Controllers
         // GET: EventExport
         public ActionResult Index()
         {
+            if (Session["acc"] == null)
+            {
+                return View("../Register/index");
+            }
+            ViewBag.ACCOUNT = Session["acc"].ToString();
+
             return View();
         }
 
         public ActionResult ExportData()
         {
+            if (Session["acc"] == null)
+            {
+                return View("../Register/index");
+            }
+            ViewBag.ACCOUNT = Session["acc"].ToString();
+
             Error.Error error = null;
             string[] top10Events;
 
@@ -32,7 +44,7 @@ namespace WebHTCBackEnd.Controllers
             {
                 DataTable rewardData = null;
                 var lanSet = new Language.Event_Export();
-                lanSet.CurrentZone = Language.LanguageBase.CURRENT_LANGUAGE;
+                lanSet.CurrentZone = THC_Library.Language.LanguageBase.CURRENT_LANGUAGE;
                 ViewData["lan"] = lanSet;
                 ViewBag.TOP10_EVENTS = top10Events;
                 //ViewBag.reward_types = classes.RewardType.GetRewardType(Language.LanguageBase.CURRENT_LANGUAGE);
@@ -43,6 +55,12 @@ namespace WebHTCBackEnd.Controllers
 
         public ActionResult EventExportSearch(string event_no, string event_name)
         {
+            if (Session["acc"] == null)
+            {
+                return View("../Register/index");
+            }
+            ViewBag.ACCOUNT = Session["acc"].ToString();
+
             Error.Error error = null;
             //string strEventKey, strEventNo, strEventName, strVenderNo, strVenderName;
             string[] top10Events;
@@ -58,7 +76,7 @@ namespace WebHTCBackEnd.Controllers
             else
             {
                 var lanSet = new Language.Event_Export();
-                lanSet.CurrentZone = Language.LanguageBase.CURRENT_LANGUAGE;
+                lanSet.CurrentZone = THC_Library.Language.LanguageBase.CURRENT_LANGUAGE;
                 ViewData["lan"] = lanSet;
                 //ViewBag.product_types = classes.ProductType.GetProductType(Language.LanguageBase.CURRENT_LANGUAGE);
                 ViewBag.s_event_no = event_no;

@@ -12,11 +12,23 @@ namespace WebHTCBackEnd.Controllers
         // GET: RewarManage
         public ActionResult Index()
         {
+            if (Session["acc"] == null)
+            {
+                return View("../Register/index");
+            }
+            ViewBag.ACCOUNT = Session["acc"].ToString();
+
             return View();
         }
                 
         public ActionResult RewardData()
         {
+            if (Session["acc"] == null)
+            {
+                return View("../Register/index");
+            }
+            ViewBag.ACCOUNT = Session["acc"].ToString();
+
             Error.Error error = null;
             string[] top10Events;
 
@@ -32,17 +44,23 @@ namespace WebHTCBackEnd.Controllers
             {
                 DataTable rewardData = null;
                 var lanSet = new Language.Event_Reward();
-                lanSet.CurrentZone = Language.LanguageBase.CURRENT_LANGUAGE;
+                lanSet.CurrentZone = THC_Library.Language.LanguageBase.CURRENT_LANGUAGE;
                 ViewData["lan"] = lanSet;                
                 ViewBag.TOP10_EVENTS = top10Events;
-                ViewBag.reward_types = classes.RewardType.GetRewardType(Language.LanguageBase.CURRENT_LANGUAGE);
-                ViewBag.reward_venders = classes.RewardVender.GetRewardVender(Language.LanguageBase.CURRENT_LANGUAGE);
+                ViewBag.reward_types = classes.RewardType.GetRewardType(THC_Library.Language.LanguageBase.CURRENT_LANGUAGE);
+                ViewBag.reward_venders = classes.RewardVender.GetRewardVender(THC_Library.Language.LanguageBase.CURRENT_LANGUAGE);
                 return View(rewardData);
             }
         }
         
         public ActionResult RewardSearch(string event_no, string event_name)
         {
+            if (Session["acc"] == null)
+            {
+                return View("../Register/index");
+            }
+            ViewBag.ACCOUNT = Session["acc"].ToString();
+
             Error.Error error = null;
             string strEventKey, strEventNo, strEventName, strVenderNo, strVenderName;
             string[] top10Events;
@@ -59,9 +77,9 @@ namespace WebHTCBackEnd.Controllers
             else
             {
                 var lanSet = new Language.Event_Reward();
-                lanSet.CurrentZone = Language.LanguageBase.CURRENT_LANGUAGE;
+                lanSet.CurrentZone = THC_Library.Language.LanguageBase.CURRENT_LANGUAGE;
                 ViewData["lan"] = lanSet;
-                ViewBag.product_types = classes.ProductType.GetProductType(Language.LanguageBase.CURRENT_LANGUAGE);
+                ViewBag.product_types = classes.ProductType.GetProductType(THC_Library.Language.LanguageBase.CURRENT_LANGUAGE);
                 ViewBag.s_event_no = event_no;
                 ViewBag.s_event_name = event_name;
                 ViewBag.EVENT_KEY = strEventKey;
@@ -70,8 +88,8 @@ namespace WebHTCBackEnd.Controllers
                 ViewBag.VENDER_NO = strVenderNo;
                 ViewBag.VENDER_NAME = strVenderName;
                 ViewBag.TOP10_EVENTS = top10Events;
-                ViewBag.reward_types = classes.RewardType.GetRewardType(Language.LanguageBase.CURRENT_LANGUAGE);
-                ViewBag.reward_venders = classes.RewardVender.GetRewardVender(Language.LanguageBase.CURRENT_LANGUAGE);
+                ViewBag.reward_types = classes.RewardType.GetRewardType(THC_Library.Language.LanguageBase.CURRENT_LANGUAGE);
+                ViewBag.reward_venders = classes.RewardVender.GetRewardVender(THC_Library.Language.LanguageBase.CURRENT_LANGUAGE);
                 return View("RewardData", rewardData);
             }
 
@@ -110,11 +128,12 @@ namespace WebHTCBackEnd.Controllers
             var Assign = Request.Form["txt_assign"];
             var RwdImage = Request.Form["txt_image"];
             var RwdEffective = Request.Form["txt_effective_time"];
+            var RwdWinDesc = Request.Form["txt_win_desc"];
             
             Error.Error error = null;
             WebHTCBackEnd.Models.Events.THC_EventReward objReward = new Models.Events.THC_EventReward();
             int iId = objReward.addNewReward(EventKey, RwdType, RwdLevel, RwdName, RwdNumber, RwdMemo,
-                                RwdVender, Assign, RwdImage, RwdEffective, RwdSMS, out error);
+                                RwdVender, Assign, RwdImage, RwdEffective, RwdSMS, RwdWinDesc, out error);
 
             string retJson;
             if (error != null)
@@ -143,11 +162,12 @@ namespace WebHTCBackEnd.Controllers
             var Assign = Request.Form["txt_assign"];
             var RwdImage = Request.Form["txt_image"];
             var RwdEffective = Request.Form["txt_effective_time"];
+            var RwdWinDesc = Request.Form["txt_win_desc"];
 
             Error.Error error = null;
             WebHTCBackEnd.Models.Events.THC_EventReward objReward = new Models.Events.THC_EventReward();
             int iAffectedCount = objReward.updateReward(RwdKey, RwdType, RwdLevel, RwdName, RwdNumber, RwdMemo,
-                                RwdVender, Assign, RwdImage, RwdEffective, RwdSMS, out error);
+                                RwdVender, Assign, RwdImage, RwdEffective, RwdSMS, RwdWinDesc, out error);
 
             string retJson;
             if (error != null)
