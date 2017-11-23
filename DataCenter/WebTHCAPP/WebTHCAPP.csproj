@@ -172,14 +172,21 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AppController.cs" />
+    <Compile Include="Controllers\BackendController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountInfo.cs" />
+    <Compile Include="Models\Activity.cs" />
+    <Compile Include="Models\AppSession.cs" />
+    <Compile Include="Models\MailClass.cs" />
     <Compile Include="Models\Member.cs" />
     <Compile Include="Models\RequestChecker.cs" />
     <Compile Include="Models\Result.cs" />
+    <Compile Include="Models\SystemControl.cs" />
+    <Compile Include="Models\TaiwanAddress.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -220,10 +227,30 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_THC.cshtml" />
     <Content Include="Views\App\Index.cshtml" />
+    <Content Include="Views\App\HistoryList.cshtml" />
+    <Content Include="Views\App\Activities.cshtml" />
+    <Content Include="Views\App\Rewards.cshtml" />
+    <Content Include="Views\App\UsrInfo.cshtml" />
+    <Content Include="Views\App\About.cshtml" />
+    <Content Include="Views\App\Login.cshtml" />
+    <Content Include="Views\App\Question.cshtml" />
+    <Content Include="Views\App\ActivityDesc.cshtml" />
+    <Content Include="Views\Error\Index.cshtml" />
+    <Content Include="Views\Error\NotAllow.cshtml" />
+    <Content Include="Views\Error\SystemError.cshtml" />
+    <Content Include="Views\Members\AccessRestPassword.cshtml" />
+    <Content Include="Views\Shared\_THC_White.cshtml" />
+    <Content Include="Views\Backend\Index.cshtml" />
+    <Content Include="Views\Shared\_THCBackend.cshtml" />
+    <Content Include="Views\Backend\Preview.cshtml" />
+    <Content Include="Views\App\WinDesc.cshtml" />
+    <Content Include="Views\App\Activity.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="activity\" />
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Members\" />
+    <Folder Include="error\" />
+    <Folder Include="Views\TaiwanAddress\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
