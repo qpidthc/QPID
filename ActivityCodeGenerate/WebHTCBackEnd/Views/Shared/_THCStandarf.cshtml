@@ -1,4 +1,4 @@
-﻿@using WebHTCBackEnd.Language;
+﻿@using THC_Library.Language;
 
 @{
     LanguageBase lan = (LanguageBase)ViewData["lan"];
@@ -118,19 +118,11 @@
                     <li><a href="@Url.Content("~/")RewardManage/RewardData" TOG >&nbsp;&nbsp;&nbsp;&nbsp;活動獎項管理</a></li>
                     <li><a href="@Url.Content("~/")EventExport/ExportData" TOG >&nbsp;&nbsp;&nbsp;&nbsp;活動資料查詢與匯出</a></li>                    
                 </ul>
-            </li>
-            <li>
-                <a href="#"><i class="fa fa-search"></i>行銷活動查詢 <i class="fa fa-caret-down"></i></a>
-                <ul>
-                    <li><a href="#">&nbsp;&nbsp;&nbsp;&nbsp;會員中獎清單查詢</a></li>
-                    <li><a href="#">&nbsp;&nbsp;&nbsp;&nbsp;會員掃描分析查詢</a></li>
-                    <li><a href="#">&nbsp;&nbsp;&nbsp;&nbsp;會員掃描紀錄查詢</a></li>
-                </ul>
-            </li>
+            </li>           
             <li>
                 <a href="#"><i class="fa fa-laptop"></i>系統管理 <i class="fa fa-caret-down"></i></a>
                 <ul>
-                    <li><a href="#">&nbsp;&nbsp;&nbsp;&nbsp;系統使用者管理</a></li>
+                    <li><a href="@Url.Content("~/")Register/UserControl" TOG>&nbsp;&nbsp;&nbsp;&nbsp;系統使用者管理</a></li>
                     <li><a href="@Url.Content("~/")SystemBase/VenderDate" TOG>&nbsp;&nbsp;&nbsp;&nbsp;活動廠商管理</a></li>                    
                 </ul>
             </li>
@@ -188,14 +180,24 @@
                         <!--
                         <li><a href="../navbar/">Default</a></li>
                         <li><a href="../navbar-static-top/">Static top</a></li>
-                        -->
-                        <li class="active"><a href="#">@lan.Logout<span class="sr-only">(current)</span></a></li>
+                        -->                        
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">@lan.Language <b class="caret"></b></a>
                             <ul class="dropdown-menu pull-right">
                                 <li><a href="javascript:void(0);" onclick="onLanguageChanged('TW')">@lan.TW</a></li>
                                 <li><a href="javascript:void(0);" onclick="onLanguageChanged('EN')">@lan.EN</a></li>
                                 <li><a href="javascript:void(0);" onclick="onLanguageChanged('CN')">@lan.CN</a></li>                               
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="return javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                                <span id="a_account"></span>
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="alink"><a href="javascript:void(0);" onclick="changeAccessCode()"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> 變更密碼</a></li>
+                                <li class="alink"><a href="javascript:void(0);" onclick="logOut();"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> 登出</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -419,6 +421,39 @@
 
         function hideLoadingBar() {
             $("#img_bar").hide();
+        }
+
+        function logOut() {
+
+            $formData = "user=" + $("#a_account").val();
+
+            $.ajax({
+                async: false,
+                type: "POST",
+                url: '@Url.Content("~/")Register/Logout',
+                data: $formData,
+                dataType: 'json',
+                success: function (data, status, xhr) {
+
+                    jDatas = jQuery.parseJSON(data);
+                    if (jDatas.ErrorMessage) {
+                        showQMoal('e', false, jDatas.ErrorMessage, 0, null);
+                    } else {
+                        window.location.href = "@Url.Content("~/")Register/";
+                    }
+                },
+                error: function (request, error) {
+                    alert(error + " : " + request.responseText);
+
+                },
+                complete: function () {
+                    hideLoadingBar();
+                }
+            });
+        }
+
+        function changeAccessCode() {
+            window.location.href = '@Url.Content("~/")Register/ModifyAccessCode';
         }
 
     </script>

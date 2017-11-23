@@ -1,6 +1,4 @@
-﻿@{
-    Layout = null;
-}
+﻿
 @model System.Data.DataTable
 @using System.Data;
 @using System.Collections.Generic;
@@ -178,7 +176,6 @@
                     <div class="form-group col-md-4 form-inline">
                         <label for="txt_ptype">@lan.RwdType</label>  
                        
-
                         <select class="selectpicker form-control" id="txt_ptype" title="@lan.RwdType" name="txt_ptype" data-width="200px" data-error="@lan.Error_RwdType" required>
 
                             @foreach (var rwd in @ViewBag.reward_types.AllKeys)
@@ -212,7 +209,7 @@
                 <div class="row">
                     <div class="form-group col-md-4 form-inline">
                         <label for="txt_rwdvender">@lan.RwdVender</label>
-                        <select class="selectpicker form-control" id="txt_rwdvender" title="@lan.RwdVender" name="txt_rwdvender" data-width="200px" data-error="@lan.Error_RwdVender" required>
+                        <select class="selectpicker form-control" id="txt_rwdvender" title="@lan.RwdVender" name="txt_rwdvender" data-width="200px" data-error="@lan.Error_RwdVender" >
 
                             @foreach (var vender in @ViewBag.reward_venders.AllKeys)
                             {
@@ -243,7 +240,13 @@
                 </div>
 
                 <div class="row">
-                                        
+                               
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_win_desc">@lan.RwdWinDesc</label>
+                        <input type="text" class="form-control" id="txt_win_desc" name="txt_win_desc" data-error="" maxlength="100">
+                        <div class="help-block with-errors"></div>
+                    </div>
+                             
                     <div class="form-group col-md-4 form-inline">
                         <label for="dat_effective_time">@lan.RwdEffectiveTime</label>
                         <div class="input-group date" id="dat_effective_time" name="dat_effective_time">
@@ -256,11 +259,10 @@
                         <label for="txt_completed">@lan.RwdCompleted</label>
                         <input type="text" class="form-control" id="txt_completed" name="txt_completed" data-error="" readonly>
                         <div class="help-block with-errors"></div>
-                    </div>
+                    </div>                    
                     
-                    <div class="form-group col-md-4 form-inline">
-                    </div>
                 </div>
+
                 <div class="row">
                     <div class="form-group col-md-6 form-inline">
                         <label for="txt_sms">@lan.RwdSMS</label>
@@ -274,7 +276,7 @@
                 <div class="row">
                     <div class="form-group col-md-6 form-inline">
                         <label for="txt_memo">@lan.RwdMemo</label>                        
-                        <textarea class="input-xlarge" id="txt_memo" name="txt_memo" rows="6" style="width:100%;"></textarea>
+                        <textarea class="input-xlarge" id="txt_memo" name="txt_memo" rows="6" style="width:100%;" maxlength="500"></textarea>
                         <div class="help-block with-errors"></div>
                     </div>
                     <div class="form-group col-md-4 form-inline">
@@ -336,7 +338,7 @@
                 <div class="file-drop-area">
                     <span class="fake-btn">@lan.RwdSelectFile</span>
                     <span class="file-msg js-set-number">@lan.RwdUploadFile</span>
-                    <input class="file-input" type="file" id="rwdFile" name="rwdFile">
+                    <input class="file-input" type="file" id="rwdFile" name="rwdFile" accept=".txt" data-type='txt'>
                 </div>
                              
                 <br /><br />
@@ -592,8 +594,15 @@
         var $textContainer = $(this).prev('.js-set-number');
 
         if (filesCount === 1) {
-            // if single file then show file name
-            $textContainer.text($(this).val().split('\\').pop());
+
+            // if single file then show file name  
+            if ($(this)[0].files[0].type == 'text/plain') {
+                var uploadFileName = $(this).val().split('\\').pop();
+                $textContainer.text(uploadFileName);
+            } else {               
+                $textContainer.text('');
+            }
+
         } else {
             // otherwise show number of files
             $textContainer.text(filesCount + ' files selected');
@@ -921,6 +930,7 @@
                     $("#txt_rwdvender").val(jDatas[0].AEP009).change();
                     $("#txt_assign").val(jDatas[0].AEP010);
                     $("#txt_effective_time").val(jDatas[0].AEP012);
+                    $("#txt_win_desc").val(jDatas[0].AEP014);
                     editMode = 'U';
 
                     if ($("#txt_completed").val().length > 0) {
@@ -958,7 +968,7 @@
 
         showLoadingBar();
         $formData = $("#form1").serialize() + "&event_key=" + EVENT_KEY;
-
+       
         $.ajax({
             async: false,
             type: "POST",
@@ -1007,12 +1017,11 @@
     }
 
     function doUpdate() {
-
+               
         showLoadingBar();
-        $formData = $("#form1").serialize();
+        $formData = $("#form1").serialize();       
         $formData += "&rwd_key=" + MYKEY;
-        $formData += "&txt_rwdvender=" + $("#txt_rwdvender").val();
-
+       
         $.ajax({
             async: false,
             type: "POST",
@@ -1110,6 +1119,9 @@
             ajaxFileUpload2();
         }
         */
+       
+       
+
         var rwd_vender = $("#txt_rwdvender").val();
         if (rwd_vender.length > 0) {
             ajaxFileUpload2();
@@ -1118,11 +1130,19 @@
 
     function ajaxFileUpload2() {
 
-        var uploadFile = $("#rwdFile").val();
-        if (uploadFile.length == 0) {
+        var files = $("#rwdFile")[0].files.length;
+
+        if (files == 0) {
             showQMoal('e', true, '請選擇上傳檔案', 0, null);
             return false;
         }
+
+        var file_size = $("#rwdFile")[0].files[0].size;
+        if (file_size == 0) {
+            showQMoal('e', true, '檔案是空檔案', 0, null);
+            return false;
+        }
+
         var rwd_vender = $("#txt_rwdvender").val();
         var data = { vender: rwd_vender };
 

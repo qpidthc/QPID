@@ -151,8 +151,9 @@
                     <div class="form-group col-md-4 form-inline">
                         <label for="dat_end_time">@lan.End_Time</label>
                         <div class="input-group date" id="dat_end_time" name="dat_end_time" >
-                            <input type="text" class="form-control" id="txt_end_time" name="txt_end_time"><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                            <input type="text" class="form-control" id="txt_end_time" name="txt_end_time" data-error="@lan.Error_End_Time" required><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                         </div>
+                        <div class="help-block with-errors"></div>
                     </div>
                 </div>
 
@@ -195,7 +196,7 @@
                     </div>
                     <div class="form-group col-md-8 form-inline">
                         <label for="txt_web_url">@lan.Web_Url</label>
-                        <input type="text" class="form-control" id="txt_web_url" maxlength="100" placeholder="@lan.Web_Url" name="txt_web_url" data-error="@lan.Error_WebUrl" required>
+                        <input type="text" class="form-control" id="txt_web_url" maxlength="100" placeholder="@lan.Web_Url" name="txt_web_url" data-error="@lan.Error_WebUrl" style="width:400px;min-width:300px;" required>
                         <div class="help-block with-errors"></div>
                     </div>
                 </div>
@@ -264,20 +265,20 @@
             if (!string.IsNullOrEmpty(ViewBag.s_event_no))
             {
                 <text>
-                $("#txt_sh_eventno").val('@ViewBag.s_event_no');
-                </text>
+        $("#txt_sh_eventno").val('@ViewBag.s_event_no');
+        </text>
             }
             if (!string.IsNullOrEmpty(ViewBag.s_event_name))
             {
                 <text>
-                $("#txt_sh_eventname").val('@ViewBag.s_event_name');
-                </text>
+        $("#txt_sh_eventname").val('@ViewBag.s_event_name');
+        </text>
             }
             if (!string.IsNullOrEmpty(ViewBag.s_vender))
             {
                 <text>
         $("#txt_sh_vender").val('@ViewBag.s_vender');
-                </text>
+        </text>
             }
         }
 
@@ -306,7 +307,15 @@
                 //alert('invalid');
             } else {
                 // everything looks good!
+
                 e.preventDefault();
+
+                var eventNo = $("#txt_event_no").val();
+
+                if (eventNo.indexOf('-') > -1) {                   
+                    showQMoal('e', false, '@lan.Event_No 不可有 - 關鍵字符號，請已別的替代 !' , 0, null);
+                    return false;
+                }
 
                 if (editMode == 'A') {
                     doAdd();
@@ -582,7 +591,7 @@
 
 
     function doDelete() {
-              
+
         showLoadingBar();
         var data = { event_no: editRow };
         $.ajax({
@@ -594,7 +603,7 @@
             success: function (data, status, xhr) {
 
                 jDatas = jQuery.parseJSON(data);
-                if (jDatas.length == 1) {                    
+                if (jDatas.length == 1) {
                     table.row(tableRow).remove().draw();
                 } else {
                     if (jDatas.ErrorMessage) {
@@ -615,7 +624,7 @@
         var count = table.data().count();
         for (var i = 0; i < count; i++) {
             var r = table.row(i).data();
-            if (r.AE002 === key) {               
+            if (r.AE002 === key) {
                 tableRow = table.row(i);
                 return true;
             }

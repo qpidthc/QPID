@@ -1,0 +1,116 @@
+﻿@{
+    Layout = "";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>THC 發碼控制台</title>
+    <link rel="stylesheet" href="~/css/login.css">
+    <script src="~/js/jquery-2.1.1.min.js"></script>
+</head>
+<body>
+    <form action="@Url.Content("~/")Register/EnterControl" method="post">
+        <div class="login-wrap">
+            <div class="login-html">
+                <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">登&nbsp;&nbsp;&nbsp;&nbsp;入</label>
+                <input id="tab-2" type="radio" name="tab" class="sign-up" style="display:none;"><label for="tab-2" class="tab" style="display:none;">Sign Up</label>
+                <div class="login-form">
+                    <div class="sign-in-htm">
+                        <div class="group">
+                            <label for="user" class="label" style="font-size:large;margin-bottom:15px;">使用者帳號</label>
+                            <input id="user" name="user" type="text" class="input" placeholder="輸入帳號" style="font-size:large;outline: none;">
+                        </div>
+                        <div class="group">
+                            <label for="pass" class="label" style="font-size:large;margin-bottom:15px;">使用者密碼</label>
+                            <input id="pass" name="pass" type="password" class="input" placeholder="輸入密碼" style="font-size:large;outline: none;" data-type="password">
+                        </div>
+                        <div class="group">
+                            &nbsp;
+                        </div>
+                        <div class="group">
+                            <input type="submit" class="button" style="font-size:large;outline: none;" value="進&nbsp;&nbsp;&nbsp;&nbsp;入">
+                        </div>
+                        <div class="hr"></div>
+                        <div class="foot-lnk">
+                            &nbsp;
+                            <label class="label" style="font-size:x-large;margin-bottom:15px;color:white;">宏全發碼控制後台</label>
+                            <br />
+                            <br />
+                            <label id="lbl_msg" class="label" style="font-size:x-large;margin-bottom:15px;color:red;"></label>
+                        </div>
+                    </div>
+                    <div class="sign-up-htm">
+                        <div class="group">
+                            <label for="user" class="label">Username</label>
+                            <input id="user" type="text" class="input">
+                        </div>
+                        <div class="group">
+                            <label for="pass" class="label">Password</label>
+                            <input id="pass" type="password" class="input" data-type="password">
+                        </div>
+                        <div class="group">
+                            <label for="pass" class="label">Repeat Password</label>
+                            <input id="pass" type="password" class="input" data-type="password">
+                        </div>
+                        <div class="group">
+                            <label for="pass" class="label">Email Address</label>
+                            <input id="pass" type="text" class="input">
+                        </div>
+                        <div class="group">
+                            <input type="submit" class="button" value="Sign Up">
+                        </div>
+                        <div class="hr"></div>
+                        <div class="foot-lnk">
+                            <label for="tab-1">Already Member?</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+
+    $('form').submit(function () {
+
+        var user = $.trim($('#user').val());
+        var pass = $.trim($('#pass').val());
+
+        if (user === '') {
+            $("#lbl_msg").text('請輸入帳號');
+            $("#user").focus();
+            return false;
+        }
+
+        if (pass === '') {
+            $("#lbl_msg").text('請輸入密碼');
+            $("#pass").focus();
+            return false;
+        }
+        return true;
+    });
+
+    $(document).ready(function () {
+
+        @{
+               if (!string.IsNullOrEmpty(ViewBag.ERROR_MESSAGE))
+               {
+                     <text>
+        $("#lbl_msg").text('@ViewBag.ERROR_MESSAGE');
+        </text>
+               }
+
+            if (!string.IsNullOrEmpty(ViewBag.ORG_ACCOUNT))
+               {
+                     <text>
+        $("#user").val('@ViewBag.ORG_ACCOUNT');
+                    </text>
+               }
+           }
+    })
+
+
+    </script>
+</body>
+</html>

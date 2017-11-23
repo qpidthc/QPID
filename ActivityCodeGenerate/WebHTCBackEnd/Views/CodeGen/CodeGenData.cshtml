@@ -838,7 +838,8 @@
     function doDownload(filename) {
 
         var url = '@Url.Content("~/")codegen/DownloadCode?event_no=' +
-                    $("#txt_event_no").val() + '&id=' + MYKEY + "&filename=" + filename;
+                    $("#txt_event_no").val() + '&event_name=' + $("#lbl_event_name").text() +
+                    '&id=' + MYKEY + "&filename=" + filename;
 
         window.location.href = url;
 
