@@ -1,0 +1,218 @@
+﻿/*-------------------------------*/
+/*           VARIABLES           */
+/*-------------------------------*/
+body {
+  position: relative;
+  overflow-x: hidden;
+}
+
+body, html {
+  height: 100%;
+  background-color: #583e7e;
+}
+
+#page-content-wrapper {
+  padding-top: 70px;
+  width: 100%;
+}
+/*-------------------------------*/
+/*          Dark Overlay         */
+/*-------------------------------*/
+
+.overlay {
+  position: fixed;
+  display: none;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(9, 9, 9, 0.4);
+  z-index: 1900;
+}
+
+.navbar-custom {
+    background-color: #2C4871;
+    color: #ffffff;
+    border-radius: 0;
+}
+
+.navbar-custom .navbar-nav > .active > a {
+    color: #ffffff;
+    background: #2C4871;
+}
+
+.navbar-custom .navbar-nav > .active > a:hover {
+    color: #084D0A;
+    background: #B6D2F2;
+}
+.navbar-custom .navbar-nav > .active > a:focus {
+    color: #ffffff;
+    background: #B6D2F2;
+}
+
+.navbar-custom .navbar-nav > li > a,
+.navbar-custom .navbar-nav > li > a:focus {
+    color: #fff;
+    background-color: #2C4871;
+}
+
+
+.navbar-custom .navbar-nav > li > .active {
+    background-color: #B6D2F2;
+    color: #fff;
+}
+
+.navbar-custom .navbar-nav > li > .active > a, .navbar-nav > .active > a:hover, .navbar-nav > .active > a:focus {
+    background-color: #58ACFA;
+    color: #fff;
+}
+
+.navbar-custom .navbar-nav > li > a:hover, .nav > li > a:focus, .navbar-custom .navbar-nav .open > a {
+    background-color: #B6D2F2;
+    color: #084D0A;
+}
+
+
+/* dropdown */
+.navbar .nav > li.dropdown.open.active > a:hover,
+.navbar .nav > li.dropdown.open > a {
+    color: #fff;
+    background-color: #B6D2F2;
+    border-color: #fff;
+}
+
+.navbar-custom .navbar-nav .dropdown-menu {
+    background-color: #B6D2F2;
+}
+
+.navbar-custom .navbar-nav .dropdown-menu > li > a {
+    color: #2C4871;
+}
+
+.navbar-custom .navbar-nav .dropdown-menu > li > a:hover, .navbar-custom .navbar-nav .dropdown-menu > li > a:focus {
+    color: #fff;
+    background-color:#58ACFA;
+}
+
+.navbar-custom .navbar-brand {
+    color: #eeeeee;
+}
+.navbar-custom .navbar-toggle {
+    background-color: #eeeeee;
+}
+
+.navbar-custom .icon-bar {
+    background-color: #33aa33;
+}
+
+#menu {
+    position: fixed;
+    background-color: #787980;
+    height: 100%;
+    z-index: 2000;
+    width: 280px;
+    color: #bbb;
+    top: 10px;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    opacity: 1;
+    font-family: 'Source Sans Pro', sans-serif;           
+}
+#menu ul {
+    list-style: none;
+    margin-top: 0;
+    padding: 0;
+}
+#menu ul li {
+    border-bottom: 1px solid #222;
+}
+#menu > ul > li > a {
+    border-left: 4px solid #95C5FF;
+}
+#menu > ul > li > ul > li a {
+    border-left: 4px solid #ffffff;
+}
+#menu ul li a {
+    color: #ffffff;
+    font-size: 16px;
+    display: block;
+    padding: 8px 0 8px 7px;
+    text-decoration: none;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+#menu ul a i {
+    margin-right: 10px;
+    font-size: 18px;
+    margin-top: 3px;
+    width: 20px;
+}
+#menu ul a i[class*='fa-caret'] {
+    float: right;
+}
+#menu ul a:hover{
+    background-color: #AFC4D2;
+    border-left-color: #AFC4D2;
+    color: #263392;
+}
+#menu ul a.active {
+    background-color: #AFC4D2;
+    border-left-color: #AFC4D2;
+    color: #F60010;
+}
+
+/* Submenu */
+#menu ul li a.active + ul {
+    display: block;
+}
+#menu ul li ul {
+    margin-top: 0;
+    display: none;
+}
+#menu ul li ul li {
+    border-bottom: none;
+}
+#menu ul li ul li a {
+    padding-left: 30px;
+}
+#menu ul li ul li a:hover {
+    background-color: #F2F5A9;
+    color:#263392;
+}
+
+/* /Submenu */
+
+
+/* Cuando este a la Izq, para esconderlo posicionarlo a la Izq a -width */
+
+.left {
+    left: -280px;
+}
+
+.show {
+    left: 0;
+}
+#showmenu {
+    margin-left: 100%;
+    position: absolute;
+    top: 0;
+    padding: 6px 10px 7px 10px;   
+    color: #FFCC33;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+ #container {
+    padding: 50px;
+}
+
+body, html {
+    background-color: #FAFAFA;
+}
+
