@@ -9,7 +9,11 @@ namespace WebTHCEventUI.Controllers
 {
     public class THCController : Controller
     {
-       
+
+        public ActionResult test()
+        {
+            return View();
+        }
         // GET: THC
         public ActionResult Index(string ac, string code)
         {
@@ -78,6 +82,7 @@ namespace WebTHCEventUI.Controllers
                              string[] strSplit =  error.ErrorMessage.Split(' ');
                              ViewBag.RepeatDate = strSplit[0];
                              ViewBag.RepeatTime = strSplit[1];
+                             ViewBag.DOMAIN = Models.Domain.REMOTE_ACCESS_DOMAIN;
                              return View("repeatPage");
                          case THC_Library.CodeRenderException.SYSTEM_ERROR:
                              break;
@@ -130,9 +135,10 @@ namespace WebTHCEventUI.Controllers
             THC_Library.Reward.RewardConvertor reward;
             string gender, age, Mobil, iid, addr;
             int iLogKey;
+            int eventKey;
 
             Models.CodeRender codeRender = new Models.CodeRender();
-            bool bWin = codeRender.go(ac, code, tk, ml, city, lat, lng, 
+            bool bWin = codeRender.go(ac, code, tk, ml, city, lat, lng, out eventKey,
                                     out gender, out age, out Mobil, out iid, out addr, out reward, 
                                     out iLogKey, out error);
 
@@ -160,6 +166,7 @@ namespace WebTHCEventUI.Controllers
                     case THC_Library.CodeRenderException.REPEAT_SCAN:
                         ViewBag.TICKET = tk;
                         ViewBag.ACC = ml;
+                        ViewBag.EVENT = eventKey.ToString();
                         ViewBag.CITY = city;
                         ViewBag.Message = "已掃描";
                         string[] strSplit =  error.ErrorMessage.Split(' ');
@@ -171,7 +178,7 @@ namespace WebTHCEventUI.Controllers
                         ViewBag.Message = "無效的登入";
                         break;
                     case THC_Library.CodeRenderException.SYSTEM_ERROR:
-                        ViewBag.Message = "系統錯誤";
+                        ViewBag.Message = error.ErrorMessage; //"系統錯誤";
                         break;                        
                 }
                 return View("wrongPage");
@@ -223,6 +230,7 @@ namespace WebTHCEventUI.Controllers
                 }
                 else
                 {
+                    ViewBag.EVENT = eventKey.ToString();
                     ViewBag.TICKET = tk;
                     ViewBag.ACC = ml;
                     ViewBag.DOMAIN = Models.Domain.REMOTE_ACCESS_DOMAIN;
@@ -232,7 +240,8 @@ namespace WebTHCEventUI.Controllers
         }
                 
         public ActionResult get()
-        {
+        {            
+            //需要判斷參數是否有
             THC_Library.Error error;
             var reqActivity = Request.QueryString["act"];
             var reqCode = Request.QueryString["code"];
@@ -241,15 +250,26 @@ namespace WebTHCEventUI.Controllers
             var reqMobil = Request.QueryString["m"];
             var reqLogKey = Request.QueryString["lk"];
             var reqCoupNumber = Request.QueryString["coup"];
+            var reqVaildDate = Request.QueryString["vdate"];
             var reqRwdType = Request.QueryString["type"];
+            var reqRwdImg = Request.QueryString["img"];
 
             var reqCity = Request.QueryString["city"];
             var reqLat = Request.QueryString["lat"];
             var reqLong = Request.QueryString["lng"];
 
+            if (string.IsNullOrEmpty(reqAccount) || string.IsNullOrEmpty(reqCode) || string.IsNullOrEmpty(reqTimestamp)
+                || string.IsNullOrEmpty(reqAccount))
+            {
+                ViewBag.Message = "";
+                ViewBag.MessageInfo = "";
+                return View("outOfPage");
+            }
+
+            int event_no;
             Models.CodeRender codeRender = new Models.CodeRender();
             bool bOK = codeRender.done(reqActivity, reqCode, reqTimestamp, reqAccount, reqCity, reqLat, reqLong, 
-                                reqCoupNumber, reqLogKey, out error);
+                                reqCoupNumber, reqLogKey, out event_no, out error);
 
             if (error != null)
             {                                
@@ -260,20 +280,22 @@ namespace WebTHCEventUI.Controllers
             {
                 ViewBag.MOBIL = reqMobil;
                 ViewBag.RWD_COUPNUMBER = reqCoupNumber;
+                ViewBag.RWD_IMG = reqRwdImg;
 
                 if (reqRwdType == "0")
                 {
+                    ViewBag.RWD_DATE = reqVaildDate; 
                     ViewBag.ACC = reqAccount;
-                    ViewBag.TICKET = reqTimestamp;
-                    ViewBag.MOBIL = reqMobil;
+                    ViewBag.EVENT = event_no.ToString();
+                    ViewBag.TICKET = reqTimestamp;                   
                     ViewBag.DOMAIN = Models.Domain.REMOTE_ACCESS_DOMAIN;
                     return View("get");
                 }
                 else if (reqRwdType == "1")
                 {
                     ViewBag.ACC = reqAccount;
-                    ViewBag.TICKET = reqTimestamp;
-                    ViewBag.MOBIL = reqMobil;
+                    ViewBag.EVENT = event_no.ToString();
+                    ViewBag.TICKET = reqTimestamp;                    
                     ViewBag.DOMAIN = Models.Domain.REMOTE_ACCESS_DOMAIN;
                     return View("getPhyical");
                 }
@@ -291,7 +313,7 @@ namespace WebTHCEventUI.Controllers
         {
             return View("rewardPhyicalPage");
         }
-
+                
         [HttpPost]
         public JsonResult getCities()
         {            
@@ -370,7 +392,7 @@ namespace WebTHCEventUI.Controllers
 
             IList<System.Data.SqlClient.SqlParameter> paraList = 
                             new System.Collections.Generic.List<System.Data.SqlClient.SqlParameter>();
-            string strSQL = "update qr_record set QRC012=0,QRC013=NULL";
+            string strSQL = "update qr_record set QRC012=0,QRC013=NULL,QRC016=NULL";
             THC_Library.DataBase.DataBaseControl dbCtl = new THC_Library.DataBase.DataBaseControl();
             try
             {
