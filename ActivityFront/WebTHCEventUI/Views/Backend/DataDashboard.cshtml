@@ -1,0 +1,477 @@
+﻿
+@{
+    ViewBag.Title = "THC 活動控制台";
+    Layout = "~/Views/Shared/_THCBackend.cshtml";
+}
+
+<script src="~/bc/js/echarts.common.min.js"></script>
+
+
+<div class="container-fluid">
+
+    <div style="width:100%;padding-top:10px;margin-bottom:10px;">
+        <div>
+            <strong class="event-title"> 圖表資料分析   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img id="img_bar" src="~/bc/img/progress_bar.gif" style="height:18px;display:none;"></strong>
+            <hr class="style2" />
+        </div>
+
+        <div class="form-inline ">
+            <label class="control-label" for="txt_sh_eventno">活動清單</label>
+            <div class="input-group">
+                <input type="text" class="form-control " id="txt_sh_eventno" name="txt_sh_eventno" aria-label="...">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle btn-info" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">清單 <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        @foreach (var row in @ViewBag.Data.Rows)
+                        {
+                            <li><a href="#" kid='@row["AE001"]'>@row["AE002"] <span>@row["AE003"]</span> </a></li>
+                        }
+                    </ul>
+                </div><!-- /btn-group -->
+            </div><!-- /input-group -->
+        </div>
+    </div>    
+
+    <div id="div_content" class="panel panel-info" style="display:block;">
+        <div class="panel-heading">
+            <div class="panel-title pull-left">&nbsp;</div>
+
+            <div class="clearfix"></div>
+        </div>
+        <div class="panel-body">
+            
+            <div class="row">
+                <div class="col-md-12" style="border:0px solid blue;padding-left:20px;padding-right:20px;padding-bottom:20px;padding-top:20px;background:#FAFAD2;">
+
+                    <div class="col-md-6 form-inline">
+                        <label for="txt_type">查詢天數</label>
+                        <select class="selectpicker form-control" id="sel_duration" title="查詢天數" name="sel_duration" data-width="200px" data-error="">
+
+                            <option value="7">一個禮拜</option>
+                            <option value="14">兩個禮拜</option>
+                            <option value="21">三個禮拜</option>
+                            <option value="30">一個月</option>
+                            <option value="60">兩個月</option>
+                            <option value="90">三個月</option>
+                            <option value="365">專案期間</option>
+                        </select>                                               
+                    </div>                                        
+                </div>
+            </div>
+
+            <div class="row">
+                <hr />
+            </div>
+            <div class="row">
+                <div class="col-md-12 ">
+                    <div >
+                        <div style="text-align:center">
+                            <label style="font-size:large;margin-top:10px;">氣溫與掃描次數趨勢圖</label>
+                        </div>
+                        
+                        <div id="div_tempcount" style="width:100%;height:300px;border:1px dashed black;margin:1px;"></div>
+                    </div>
+                </div>              
+            </div>
+            <div class="row">
+                <div class="col-md-12 ">
+                    <div>
+                        <div style="text-align:center">
+                            <label style="font-size:large;margin-top:10px;">地區與掃描次數趨勢圖</label>
+                        </div>
+
+                        <div id="div_area" style="width:100%;height:300px;border:1px dashed black;margin:1px;"></div>
+                    </div>
+                </div>           
+                               
+            </div>
+                      
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    var KID;
+    var EVENT_NO = '';
+    var tempcountChart;
+    var areaChart;
+    
+    $(document).ready(function () {
+
+        $(".dropdown-menu li a").click(function () {
+
+            KID = $(this).attr('KID');
+            var eventItem = $(this).text();
+            var splits = eventItem.split(' ');
+            $("#txt_sh_eventno").val(eventItem);
+            EVENT_NO = splits[0];
+
+            $("#sel_duration").val(null).change();
+            
+            tempcountChart = echarts.init(document.getElementById('div_tempcount'));
+            areaChart = echarts.init(document.getElementById('div_area'));            
+
+            tempcountChart.setOption({}, true);
+            areaChart.setOption({}, true);
+        });
+
+        $("#sel_duration").change(function () {
+
+            var days = $(this).val();
+            if (days.length == 0 || EVENT_NO.length == 0) {
+                return;
+            }
+            getTempCount(days);
+            getTimeCountByArea(days);
+        });
+    });
+
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+
+    function getWeather() {
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: '@Url.Content("~/")Backend/Weather',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                var source = JSON.parse(data);
+
+                if (source.ErrorMessage) {
+                    showQMoal('e', false, source.ErrorMessage, 0, null);
+                } else {
+
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function getTimeCountByArea(days) {
+       
+        var data = "event_no=" + KID + "&days=" + days;
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: '@Url.Content("~/")Backend/ScanTimeCounterByArea',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                var source = JSON.parse(data);
+
+                if (source.ErrorMessage) {
+                    showQMoal('e', false, source.ErrorMessage, 0, null);
+                } else {
+
+                    var dateSource = [];
+
+                    var today = new Date();
+                    var before_date = new Date(today);
+
+                    dateSource.push(formatDate(before_date));
+
+                    var Max = days;
+                    var ii = 1;
+                    for (i = 0; i < Max; i++) {
+                        before_date.setTime(today.getTime() - (i * 86400000));
+                        //console.log(i + '  ' + Max + '  ' + formatDate(before_date));
+                        //ii++;
+                        dateSource.splice(0, 0, formatDate(before_date));
+
+                    }
+                    //var valueSource = [];
+                    var northSource = [];
+                    var centralSourc = [];
+                    var southSource = [];
+                    var eastSource = [];
+                    
+                    var item;
+                    //{ 'value': data.VALUE, 'name': data.AREA };
+                    /*
+                    $.each(dateSource, function (key, data) {
+                        item = { 'date': data.DATE, 'count' : 0, 'area' : 1 };
+                        northSource.push(0);
+                        item = { 'date': data.DATE, 'count': 0, 'area': 2 };
+                        centralSourc.push(0);
+                        item = { 'date': data.DATE, 'count': 0, 'area': 3 };
+                        southSource.push(0);
+                        item = { 'date': data.DATE, 'count': 0, 'area': 4 };
+                        eastSource.push(0);
+                    });
+                    */
+
+                    var MaxCount = 0;
+                    $.each(source, function (key, data) {
+
+                        var d = data.DATE.slice(0, 10);
+                        $.each(dateSource, function (key, data2) {
+                            if (data2 == d) {
+                                if (data.AREA == 1) {
+                                    //northSource[key].area = data.AREA;
+                                    northSource[key] = data.COUNT;
+                                } else if (data.AREA == 2) {
+                                    //centralSourc[key].area = data.AREA;
+                                    centralSourc[key] = data.COUNT;
+                                }
+                                else if (data.AREA == 3) {
+                                    //southSource[key].area = data.AREA;
+                                    southSource[key] = data.COUNT;
+                                }
+                                else if (data.AREA == 4) {
+                                    //eastSource[key].area = data.AREA;
+                                    eastSource[key] = data.COUNT;
+                                }                               
+                                //console.log('count  ' + data.COUNT);                                
+                            }
+                        });
+                        if (data.COUNT > MaxCount) {
+                            MaxCount = data.COUNT;
+                        }
+                    });
+
+                    if (MaxCount == 0) {
+                        MaxCount = 100;
+                    }
+
+                    option = {
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                            }
+                        },
+                        color: ['#3cb371', '#8000ff', '#ff6347', '#ffa500'],
+                        legend: {
+                            data: ['北部地區', '中部地區', '南部地區', '東部地區']                           
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: [
+                            {
+                                type: 'category',
+                                data: dateSource
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value',
+                                name: '次數'
+                            }
+                        ],
+                        series: [                            
+                            {
+                                name: '北部地區',
+                                type: 'bar',
+                                stack: '地區',                               
+                                data: northSource
+                            },
+                            {
+                                name: '中部地區',
+                                type: 'bar',
+                                stack: '地區',
+                                data: centralSourc
+                            },
+                            {
+                                name: '南部地區',
+                                type: 'bar',
+                                stack: '地區',
+                                data: southSource
+                            },
+                             {
+                                 name: '東部地區',
+                                 type: 'bar',
+                                 stack: '地區',
+                                 data: eastSource
+                             }
+                        ]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    areaChart.setOption(option);
+                    areaChart.hideLoading();
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function getTempCount(days) {
+
+        var data = "event_no=" + KID + "&days=" + days;
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: '@Url.Content("~/")Backend/ScanTimeTemptrue',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                var source = JSON.parse(data);
+
+                if (source.ErrorMessage) {
+                    showQMoal('e', false, source.ErrorMessage, 0, null);
+                } else {
+
+                    var dateSource = [];
+
+                    var today = new Date();
+                    var before_date = new Date(today);
+
+                    dateSource.push(formatDate(before_date));
+
+                    var Max = days ;
+                    var ii = 1;
+                    for (i = 0; i < Max; i++) {
+                        before_date.setTime(today.getTime() - (i * 86400000));                       
+                        //console.log(i + '  ' + Max + '  ' + formatDate(before_date));
+                        //ii++;
+                        dateSource.splice(0, 0, formatDate(before_date));
+                        
+                    }                   
+                    var valueSource = [];
+                    var temptrueSource = [];
+                    var countSource = [];
+
+                    var item;
+                    $.each(dateSource, function (key, data) {                      
+                        temptrueSource.push(0);
+                        countSource.push(0);                      
+                    });
+
+                    var MaxCount = 0;
+                    $.each(source, function (key, data) {
+
+                        var d = data.DATE.slice(0, 10);
+                        $.each(dateSource, function (key, data2) {
+                            if (data2 == d) {                                
+                                temptrueSource[key] = data.TEMP;
+                                countSource[key] = data.COUNT;
+                                //console.log('count  ' + data.COUNT);
+                                if (data.COUNT > MaxCount) {
+                                    MaxCount = data.COUNT;
+                                }
+                            }
+                        });
+                    });
+
+                    if (MaxCount == 0) {
+                        MaxCount = 45;
+                    }
+
+                    option = {
+                       
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'cross',
+                                crossStyle: {
+                                    color: '#999'
+                                }
+                            }
+                        },
+                        toolbox: {
+                            show: false,
+                            feature: {
+                                dataView: { show: true, readOnly: false },
+                                magicType: { show: true, type: ['line', 'bar'] },
+                                restore: { show: true },
+                                saveAsImage: { show: true }
+                            }
+                        },
+                        legend: {
+                            data: ['掃描次數', '平均温度']
+                        },
+                        xAxis: [
+                            {
+                                type: 'category',
+                                data: dateSource,
+                                axisPointer: {
+                                    type: 'shadow'
+                                }
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value',
+                                name: '次數',
+                                min: 0,
+                                max: MaxCount,
+                                interval: 500,
+                                axisLabel: {
+                                    formatter: '{value} 次'
+                                }
+                            },
+                            {
+                                type: 'value',
+                                name: '温度',
+                                min: 0,
+                                max: 45,
+                                interval: 5,
+                                axisLabel: {
+                                    formatter: '{value} °C'
+                                }
+                            }
+                        ],
+                        series: [
+                            {
+                                name: '掃描次數',
+                                type: 'bar',
+                                data: countSource
+                            },
+                            {
+                                name: '平均温度',
+                                type: 'line',
+                                yAxisIndex: 1,
+                                data: temptrueSource
+                            }
+                        ]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    tempcountChart.setOption(option);
+                    tempcountChart.hideLoading();
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+</script>

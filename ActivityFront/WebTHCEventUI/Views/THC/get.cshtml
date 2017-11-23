@@ -3,6 +3,15 @@
     Layout = "~/Views/Shared/_THCUI.cshtml";
 }
 
+<style>
+    .Label {
+        font-size:x-large;
+        margin-top:5px;
+        margin-bottom:5px;
+        color:black;
+    }
+</style>
+
 <body class=" bg5">
     <div id="page ">
 
@@ -14,46 +23,42 @@
 
             <div class="logo w50">
                 <img src="~/images/Logo_sm.png" class="logo-sm" />
-            </div>
+            </div>          
             <section id="msg">
                 <div class="container">
-
+                                       
                     <div class="row">
-                        <div class="col-md-12" style="width:130px;margin:20px auto;border: 2px #6E6E6E ;border-style: solid;text-align:center; vertical-align:middle; font-size:1.5em;padding:10px;color: #595959">
-                            恭喜中獎
+                        <div class="col-md-12" style="width:50%;margin:0px auto;border: 2px #6E6E6E ;border-style: solid;text-align:center; vertical-align:middle; font-size:1.5em;padding:10px;color: #595959">
+                            <img src="~/@ViewBag.RWD_IMG" style="width:100px;height:130px;" />
                         </div>
                     </div>
-
-                    <dir class="row">
-                        <div class="col-xs-2"></div>
-                        <div class="col-xs-10" style="display:inline-block;">
-                            <div style="display:inline-block;">
-                                <p>已傳送簡訊至 </p>
-                            </div>
-                            <div style="display:inline-block;">
-                                <h3 style="color:blue;">@ViewBag.MOBIL</h3>
-                            </div>
+                    <div class="row">&nbsp;</div>
+                    <dir class="row">                        
+                        <div class="col-xs-12" style="display:inline-block;text-align:center;">
+                            <div style="font-size:large;color:black;">
+                                中獎序號已傳送至 <br />
+                                <label class="Label">@ViewBag.MOBIL</label>
+                                <br />
+                            </div>                           
                         </div>
-
                     </dir>
 
-                    <div class="row">
-                        <div class="col-xs-2"></div>
-                        <div class="col-xs-10" style="display:inline-block;">
-                            <div style="display:inline-block;">
-                                <p>中獎序號 </p>
-                            </div>
-                            <div style="display:inline-block;">
-                                <h3 style="color:blue;">@ViewBag.RWD_COUPNUMBER</h3>
-                            </div>
+                    <div class="row">                        
+                        <div class="col-xs-12" style="display:inline-block;text-align:center;">
+                            <div style="font-size:large;color:black;">
+                                中獎序號 <br />
+                                <label class="Label">@ViewBag.RWD_COUPNUMBER</label>                               
+                                <br />
+                            </div>                            
                         </div>
                     </div>
 
-
-                    <dir class="row">
-                        <div class="col-xs-2"></div>
-                        <div class="col-xs-10">
-                            <p>請關注您的手機簡訊通知</p>
+                    <dir class="row">                        
+                        <div class="col-xs-12" style="display:inline-block;text-align:center;">
+                            <div style="font-size:large;color:black;">
+                                序號期限 <br />
+                                <label class="Label">@ViewBag.RWD_DATE</label> 
+                            </div>
                         </div>
                     </dir>
 
@@ -74,6 +79,7 @@
     <script>
 
     var acc = '';
+    var evt = '';
     var tk = '';
     var m = '';
 
@@ -87,6 +93,13 @@
         </text>
                 }
 
+                if (!string.IsNullOrEmpty(ViewBag.EVENT))
+                {
+                    <text>
+        evt = '@ViewBag.EVENT';
+        </text>
+                }
+
                 if (!string.IsNullOrEmpty(ViewBag.TICKET))
                 {
                     <text>
@@ -97,19 +110,18 @@
                 if (!string.IsNullOrEmpty(ViewBag.MOBIL))
                 {
                     <text>
-                m = '@ViewBag.MOBIL';
-                    </text>
+        m = '@ViewBag.MOBIL';
+        </text>
                 }
          }
 
-        
+
     });
 
     function done() {
-
-        window.location.href = '@ViewBag.DOMAIN' + '?acc=' + acc + '&tk=' + tk;       
+        window.location.href = '@ViewBag.DOMAIN' + '?acc=' + acc + '&evt=' + evt + '&tk=' + tk;       
     }
 
-    </script>
+</script>
 
 </body>

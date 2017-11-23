@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewBag.Title = "THC 活動控制台";
+    Layout = "~/Views/Shared/_THCBackend.cshtml";
+}
+
+<div class="container-fluid">
+
+    <div style="width:100%;padding-top:10px;margin-bottom:10px;">
+        <div>
+            <strong class="event-title"> 變更密碼   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img id="img_bar" src="~/bc/img/progress_bar.gif" style="height:18px;display:none;"></strong>
+            <hr class="style2" />
+        </div>
+
+    </div>
+    <br />
+
+    <div id="div_content" class="panel panel-info" style="display:block;">
+        <div class="panel-heading">
+            <div class="panel-title pull-left">&nbsp;</div>
+
+            <div class="clearfix"></div>
+        </div>
+        <div class="panel-body">
+
+            <form id="form1" class="form" action="" role="form">
+                <!--data-toggle="validator" -->
+                
+                <div class="row">
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_acc">輸入舊密碼</label>
+                        <input type="password" class="form-control" id="txt_old" name="txt_old" maxlength="30" data-error="" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_name">輸入新密碼</label>
+                        <input type="password" class="form-control" id="txt_new1" name="txt_new1" maxlength="20" data-error="" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_login_time">確認新密碼</label>
+                        <input type="password" class="form-control" id="txt_new2" name="txt_new2" data-error="" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+
+                <hr />
+                <button type="submit" class="btn btn-primary" id="btn_submit">
+                    <!-- onclick="doSubmit();" -->
+                    <span class="glyphicon glyphicon-saved"></span>&nbsp;&nbsp;&nbsp;&nbsp;儲存&nbsp;&nbsp;&nbsp;&nbsp;
+                </button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+               
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#form1').validator();
+        $('#form1').validator().on('submit', function (e) {
+            if (e.isDefaultPrevented()) {
+                // handle the invalid form...
+                //alert('invalid');
+            } else {
+                // everything looks good!
+                e.preventDefault();
+                //doUpdate();
+
+                doUpdate();
+            }
+        })
+    })
+
+    function doUpdate() {
+
+        $formData = $("#form1").serialize();
+
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")Control/ChangeCode',
+            data: $formData,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                var source = JSON.parse(data);
+
+                if (source.ErrorMessage) {
+                    showQMoal('e', true, source.ErrorMessage, 0, null);
+                   
+                } else {
+                    showQMoal('i', true, "修改完成", 0, null);
+                }
+
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+</script>
+
+

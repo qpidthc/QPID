@@ -1,8 +1,686 @@
 ﻿
 @{
-    ViewBag.Title = "DataAnalysis";
+    ViewBag.Title = "THC 活動控制台";
     Layout = "~/Views/Shared/_THCBackend.cshtml";
 }
 
-<h2>DataAnalysis</h2>
+<script src="~/bc/js/echarts.common.min.js"></script>
+
+<style>
+
+table.cinereousTable {
+  border: 1px solid #5092BF;
+  background-color: #FFE3C6;
+  width: 100%;
+  text-align: center;
+}
+table.cinereousTable td, table.cinereousTable th {
+  border: 1px solid #5092BF;
+  padding: 4px 4px;
+}
+table.cinereousTable tbody td {
+  font-size: 13px;
+}
+table.cinereousTable thead {
+  background: #428FD6;
+  background: -moz-linear-gradient(top, #71abe0 0%, #559ada 66%, #428FD6 100%);
+  background: -webkit-linear-gradient(top, #71abe0 0%, #559ada 66%, #428FD6 100%);
+  background: linear-gradient(to bottom, #71abe0 0%, #559ada 66%, #428FD6 100%);
+}
+table.cinereousTable thead th {
+  font-size: 17px; 
+  color: #F7FFFA;
+  text-align: center;
+}
+
+</style>
+
+<div class="container-fluid">
+
+    <div style="width:100%;padding-top:10px;margin-bottom:10px;">
+        <div>
+            <strong class="event-title"> 當日資料分析   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img id="img_bar" src="~/bc/img/progress_bar.gif" style="height:18px;display:none;"></strong>
+            <hr class="style2" />
+        </div>
+
+        <div class="form-inline ">
+            <label class="control-label" for="txt_sh_eventno">活動清單</label>
+            <div class="input-group">
+                <input type="text" class="form-control " id="txt_sh_eventno" name="txt_sh_eventno" aria-label="...">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle btn-info" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">清單 <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        @foreach (var row in @ViewBag.Data.Rows)
+                        {
+                            <li><a href="#" kid='@row["AE001"]'>@row["AE002"] <span>@row["AE003"]</span> </a></li>
+                        }
+                    </ul>
+                </div><!-- /btn-group -->
+            </div><!-- /input-group -->
+        </div>
+    </div>    
+
+    <div id="div_content" class="panel panel-info" style="display:block;">
+        <div class="panel-heading">
+            <div class="panel-title pull-left">&nbsp;</div>
+
+            <div class="clearfix"></div>
+        </div>
+        <div class="panel-body">
+
+            <div class="row" >
+                <div class="col-md-10 col-md-offset-1" style="border:0px solid blue;padding-left:20px;padding-right:20px;padding-bottom:50px;padding-top:20px;background:#FAFAD2;">
+
+                    <div class="col-md-4 ">
+                        <h1 for="h_scancount" style="display:inline;color:#0489B1;font-weight:bold;">掃描總數</h1>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <h1 id="h_scancount" style="display:inline;color:#FE2E2E;font-weight:bold;"></h1>
+                    </div>
+                    <div class="col-md-4 ">
+                        <h1 for="h_scantotal" style="display:inline;color:#0489B1;font-weight:bold;">發碼總數</h1>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <h1 id="h_scantotal" style="display:inline;color:#FE2E2E;font-weight:bold;"></h1>
+                    </div>
+                    <div class="col-md-4 ">
+                        <h1 for="h_scanrate" style="display:inline;color:#0489B1;font-weight:bold;">掃描率</h1>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <h1 id="h_scanrate" style="display:inline;color:#FE2E2E;font-weight:bold;"></h1>
+                    </div>                
+
+                </div>                
+            </div>
+
+            <div class="row">
+                <hr />
+            </div>           
+            <div class="row">
+                <div class="col-md-6 " >
+                    <div style="border:1px dashed black;margin:1px;padding:30px;">
+                        <div id="div_area" style="width:100%;height:300px;"></div>                   
+                    </div>                    
+                </div>
+                <div class="col-md-6 ">
+                    <div style="border:1px dashed black;margin:1px;padding:30px;">
+                        <div id="div_age" style="width: 100%;height:300px;"></div>
+                    </div>                    
+                </div>
+                
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6">
+                    <div style="border:1px dashed black;margin:1px;padding:30px;">
+                        <div id="div_gender" style="width: 100%;height:300px;"></div>
+                    </div>                    
+                    
+                </div>
+                <div class="col-md-6">
+                    <div style="border:1px dashed black;margin:1px;padding:30px;">
+                        <div id="div_day7" style="width: 100%;height:300px;"></div>
+                    </div>
+
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-12">
+                    <div style="border:1px dashed black;margin:1px;padding:30px;">
+                        <h3 style="display:inline;color:#0489B1;font-weight:bold;">參與率分析</h3>
+                        <br /><br />
+                        <div class="form-inline">
+                            <label class="control-label" for="txt_rate">參與次數</label>
+                            <input type="number" class="form-control " id="txt_rate" name="txt_rate" aria-label="..." value="2">
+                            <button type="button" class="btn btn-info" onclick="rate();" id="btn_rate">
+                                <span class=" glyphicon glyphicon-th">
+                                </span>&nbsp;&nbsp;&nbsp;&nbsp;分析&nbsp;&nbsp;&nbsp;&nbsp;
+                            </button>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label id="lbl_rate" style="color:red;font-weight:bold;font-size:24px;"></label>
+                        </div>                        
+                        <div>
+                            <br />                           
+                            <table id="rateTable" class="cinereousTable">
+                                <thead>
+                                    <tr>
+                                        <th>帳號</th>
+                                        <th>電話</th>
+                                        <th>掃描次數</th>
+                                    </tr>
+                                </thead>
+                                <tbody>                                    
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                   
+                </div>
+               
+            </div>
+        </div>
+    
+    </div>
+
+</div>
+
+<script>
+
+    var KID;
+    var EVENT_NO;
+    var ageChart;
+    var areaChart;    
+    var genderChart;
+    var dateChart;
+
+    $(document).ready(function () {
+
+        $(".dropdown-menu li a").click(function () {
+
+            KID = $(this).attr('KID');
+            var eventItem = $(this).text();
+            var splits = eventItem.split(' ');
+            $("#txt_sh_eventno").val(eventItem);
+            EVENT_NO = splits[0];
+            $("#txt_rate").val(2);
+            $("#lbl_rate").text('');
+            $("#rateTable > tbody").empty();
+            getScanRate();
+        });
+                
+        ageChart = echarts.init(document.getElementById('div_age'));
+        areaChart = echarts.init(document.getElementById('div_area'));
+        genderChart = echarts.init(document.getElementById('div_gender'));
+        dateChart = echarts.init(document.getElementById('div_day7'));
+                
+    });
+
+    function rate() {
+      
+        if (typeof (KID) === 'undefined') {
+            showQMoal('e', false, '請選擇分析專案', 0, null);
+            return false;
+        }
+        var rate = $("#txt_rate").val();
+        if (rate.length == 0) {
+            showQMoal('e', false, '請輸入掃描累積次數', 0, null);
+            return false;
+        }
+
+        var data = {
+            event_no: KID,
+            counter: rate
+        };
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: '@Url.Content("~/")Backend/ScanRate',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+                               
+                if (data.ErrorMessage) {
+                    showQMoal('e', false, data.ErrorMessage, 0, null);
+                } else {
+                    var v = JSON.parse(data.data);                   
+                    var r = Math.round(v.length / data.total * 100, -2);
+                    var rr = '掃描 ' + rate + ' 次以上的有 ' + v.length + '人   總掃碼人數 ' + data.total + ' 人';
+                    $("#lbl_rate").text(rr);
+
+                    $("#rateTable > tbody").empty();
+                   
+                    $.each(v, function (index, value) {
+                        if (value.tel === null) {
+                            newRow = "<tr><td>" + value.acc + "</td><td></td><td>" + value.cc + "</td></tr>";
+                        } else {
+                            newRow = "<tr><td>" + value.acc + "</td><td>" + value.tel + "</td><td>" + value.cc + "</td></tr>";
+                        }
+                        
+                        $("#rateTable tbody").append(newRow);
+                    });
+                   
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function getScanRate() {
+
+        var data = "event_no=" + EVENT_NO;
+       
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: '@Url.Content("~/")Backend/ScanRateData',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                var source = JSON.parse(data);
+
+                if (source.ErrorMessage) {
+                    showQMoal('e', false, source.ErrorMessage, 0, null);
+                } else {
+                  
+                    var rate = source.SCANRATE * 100;
+                    $("#h_scancount").text(source.SCANCOUNT);
+                    $("#h_scantotal").text(source.TOTAL);
+                    $("#h_scanrate").text(rate + ' %');
+                   
+                    ageChart.showLoading();
+                    areaChart.showLoading();
+                    genderChart.showLoading();
+                    dateChart.showLoading();
+
+                    getAge();
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function getAge() {
+        
+        var data = "event_no=" + KID;
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: '@Url.Content("~/")Backend/ScanAge',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                var source = JSON.parse(data);
+
+                if (source.ErrorMessage) {
+                    showQMoal('e', false, source.ErrorMessage, 0, null);
+                } else {
+
+                    var dataSource = ['10-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70以上'];
+                    var valueSource = [];
+                    var age10 = { 'value': 0, 'name': '10-29' };
+                    var age20 = { 'value': 0, 'name': '20-29' };
+                    var age30 = { 'value': 0, 'name': '30-39' };
+                    var age40 = { 'value': 0, 'name': '40-49' };
+                    var age50 = { 'value': 0, 'name': '50-59' };
+                    var age60 = { 'value': 0, 'name': '60-69' };
+                    var age70 = { 'value': 0, 'name': '70以上' };
+
+                    $.each(source, function (key, data) {
+                        if (data.AGE == 1) {
+                            age10.value = data.VALUE;
+                        } else if (data.AGE == 2) {
+                            age20.value = data.VALUE;
+                        }
+                        else if (data.AGE == 3) {
+                            age30.value = data.VALUE;
+                        }
+                        else if (data.AGE == 4) {
+                            age40.value = data.VALUE;
+                        }
+                        else if (data.AGE == 5) {
+                            age50.value = data.VALUE;
+                        }
+                        else if (data.AGE == 6) {
+                            age60.value = data.VALUE;
+                        }
+                        else if (data.AGE == 7) {
+                            age70.value = data.VALUE;
+                        }                        
+                    })
+
+                    valueSource.push(age10);
+                    valueSource.push(age20);
+                    valueSource.push(age30);
+                    valueSource.push(age40);
+                    valueSource.push(age50);
+                    valueSource.push(age60);
+                    valueSource.push(age70);
+
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: '掃描年齡來源',
+                            subtext: '',
+                            x: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: "{a} <br/>{b} : {c} ({d}%)"
+                        },
+                        legend: {
+                            orient: 'vertical',
+                            left: 'left',
+                            data: dataSource
+                        },
+                        series: [
+                            {
+                                name: '資料來源',
+                                type: 'pie',
+                                radius: '55%',
+                                center: ['50%', '60%'],
+                                data: valueSource ,
+                                itemStyle: {
+                                    emphasis: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    ageChart.setOption(option);
+                    ageChart.hideLoading();
+                    getArea();
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function getArea() {
+
+        var data = "event_no=" + KID;
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: '@Url.Content("~/")Backend/ScanArea',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                var source = JSON.parse(data);
+
+                if (source.ErrorMessage) {
+                    showQMoal('e', false, source.ErrorMessage, 0, null);
+                } else {
+
+                    var dataSource = [];
+                    var valueSource = [];
+                    $.each(source, function (key, data) {
+                        if (data.AREA.length == 0) {
+                            data.AREA = '未知';
+                        }
+                        dataSource.push(data.AREA);
+                        var item = { 'value': data.VALUE, 'name': data.AREA };
+                        valueSource.push(item);
+                    })
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: '掃描地區來源',
+                            subtext: '',
+                            x: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: "{a} <br/>{b} : {c} ({d}%)"
+                        },
+                        legend: {
+                            orient: 'vertical',
+                            left: 'left',
+                            data: dataSource
+                        },
+                        series: [
+                            {
+                                name: '資料來源',
+                                type: 'pie',
+                                radius: '55%',
+                                center: ['50%', '60%'],
+                                data: valueSource ,
+                                itemStyle: {
+                                    emphasis: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    areaChart.setOption(option);
+                    areaChart.hideLoading();
+                    getGender();
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function getGender() {
+
+        var data = "event_no=" + KID;
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: '@Url.Content("~/")Backend/ScanGender',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                var source = JSON.parse(data);
+
+                if (source.ErrorMessage) {
+                    showQMoal('e', false, source.ErrorMessage, 0, null);
+                } else {
+                    var dataSource = ['女', '男', '彩虹'];
+                    var valueSource = [];
+                    var female = { 'value': 0, 'name': '女' };
+                    var male = { 'value': 0, 'name': '男' };
+                    var mix = { 'value': 0, 'name': '彩虹' };
+
+                    $.each(source, function (key, data) {
+                        if (data.GENDER == 0) {
+                            female.value = data.VALUE;
+                        } else if (data.GENDER == 1) {
+                            male.value = data.VALUE;
+                        } else if (data.GENDER == 2) {
+                            mix.value = data.VALUE;
+                        }
+                    })
+
+                    valueSource.push(female);
+                    valueSource.push(male);
+                    valueSource.push(mix);
+                    if (female.value == 0 && male.value == 0 && mix.value == 0) {
+                        valueSource = [];
+                    }
+
+                    // 指定图表的配置项和数据
+                    option = {
+                        title: {
+                            text: '掃描性別來源',
+                            subtext: '',
+                            x: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: "{a} <br/>{b} : {c} ({d}%)"
+                        },
+                        color:['red', 'blue','pink'],
+                        legend: {
+                            orient: 'vertical',
+                            left: 'left',
+                            data: dataSource
+                        },
+                        series: [
+                            {
+                                name: '資料來源',
+                                type: 'pie',
+                                radius: '55%',
+                                center: ['50%', '60%'],
+                                data: valueSource,
+                                itemStyle: {
+                                    emphasis: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    genderChart.setOption(option);
+                    genderChart.hideLoading();
+
+                    getDay7();
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+
+    function getDay7() {
+               
+        var data = "event_no=" + KID;
+
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: '@Url.Content("~/")Backend/ScanCount_InDay_7',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                var source = JSON.parse(data);
+
+                if (source.ErrorMessage) {
+                    showQMoal('e', false, source.ErrorMessage, 0, null);
+                } else {
+
+                    var dataSource = [];
+
+                    var today = new Date();
+                    var before_7 = new Date(today);
+                                        
+                    dataSource.push(formatDate(before_7));
+                    
+                    //before_7.setDate(myNewDate.getDate() - 7);
+                    for (i = 0; i < 6 ; i++) {
+                        before_7.setDate(today.getDate() - i);
+                        //alert(before_7.toISOString().slice(0, 10));
+                        dataSource.splice(0, 0, formatDate(before_7));
+                    }
+                    //alert(myNewDate.toISOString().slice(0, 10));
+
+                   //var dataSource = [];
+                    var valueSource = [];
+
+                    $.each(dataSource, function (key, data) {
+                        var item = { 'value': 0, 'name': data };
+                        valueSource.push(item);
+                    });
+                                       
+                    $.each(source, function (key, data) {
+
+                        var d = data.DATE.slice(0, 10);
+                        $.each(valueSource, function (key, data2) {
+                            if (data2.name == d) {
+                                data2.value = data.VALUE;
+                            }                            
+                        });                        
+                    });
+                    
+                   
+                    option = {
+                        title: {
+                            text: '7日掃描數量',                           
+                            x: 'center'
+                        },
+                        color: ['#3398DB'],
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: [
+                            {
+                                type: 'category',
+                                data: dataSource,
+                                axisTick: {
+                                    alignWithLabel: true
+                                }
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value'
+                            }
+                        ],
+                        series: [
+                            {
+                                name: '直接访问',
+                                type: 'bar',
+                                barWidth: '60%',
+                                data: valueSource
+                            }
+                        ]
+                    };
+
+                    // 使用刚指定的配置项和数据显示图表。
+                    dateChart.setOption(option);
+                    dateChart.hideLoading();
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+</script>
 

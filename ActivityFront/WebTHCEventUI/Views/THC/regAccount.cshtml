@@ -10,47 +10,93 @@
         <nav id="menu">
         </nav>  
         <div class="header-bar" style="margin-top: 1em">
-            <i id="i_back" class="fa fa-reply fa-2x barFixed" aria-hidden="true" style="color:#ff6a00;"></i>           
+            <i id="i_back" class="fa fa-reply fa-2x barFixed" aria-hidden="true" style="color:#6E6E6E;"></i>           
         </div>
         <div class="content">
 
             <div class="logo w50">
-                <img src="~/images/logo_blk.png" class="logo-img" />
-            </div>
-
+                <img src="~/images/Logo_sm.png" class="logo-sm" />
+            </div>            
             <section id="msg">
                 <div class="container">
-
+                    <!--
                     <div class="row">
-                        <div class="col-md-12" style="width:130px;margin:20px auto;border: 2px #6E6E6E ;border-style: solid;text-align:center; vertical-align:middle; font-size:1.5em;padding:10px;color: #595959">
-                            註冊會員
-                        </div>
+                    <div class="col-md-12" style="width:130px;margin:20px auto;border: 2px #6E6E6E ;border-style: solid;text-align:center; vertical-align:middle; font-size:1.5em;padding:10px;color: #595959">
+                        註冊會員
                     </div>
-                    <dir class="row">
+                    </div>
+                    -->
+                    <div class="row">
                         <div class="col-xs-2"></div>
                         <div class="col-xs-8"><label id="lbl_mail">帳號</label></div>
                         <div class="col-xs-2"></div>
-                    </dir>
-                    <dir class="row">
+                    </div>
+                    <div class="row">
                         <div class="col-xs-2"></div>
                         <div class="col-xs-8">
                             <input id="txt_mail" name="txt_mail" type="text" class="form-control qpid-input" style="width:100%;" placeholder="MAIL信箱" />
                         </div>
                         <div class="col-xs-2"></div>
-                    </dir>
-                    <dir class="row">&nbsp;</dir>
-                    <dir class="row">
+                    </div>
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <div class="col-xs-2"></div>
+                        <div class="col-xs-8"><label id="lbl_gender">性別</label></div>
+                        <div class="col-xs-2"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-2"></div>
+                        <div class="col-xs-8">
+                            <select id="sel_gender" name="sel_gender" class=" qpid-select" style="width:100%;">
+                                
+                                <option value="">請選擇</option>
+                                <option value="1">男</option>
+                                <option value="0">女</option>
+                                <option value="2">彩虹</option>
+
+                            </select>
+                        </div>
+                        <div class="col-xs-2"></div>
+                    </div>                   
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <div class="col-xs-2"></div>
+                        <div class="col-xs-8"><label id="lbl_age">年齡</label></div>
+                        <div class="col-xs-2"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-2"></div>
+                        <div class="col-xs-8">
+                            <select id="sel_age" name="sel_age" class=" qpid-select" style="width:100%;">
+
+                                <option value="">請選擇</option>
+                                <option value="1">10-20</option>
+                                <option value="2">20-30</option>
+                                <option value="3">30-40</option>
+                                <option value="4">40-50</option>
+                                <option value="5">50-60</option>
+                                <option value="6">60-70</option>
+                                <option value="7">70 以上</option>
+
+                            </select>
+                        </div>
+                        <div class="col-xs-2"></div>
+                    </div>
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
                         <div class="col-xs-2"></div>
                         <div class="col-xs-8"><label id="lbl_pwd">密碼</label></div>
                         <div class="col-xs-2"></div>
-                    </dir>
-                    <dir class="row">
+                    </div>
+                    <div class="row">
                         <div class="col-xs-2"></div>
                         <div class="col-xs-8">
                             <input id="txt_pwd" name="txt_pwd" type="password" class="form-control qpid-input" style="width:100%;" placeholder="輸入密碼" />
                         </div>
                         <div class="col-xs-2"></div>
-                    </dir>
+                    </div>
+                    <div class="row">&nbsp;</div>
+                    
                 </div>
 
             </section>
@@ -60,6 +106,15 @@
                     <button id="btn_submit" name="btn_submit" type="button" class="form-control ok-btn">送出</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+
+    <div id="div_wait" class="popup-content-box">
+        <div style="margin:10px;">
+            <img src="~/images/wait.gif" style="width:120px;height:80px;" />
+            <br />
+            <strong>資料傳送中</strong>
         </div>
     </div>
 
@@ -125,6 +180,22 @@
                 $("#lbl_mail").css('color', 'black');
             }
 
+            var gender = $("#sel_gender").val();
+            if (gender.length == 0) {
+                $("#lbl_gender").css('color', 'red');
+                hasEmpty = true;
+            } else {
+                $("#lbl_gender").css('color', 'black');
+            }
+
+            var age = $("#sel_age").val();
+            if (age.length == 0) {
+                $("#lbl_age").css('color', 'red');
+                hasEmpty = true;
+            } else {
+                $("#lbl_age").css('color', 'black');
+            }
+
             var pwd = $("#txt_pwd").val();
             if (pwd.length == 0) {
                 $("#lbl_pwd").css('color', 'red');
@@ -142,31 +213,23 @@
                 $("#lbl_mail").css('color', 'black');
             }
             
-            var data = "";
-
-            if (e) {
-                data = "mail=" + mail + "&pwd=" + pwd;
-            } else if (m) {
-                data = "mobil=" + mail + "&pwd=" + pwd;
-            }
-
-            if (data.length == 0) {
-                $("#lbl_mail").css('color', 'red');
-                hasEmpty = true;
-            }
-
             if (hasEmpty) {
                 return false;
             }
+                      
+            $("#div_wait").show();
+            var data = "mail=" + mail + "&gender=" + gender +
+                       "&age=" + age + "&pwd=" + pwd;
 
-            $.ajax({
-                async: false,
+            
+            $.ajax({                
                 type: "POST",
                 url: '@Url.Content("~/")register/newAccount',
                 data: data,
                 dataType: 'json',
                 success: function (data, status, xhr) {
 
+                    $("#div_wait").hide();
                     jDatas = jQuery.parseJSON(data);
                     if (jDatas.length == 1) {
                         window.location.href = '@Url.Content("~/")THC/go?ac=' + ACTIVITY + '&code=' + CODE + '&tk=' + jDatas[0].TICKET +
@@ -179,6 +242,7 @@
                     }
                 },
                 error: function (request, error) {
+                    $("#div_wait").hide();
                     alert(error + " : " + request.responseText);
                 },
                 complete: function () {

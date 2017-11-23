@@ -1,0 +1,689 @@
+﻿
+
+@using System.Data;
+@using System.Collections.Generic;
+@using System.Collections.Specialized;
+@using THC_Library.Language;
+
+@{
+    ViewBag.Title = "THC 活動控制台";
+    Layout = "~/Views/Shared/_THCBackend.cshtml";
+    THC_Library.Language.LanguageBase lan = (THC_Library.Language.LanguageBase)ViewData["lan"];
+}
+
+<style>
+    .file-drop-area {
+        border: 5px solid #808080;
+        border-radius: 8px;
+        position: relative;
+        width: 450px;
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 26px 20px 30px;
+        transition: 0.2s;
+    }
+
+    .is-active {
+        background-color: #c1d5e4;
+    }
+
+    .fake-btn {
+        background-color: #3F4069;
+        border: 1px solid #9E9EC4;
+        border-radius: 3px;
+        padding: 8px 15px;
+        margin-right: 8px;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #fff;
+    }
+
+    .file-msg {
+        font-size: small;
+        font-weight: 300;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        max-width: calc(100% - 130px);
+        vertical-align: middle;
+    }
+
+    .file-input {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        cursor: pointer;
+        opacity: 0;
+    }
+
+        .file-input:focus {
+            outline: none;
+        }
+
+
+    .funkyradio div {
+        clear: both;
+        overflow: hidden;
+    }
+
+    .funkyradio label {
+        width: 15%;
+        border-radius: 3px;
+        border: 1px solid #D1D3D4;
+        font-weight: normal;
+    }
+
+    .funkyradio input[type="radio"]:empty,
+    .funkyradio input[type="checkbox"]:empty {
+        display: none;
+    }
+
+        .funkyradio input[type="radio"]:empty ~ label,
+        .funkyradio input[type="checkbox"]:empty ~ label {
+            position: relative;
+            line-height: 2.5em;
+            text-indent: 3.25em;
+            margin-top: 2em;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+            .funkyradio input[type="radio"]:empty ~ label:before,
+            .funkyradio input[type="checkbox"]:empty ~ label:before {
+                position: absolute;
+                display: block;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                content: '';
+                width: 2.5em;
+                background: #D1D3D4;
+                border-radius: 3px 0 0 3px;
+            }
+
+    .funkyradio input[type="radio"]:hover:not(:checked) ~ label,
+    .funkyradio input[type="checkbox"]:hover:not(:checked) ~ label {
+        color: #888;
+    }
+
+        .funkyradio input[type="radio"]:hover:not(:checked) ~ label:before,
+        .funkyradio input[type="checkbox"]:hover:not(:checked) ~ label:before {
+            content: '\2714';
+            text-indent: .9em;
+            color: #C2C2C2;
+        }
+
+    .funkyradio input[type="radio"]:checked ~ label,
+    .funkyradio input[type="checkbox"]:checked ~ label {
+        color: #777;
+    }
+
+        .funkyradio input[type="radio"]:checked ~ label:before,
+        .funkyradio input[type="checkbox"]:checked ~ label:before {
+            content: '\2714';
+            text-indent: .9em;
+            color: #333;
+            background-color: #ccc;
+        }
+
+    .funkyradio input[type="radio"]:focus ~ label:before,
+    .funkyradio input[type="checkbox"]:focus ~ label:before {
+        box-shadow: 0 0 0 3px #999;
+    }
+
+    .funkyradio-default input[type="radio"]:checked ~ label:before,
+    .funkyradio-default input[type="checkbox"]:checked ~ label:before {
+        color: #333;
+        background-color: #ccc;
+    }
+
+    .funkyradio-primary input[type="radio"]:checked ~ label:before,
+    .funkyradio-primary input[type="checkbox"]:checked ~ label:before {
+        color: #fff;
+        background-color: #337ab7;
+    }
+
+    .funkyradio-success input[type="radio"]:checked ~ label:before,
+    .funkyradio-success input[type="checkbox"]:checked ~ label:before {
+        color: #fff;
+        background-color: #5cb85c;
+    }
+
+    .funkyradio-danger input[type="radio"]:checked ~ label:before,
+    .funkyradio-danger input[type="checkbox"]:checked ~ label:before {
+        color: #fff;
+        background-color: #d9534f;
+    }
+
+    .funkyradio-warning input[type="radio"]:checked ~ label:before,
+    .funkyradio-warning input[type="checkbox"]:checked ~ label:before {
+        color: #fff;
+        background-color: #f0ad4e;
+    }
+
+    .funkyradio-info input[type="radio"]:checked ~ label:before,
+    .funkyradio-info input[type="checkbox"]:checked ~ label:before {
+        color: #fff;
+        background-color: #5bc0de;
+    }
+</style>
+
+
+<div class="container-fluid">
+
+    <div style="width:100%;padding-top:10px;margin-bottom:10px;">
+        <div>
+            <strong class="event-title"> 活動獎項   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img id="img_bar" src="~/bc/img/progress_bar.gif" style="height:18px;display:none;"></strong>
+            <hr class="style2" />
+        </div>
+
+        <div class="form-inline ">
+            <label class="control-label" for="txt_sh_eventno">活動清單</label>
+            <div class="input-group">
+                <input type="text" class="form-control " id="txt_sh_eventno" name="txt_sh_eventno" aria-label="...">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle btn-info" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">清單 <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        @foreach (var row in @ViewBag.Data.Rows)
+                        {
+                            <li><a href="#" KID='@row["AE001"]'>@row["AE002"] <span>@row["AE003"]</span> </a></li>
+                        }
+                    </ul>
+                </div><!-- /btn-group -->
+            </div><!-- /input-group -->
+        </div>
+                
+    </div>
+    <br />
+
+    <div id="div_table" class="pane panel-primary span8 offset2" style="display:block;">
+
+        <div class="panel-body">
+
+            <div class="col-xs-12">
+                <table id="example" class="ui celled table" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>      
+                            <th>編輯</th>                      
+                            <th>AEP001</th>
+                            <th>AEP002</th>
+                            <th>AEP003</th>
+                            <th>AEP004</th>
+                            <th>AEP005</th>
+                            <th>AEP006</th>
+                            <th>AEP007</th>
+                            <th>AEP009</th>
+                            <th>AEP011</th>
+                            <th>AEP012</th>
+                            <th>AEP013</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+       
+    <div id="div_content" class="panel panel-info" style="display:none;">
+        <div class="panel-heading">
+            <div class="panel-title pull-left">&nbsp;</div>
+
+            <div class="clearfix"></div>
+        </div>
+        <div class="panel-body">
+
+            <form id="form1" class="form" action="" role="form">
+                <!--data-toggle="validator" -->
+
+                <div class="row">
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_type">獎項型態</label>                       
+                        <select class="selectpicker form-control" id="txt_type" title="獎項型態" name="txt_type" data-width="200px" data-error="" disabled>
+
+                            <option value="0">虛擬</option>
+                            <option value="1">實體</option>
+                        </select>
+
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_level">獎項層級</label>
+                        <input type="text" class="form-control" id="txt_level" name="txt_level" maxlength="20" data-error="" readonly>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_name">獎項名稱</label>
+                        <input type="text" class="form-control" id="txt_name" name="txt_name" maxlength="20" data-error="請輸入獎項名稱" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_number">獎項數量</label>
+                        <input type="text" class="form-control" id="txt_number" name="txt_number" maxlength="20" data-error="" readonly>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_memo">獎項說明</label>
+                        <input type="text" class="form-control" id="txt_memo" name="txt_memo" maxlength="20" data-error="" >
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_vender">獎項廠商</label>
+                        <input type="text" class="form-control" id="txt_vender" name="txt_vender" maxlength="20" data-error="請輸入獎項廠商" readonly>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+
+                <div class="row">   
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_win_desc">兌獎網址</label>
+                        <input type="text" class="form-control" id="txt_win_desc" name="txt_win_desc" maxlength="100" data-error="兌獎網址" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                                    
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_vdate">有效時間</label>                        
+                        <div class="input-group date" id="dat_effective_time" name="dat_effective_time">
+                            <input type="text" class="form-control" id="txt_effective_time" name="txt_effective_time" data-error="請輸入有效時間" required><span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                        </div>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                   
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-6 form-group">
+                        <label for="txt_img">獎項圖檔</label>
+                        <input type="text" class="form-control" id="txt_img" name="txt_img" maxlength="20" data-error="請輸入獎項圖檔" readonly>
+                        <div class="help-block with-errors"></div>
+                        <div class="form-group col-md-12 ">
+                            <img id="txt_rwd_img" src="''" style="width:150px;height:150px;" />
+                        </div>
+                        <div class="form-group col-md-12 file-drop-area">
+                            <span class="fake-btn">上傳獎項圖檔</span>
+                            <span class="file-msg js-set-number">獎項檔名</span>
+                            <input class="file-input" type="file" id="rwdFile" name="rwdFile" accept="image/*" data-type='image'>
+                        </div>
+                    </div>  
+                    <div class="form-group col-md-6 form-group">
+                        <label for="txt_sms">簡訊內容</label>
+                        <textarea class="form-control" id="txt_sms" name="txt_sms" rows="20" cols="80" data-error="請輸入簡訊內容" required></textarea>
+                        <div class="help-block with-errors"></div>
+                    </div>                   
+                </div>
+
+                <hr />
+                <button type="submit" class="btn btn-primary" id="btn_submit" >
+                    <!-- onclick="doSubmit();" -->
+                    <span class="glyphicon glyphicon-saved"></span>&nbsp;&nbsp;&nbsp;&nbsp;儲存&nbsp;&nbsp;&nbsp;&nbsp;
+                </button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-warning" onclick="goCancel();" id="btn_back">
+                    <span class=" glyphicon glyphicon-share-alt">
+                    </span>&nbsp;&nbsp;&nbsp;&nbsp;離開&nbsp;&nbsp;&nbsp;&nbsp;
+                </button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- POPUP -->
+<link rel="stylesheet" href="~/bc/css/popup.css" />
+
+<div class="popup" data-popup="popup-1">
+    <div class="popup-inner" style="border:0px solid red;">
+        <h2></h2>
+        <hr class="style2" />
+            <div style="text-align:center;">
+                <img id="img_rwdimg" name="img_rwdimg" />
+            </div>
+        <p></p>        
+        <a class="popup-close" data-popup-close="popup-1" href="#">x</a>
+    </div>
+</div>
+
+<script src="~/bc/js/ajaxfileupload.js"></script>
+
+<script>
+
+    var $fileInput = $('.file-input');
+    var $droparea = $('.file-drop-area');
+
+    // highlight drag area
+    $fileInput.on('dragenter focus click', function () {
+        $droparea.addClass('is-active');
+    });
+
+    // back to normal state
+    $fileInput.on('dragleave blur drop', function () {
+        $droparea.removeClass('is-active');
+    });
+
+    $(document).on('change', '#rwdFile', function (e) {
+        var filesCount = $(this)[0].files.length;
+        var $textContainer = $(this).prev('.js-set-number');
+
+        if (filesCount === 1) {
+            // if single file then show file name
+            //alert($(this).val().split('\\').pop() + '  ' + $(this)[0].files[0].type);
+
+            if ($(this)[0].files[0].type.split('/')[0] == 'image') {
+                uploadFileName = $(this).val().split('\\').pop();
+                $textContainer.text(uploadFileName);
+            } else {
+                uploadFileName = '';
+                $textContainer.text('');
+            }
+        } else {
+            // otherwise show number of files
+            $textContainer.text(filesCount + ' files selected');
+        }
+    });
+
+    var dataTable;
+    var KEY;
+    var tableRow;
+    var uploadFileName;
+
+    $(document).ready(function () {
+
+        $(".date").datepicker({
+            format: "yyyy/mm/dd",
+            language: 'zh-TW',
+            autoclose: true,
+            orientation: "bottom left"
+        });
+
+        //----- CLOSE
+        $('[data-popup-close]').on('click', function (e) {
+            var targeted_popup_class = jQuery(this).attr('data-popup-close');
+            $('[data-popup="' + targeted_popup_class + '"]').fadeOut(350);
+
+            e.preventDefault();
+        });
+
+        $(".dropdown-menu li a").click(function () {
+
+            var kid = $(this).attr('KID');
+
+            var eventItem = $(this).text();
+            var splits = eventItem.split(' ');
+            $("#txt_sh_eventno").val(eventItem);
+            //$("#txt_sh_eventname").val(splits[1]);
+            getRewardInfo(kid);
+        });
+
+        dataTable = $('#example').DataTable({
+            info: true,
+            bLengthChange: false,
+            searching: false,
+            "language": {
+                "lengthMenu": "顯示 _MENU_ 紀錄 每頁",
+                "zeroRecords": "@lan.DataTable_NoData",
+                "info": "@lan.DataTable_CurrentPage _PAGE_ / _PAGES_",
+                "infoEmpty": "@lan.DataTable_NoData",
+                "infoFiltered": "(filtered from _MAX_ total records)",
+                "paginate": {
+                    "next": "&nbsp;&nbsp;@lan.DataTable_NextPage&nbsp;&nbsp;",
+                    "previous": "&nbsp;&nbsp;@lan.DataTable_PreviousPage&nbsp;&nbsp;"
+                }
+            },
+            "columns":
+            [
+                {
+                    bOrderable: false,
+                    bSortable: false,
+                    mRender: function (data, type, row) {
+                        //console.log(row);
+                        var editLink = '<a  data-id="' + row.AEP001 + '" onclick="editClick(\'' + row.AEP001 + '\');" ><span class="glyphicon glyphicon-pencil" style="cursor: pointer;"></span></a>';
+                        //var delLink = '<a  data-id="' + row.EQCH001 + '" onclick="deleteClick(\'' + row.EQCH001 + '\');" ><span class="glyphicon glyphicon-trash" style="cursor: pointer;"></a>';
+                        return editLink;// + '&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;' + delLink;
+                    }
+                },
+                { "title": "KEY", "data": "AEP001", bVisible: true },
+                { "title": "EVENTKEY", "data": "AEP002", bVisible: true },
+                { "title": "獎項型態", "data": "AEP003", bVisible: true },
+                { "title": "獎項層級", "data": "AEP004", bVisible: true },
+                { "title": "獎項名稱", "data": "AEP005", bVisible: true },
+                { "title": "獎項數量", "data": "AEP006", bVisible: true },
+                { "title": "獎項說明", "data": "AEP007", bVisible: true },
+                { "title": "獎項廠商", "data": "AEP009", bVisible: true },
+                {
+                    "title": "獎項圖檔", "data": "AEP011", bVisible: true,
+                    mRender: function (data, type, row) {
+
+                        if (data === null) {
+                            var editLink = '<a  data-id="' + row.AEP011 + '" ></a>';
+                        } else {
+                            var editLink = '<a id="a_' + row.AEP001 + '" data-id="' + row.AEP011 + '" style="cursor:pointer;" onclick="openImg(\'a_' + row.AEP001 + '\',\'' + row.AEP011 + '\');" data-popup-open="popup-1">' + row.AEP011 + '</a>';
+                        }
+                        return editLink;
+                    }
+                },
+                { "title": "有效時間", "data": "AEP012", bVisible: true },
+                { "title": "簡訊內容", "data": "AEP013", bVisible: true },
+            ],
+        });
+
+        $('#form1').validator();
+        $('#form1').validator().on('submit', function (e) {
+            if (e.isDefaultPrevented()) {
+                // handle the invalid form...
+                //alert('invalid');
+            } else {
+                // everything looks good!
+                e.preventDefault();
+                ajaxFileUpload2();
+                //doUpdate();
+            }
+        })
+    })
+
+    function getRewardInfo(event_no) {
+
+        $("#rwdFile").val(null);
+        var data = 'event_no=' + event_no;
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")Backend/EventRewardInfo',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                var soruce = JSON.parse(data);
+
+                if (soruce.ErrorMessage) {
+                    showQMoal('e', false, soruce.ErrorMessage, 0, null);
+                } else {
+                    dataTable.clear().draw();
+                    dataTable.rows.add(soruce).draw();
+                }
+
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function openImg(id, img) {
+        $("#img_rwdimg").attr('src', '@Url.Content("~/")' + img);
+        var targeted_popup_class = $("#" + id).attr('data-popup-open');
+        $('[data-popup="' + targeted_popup_class + '"]').fadeIn(350);
+    }
+
+    function editClick(key) {
+
+        var data = 'reward_key=' + key;
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")Backend/SingleRewardInfo',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                var source = JSON.parse(data);
+
+                if (source.ErrorMessage) {
+                    showQMoal('e', false, source.ErrorMessage, 0, null);
+                } else {
+                    if (source.length > 0) {
+                        KEY = source[0].AEP001;
+                        $("#txt_type").val(source[0].AEP003).change();
+                        $("#txt_level").val(source[0].AEP004);
+                        $("#txt_name").val(source[0].AEP005);
+                        $("#txt_number").val(source[0].AEP006);
+                        $("#txt_memo").val(source[0].AEP007);
+                        $("#txt_vender").val(source[0].AEP009);
+                        $("#txt_img").val(source[0].AEP011);
+                        $("#txt_win_desc").val(source[0].AEP014);
+                        $("#txt_effective_time").val(source[0].AEP012);
+                        $("#txt_sms").val(source[0].AEP013);
+                        $("#txt_rwd_img").attr('src', '@Url.Content("~/")' + source[0].AEP011);
+                        uploadFileName = source[0].AEP011;
+                        getTargetRow(KEY);
+
+                        $("#div_table").hide();
+                        $("#div_content").fadeIn(500);
+                    }
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function goCancel() {
+        $("#div_content").hide();
+        $("#div_table").fadeIn(500);
+    }
+
+    function ajaxFileUpload2() {
+
+        var formData = $("#form1").serialize();
+        formData += "&reward_key=" + KEY;
+              
+        var data = {
+            reward_key: KEY,
+            txt_name: $("#txt_name").val(),
+            txt_memo: $("#txt_memo").val(),
+            txt_vender: $("#txt_vender").val(),
+            txt_img: $("#txt_img").val(),
+            txt_win_desc : $("#txt_win_desc").val(),
+            txt_effective_time: $("#txt_effective_time").val(),
+            txt_sms: $("#txt_sms").val(),
+            };
+
+        $.ajaxFileUpload(
+            {
+                url: '@Url.Content("~/")Backend/UpdateEventRewardWithFile',
+                secureuri: false,
+                data: data,
+                fileElementId: 'rwdFile',
+                dataType: 'json',
+                success: function (data, status) {
+                    var jDatas = $.parseJSON(data);
+
+                    if (jDatas.ErrorMessage) {
+                        showQMoal('e', false, jDatas.ErrorMessage, 0, null);
+                    } else {
+                       
+                        var rowData = tableRow.data();
+                        rowData.AEP005 = $("#txt_name").val();
+                        rowData.AEP007 = $("#txt_memo").val();
+                        rowData.AEP009 = $("#txt_vender").val();
+                        rowData.AEP011 = uploadFileName; //$("#txt_img").val();
+                        rowData.AEP012 = $("#txt_effective_time").val();
+                        rowData.AEP013 = $("#txt_sms").val();
+                        tableRow.data(rowData).draw();
+                        showQMoal('i', false, '修 改 完 成', 0, null);
+                    }                   
+                },
+                error: function (data, status, e) {
+                    showQMoal('e', true, e, 0, null);
+                }
+            }
+        );
+        return false;
+    }
+
+    function doUpdate() {
+
+        $formData = $("#form1").serialize();
+        $formData += "&reward_key=" + KEY;
+
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")Backend/UpdateEventReward',
+            data: $formData,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+                if (jDatas.ErrorMessage) {
+                    showQMoal('e', false, jDatas.ErrorMessage, 0, null);
+
+                } else {
+
+                    var rowData = tableRow.data();
+                    rowData.AEP005 = $("#txt_name").val();
+                    rowData.AEP007 = $("#txt_memo").val();
+                    rowData.AEP009 = $("#txt_vender").val();
+                    rowData.AEP011 = $("#txt_img").val();
+                    rowData.AEP012 = $("#txt_effective_time").val();
+                    rowData.AEP013 = $("#txt_sms").val();
+                    tableRow.data(rowData).draw();
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function getTargetRow(key) {
+        var count = dataTable.data().count();
+        for (var i = 0; i < count; i++) {
+            var r = dataTable.row(i).data();
+            if (r.AEP001 === key) {
+                tableRow = dataTable.row(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+
+</script>

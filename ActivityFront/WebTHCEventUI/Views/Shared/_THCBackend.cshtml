@@ -157,12 +157,12 @@
 
         .dropdown-menu>li>a {
           background-color: #004059;
-          color: red;
+          color: #ffffff;
         }
 
             .dropdown-menu > li > a:hover {
                 background-color: #004059;
-                color: red;
+                color: #fcb200;
             }
 
         .dropdown-menu .alink :hover {
@@ -213,7 +213,8 @@
             <li>
                 <a href="#"><i class="fa fa-gears"></i>活動事件管理 <i class="fa fa-caret-down"></i></a>
                 <ul>
-                    <li><a href="@Url.Content("~/")Events/EventData" tog>&nbsp;&nbsp;&nbsp;&nbsp;行銷活動資料</a></li>
+                    <li><a href="@Url.Content("~/")Backend/EventActivities" tog>&nbsp;&nbsp;&nbsp;&nbsp;行銷活動資料</a></li>
+                    <li><a href="@Url.Content("~/")Backend/EventRewards" tog>&nbsp;&nbsp;&nbsp;&nbsp;活動獎項資料</a></li>
                 </ul>
             </li>
             <!--
@@ -222,25 +223,32 @@
             <li>
                 <a href="#"><i class="fa fa-barcode"></i>碼號管理 <i class="fa fa-caret-down"></i></a>
                 <ul>
-                    <li><a href="@Url.Content("~/")CodeGen/CodeGenData" tog>&nbsp;&nbsp;&nbsp;&nbsp;活動發碼管理</a></li>
-                    <li><a href="@Url.Content("~/")RewardManage/RewardData" tog>&nbsp;&nbsp;&nbsp;&nbsp;活動獎項管理</a></li>
-                    <li><a href="@Url.Content("~/")EventExport/ExportData" tog>&nbsp;&nbsp;&nbsp;&nbsp;活動資料查詢與匯出</a></li>
+                    <li><a href="@Url.Content("~/")Backend/RewardEarn" tog>&nbsp;&nbsp;&nbsp;&nbsp;中獎資料查詢與匯出</a></li>                    
                 </ul>
             </li>
             <li>
-                <a href="#"><i class="fa fa-search"></i>Dashborad <i class="fa fa-caret-down"></i></a>
+                <a href="#"><i class="fa fa-search"></i>資料分析 <i class="fa fa-caret-down"></i></a>
                 <ul>
-                    <li><a href="#">&nbsp;&nbsp;&nbsp;&nbsp;會員中獎清單查詢</a></li>
-                    <li><a href="#">&nbsp;&nbsp;&nbsp;&nbsp;會員掃描分析查詢</a></li>
-                    <li><a href="#">&nbsp;&nbsp;&nbsp;&nbsp;會員掃描紀錄查詢</a></li>
+                    <li><a href="@Url.Content("~/")Backend/DataAnalysis" tog>&nbsp;&nbsp;&nbsp;&nbsp;活動統計資料</a></li>  
+                    <li><a href="@Url.Content("~/")Backend/DataDashboard" tog>&nbsp;&nbsp;&nbsp;&nbsp;活動 Dashboard</a></li> 
                 </ul>
             </li>
-            <li>
-                <a href="#"><i class="fa fa-laptop"></i>系統管理 <i class="fa fa-caret-down"></i></a>
-                <ul>
-                    <li><a href="#">&nbsp;&nbsp;&nbsp;&nbsp;系統使用者管理</a></li>                   
-                </ul>
-            </li>
+            @{
+                if (@ViewBag.ADMIN != null)
+                {
+                    if (ViewBag.ADMIN)
+                    {
+                        <li>
+                            <a href="#"><i class="fa fa-laptop"></i>系統管理 <i class="fa fa-caret-down"></i></a>
+                            <ul>
+                                <li><a href="@Url.Content("~/")control/UserControl" tog>&nbsp;&nbsp;&nbsp;&nbsp;系統使用者管理</a></li>
+                                <li><a href="@Url.Content("~/")control/ImportActivity" tog>&nbsp;&nbsp;&nbsp;&nbsp;活動建置</a></li>
+                            </ul>
+                        </li>
+                    }
+                }
+             }
+
         </ul>
         <p href="#" id="showmenu" style=" font-size: 2.0em;"> <i class="fa fa-align-justify"></i> </p>
     </nav>
@@ -266,7 +274,9 @@
                         <a class="navbar-brand" href="#" style="margin-left:0px;">活動事件控制台</a>
                     </div>
                     <!-- Collect the nav links, forms, and other content for toggling -->
+                  
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <!-- 
                         <ul class="nav navbar-nav">
                             <li><a href="#"><span class="glyphicon glyphicon-th" aria-hidden="true"></span> Dashboard</a></li>
                             <li class="dropdown">
@@ -316,7 +326,9 @@
                                 </ul>
                             </li>
                         </ul>
+                    -->
                         <ul class="nav navbar-nav navbar-right">
+                            <!-- 
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-link" aria-hidden="true"></span> Links<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
@@ -326,15 +338,25 @@
                                     <li class="alink"><a href="http://www.cubetech.ch" target="_blank">cubetech.ch</a></li>
                                 </ul>
                             </li>
+                            -->
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Jack Bass<span class="caret"></span></a>
+                                <a href="return javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                                    <span id="a_account"></span>
+                                    <span class="caret"></span>
+                                </a>
                                 <ul class="dropdown-menu">
-                                    <li class="alink"><a href="http://www.fgruber.ch/" target="_blank"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> User Settings</a></li>
-                                    <li class="alink"><a href="/logout"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Logout</a></li>
+                                    <!-- 
+                                        <li class="alink"><a href="http://www.fgruber.ch/" target="_blank"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> User Settings</a></li>
+                                    -->
+                                    <li class="alink"><a href="javascript:void(0);" onclick="changeAccessCode()"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> 變更密碼</a></li>
+                                    <li class="alink"><a href="javascript:void(0);" onclick="logOut();" ><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> 登出</a></li>
                                 </ul>
                             </li>
                         </ul>
                     </div><!-- /.navbar-collapse -->
+                   
+
                 </div><!-- /.container-fluid -->
             </nav>
             <!-- nav bar end -->
@@ -376,71 +398,73 @@
 
     <script>
 
-        var modalHanlder;
-        var actionCode;
-        var autoHide;
-        var pedding = false;
-        var editMode; /*A,U,''*/
+    var modalHanlder;
+    var actionCode;
+    var autoHide;
+    var pedding = false;
+    var editMode; /*A,U,''*/
 
-        $("#showmenu").click(function (e) {
+    $("#showmenu").click(function (e) {
 
-            e.preventDefault();
-            overlay = $('.overlay');
+        e.preventDefault();
+        overlay = $('.overlay');
+        $("#menu").toggleClass("show");
+
+        if ($("#menu").hasClass("show")) {
+            $('#menu').css("boxShadow", "10px 0px 40px #2F2F2F");
+            overlay.show();
+            $("#showmenu").hide();
+        } else {
+            $('#menu').css("boxShadow", "0px 0px 0px #2F2F2F");
+            overlay.hide();
+        }
+
+        //if ($('#menu').hasClass("boxShadow")) {
+        //    $('#menu').removeClass("boxShadow");
+        // } else {
+        //     $('#menu').css("boxShadow", "10px 0px 40px #888888");
+        // }
+    });
+
+    $("#menu a").click(function (event) {
+
+        //alert($(this).text());
+        var attr = $(this).attr('TOG');
+
+        if (typeof attr !== typeof undefined && attr !== false) {
+
+        } else {
+            event.preventDefault();
+            if ($(this).next('ul').length) {
+                $(this).next().toggle('fast');
+                $(this).children('i:last-child').toggleClass('fa-caret-down fa-caret-left');
+            }
+        }
+    });
+
+    $(document).ready(function () {
+
+        $('[data-toggle="offcanvas"]').click(function () {
+            $('#wrapper').toggleClass('toggled');
+        });
+
+        $(".overlay").bind("click", function () {
+
+            //overlay = $('.overlay');
+            //$('#wrapper').toggleClass('toggled');
             $("#menu").toggleClass("show");
-
-            if ($("#menu").hasClass("show")) {
-                $('#menu').css("boxShadow", "10px 0px 40px #2F2F2F");
-                overlay.show();
-                $("#showmenu").hide();
-            } else {
-                $('#menu').css("boxShadow", "0px 0px 0px #2F2F2F");
-                overlay.hide();
-            }
-
-            //if ($('#menu').hasClass("boxShadow")) {
-            //    $('#menu').removeClass("boxShadow");
-            // } else {
-            //     $('#menu').css("boxShadow", "10px 0px 40px #888888");
-            // }
+            $('#menu').css("boxShadow", "0px 0px 0px #2F2F2F");
+            $(this).hide();
+            $("#showmenu").show();
         });
 
-        $("#menu a").click(function (event) {
 
-            //alert($(this).text());
-            var attr = $(this).attr('TOG');
+        $("#a_account").text('@ViewBag.ACCOUNT');
+    });
 
-            if (typeof attr !== typeof undefined && attr !== false) {
+    function onLanguageChanged(lan) {
 
-            } else {
-                event.preventDefault();
-                if ($(this).next('ul').length) {
-                    $(this).next().toggle('fast');
-                    $(this).children('i:last-child').toggleClass('fa-caret-down fa-caret-left');
-                }
-            }
-        });
-
-        $(document).ready(function () {
-
-            $('[data-toggle="offcanvas"]').click(function () {
-                $('#wrapper').toggleClass('toggled');
-            });
-
-            $(".overlay").bind("click", function () {
-
-                //overlay = $('.overlay');
-                //$('#wrapper').toggleClass('toggled');
-                $("#menu").toggleClass("show");
-                $('#menu').css("boxShadow", "0px 0px 0px #2F2F2F");
-                $(this).hide();
-                $("#showmenu").show();
-            });
-        });
-
-        function onLanguageChanged(lan)
-        {
-            /*
-            var data = { "lan": lan };
+        @*var data = { "lan": lan };
             $.ajax({
                 async: false,
                 type: "POST",
@@ -464,99 +488,133 @@
                 complete: function () {
                     hideLoadingBar();
                 }
-        });
-        */
+            });*@
+
+    }
+
+    function onModalOK() {
+
+        if (modalHanlder != null) {
+            //|| typeof(modalHanlder) != "undefined") {
+            modalHanlder(actionCode);
         }
+        autoHide = true;
+        $("#qModal").modal('hide');
+    }
 
-        function onModalOK() {
-
-            if (modalHanlder != null) {
-                //|| typeof(modalHanlder) != "undefined") {
-                modalHanlder(actionCode);
-            }
+    function onMoadlYes() {
+        if (modalHanlder != null) {
+            modalHanlder(actionCode, 'y');
+        }
+        if (pedding) {
+            pedding = false;
+            //autoHide = true;
+            //$("#qModal").modal('hide');
+        } else {
             autoHide = true;
             $("#qModal").modal('hide');
         }
 
-        function onMoadlYes() {
-            if (modalHanlder != null) {
-                modalHanlder(actionCode, 'y');
-            }
-            if (pedding) {
-                pedding = false;
-                //autoHide = true;
-                //$("#qModal").modal('hide');
-            } else {
-                autoHide = true;
-                $("#qModal").modal('hide');
-            }
+    }
 
+    function onModalNo() {
+        if (modalHanlder != null) {
+            modalHanlder(actionCode, 'n');
+        }
+        autoHide = true;
+        $("#qModal").modal('hide');
+    }
+
+    function peddingHide() {
+        pedding = true;
+    }
+
+    function showQMoal(type, autohide, msg, action, handler) {
+
+        $("#mdl_header").removeClass('modal-header-success');
+        $("#mdl_header").removeClass('modal-header-warning');
+        $("#mdl_header").removeClass('modal-header-danger');
+        $("#mdl_header").removeClass('modal-header-info');
+        $("#mdl_header").removeClass('modal-header-primary');
+
+        actionCode = action;
+        modalHanlder = handler;
+        autoHide = autohide;
+
+        $("#btn_OK").hide();
+        $("#btn_Yes").hide();
+        $("#btn_No").hide();
+
+        if (type == 'q') {
+            $("#mdl_header").addClass('modal-header-primary');
+            $("#btn_Yes").show();
+            $("#btn_No").show();
+            $("#mdl_title").text('詢問視窗');
+        } else if (type == 'i') {
+            $("#mdl_header").addClass('modal-header-info');
+            $("#btn_OK").show();
+            $("#mdl_title").text('通知視窗');
+        } else if (type == 'e') {
+            $("#mdl_header").addClass('modal-header-danger');
+            $("#btn_OK").show();
+            $("#mdl_title").text('錯誤視窗');
+        } else if (type == 'w') {
+            $("#mdl_header").addClass('modal-header-warning');
+            $("#btn_OK").show();
+            $("#mdl_title").text('警告視窗');
         }
 
-        function onModalNo() {
-            if (modalHanlder != null) {
-                modalHanlder(actionCode, 'n');
-            }
-            autoHide = true;
-            $("#qModal").modal('hide');
+        $("#mdl_message").text(msg);
+
+        $("#qModal").modal('show');
+    }
+
+    jQuery('#qModal').on('hide.bs.modal', function () {
+
+        return autoHide;
+    });
+
+    function showLoadingBar() {
+        $("#img_bar").show();
+    }
+
+    function hideLoadingBar() {
+        $("#img_bar").hide();
+    }
+
+    function logOut() {
+
+        $formData = "user=" + $("#a_account").val();
+
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")Control/Logout',
+            data: $formData,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                jDatas = jQuery.parseJSON(data);
+                if (jDatas.ErrorMessage) {
+                    showQMoal('e', false, jDatas.ErrorMessage, 0, null);
+                } else {
+                    window.location.href = "@Url.Content("~/")Control/";
+                    }
+                },
+                error: function (request, error) {
+                    alert(error + " : " + request.responseText);
+
+                },
+                complete: function () {
+                    hideLoadingBar();
+                }
+            });
         }
 
-        function peddingHide() {
-            pedding = true;
+        function changeAccessCode() {
+            window.location.href = '@Url.Content("~/")Control/ModifyAccessCode';
         }
 
-        function showQMoal(type, autohide , msg, action, handler) {
-
-            $("#mdl_header").removeClass('modal-header-success');
-            $("#mdl_header").removeClass('modal-header-warning');
-            $("#mdl_header").removeClass('modal-header-danger');
-            $("#mdl_header").removeClass('modal-header-info');
-            $("#mdl_header").removeClass('modal-header-primary');
-
-            actionCode = action;
-            modalHanlder = handler;
-            autoHide = autohide;
-
-            $("#btn_OK").hide();
-            $("#btn_Yes").hide();
-            $("#btn_No").hide();
-
-            if (type == 'q') {
-                $("#mdl_header").addClass('modal-header-primary');
-                $("#btn_Yes").show();
-                $("#btn_No").show();
-                $("#mdl_title").text('詢問視窗');
-            } else if (type == 'i') {
-                $("#mdl_header").addClass('modal-header-info');
-                $("#btn_OK").show();
-                $("#mdl_title").text('通知視窗');
-            } else if (type == 'e') {
-                $("#mdl_header").addClass('modal-header-danger');
-                $("#btn_OK").show();
-                $("#mdl_title").text('錯誤視窗');
-            } else if (type == 'w') {
-                $("#mdl_header").addClass('modal-header-warning');
-                $("#btn_OK").show();
-                $("#mdl_title").text('警告視窗');
-            }
-
-            $("#mdl_message").text(msg);
-
-            $("#qModal").modal('show');
-        }
-
-        jQuery('#qModal').on('hide.bs.modal', function () {
-
-            return autoHide;
-        });
-
-        function showLoadingBar() {
-            $("#img_bar").show();
-        }
-
-        function hideLoadingBar() {
-            $("#img_bar").hide();
-        }
 
     </script>
 

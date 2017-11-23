@@ -10,17 +10,15 @@
         <nav id="menu">
         </nav>       
         <div class="header-bar" style="margin-top: 1em">
-            <i id="i_back" class="fa fa-reply fa-2x barFixed" aria-hidden="true" style="color:#ff6a00;"></i>
+            <i id="i_back" class="fa fa-reply fa-2x barFixed" aria-hidden="true" style="color:#6E6E6E;"></i>
         </div>
         <div class="content">
-
             <div class="logo w50">
-                <img src="~/images/logo_blk.png" class="logo-img" />
+                <img src="~/images/Logo_sm.png" class="logo-sm" />
             </div>
             <section id="msg">
                 <div class="container">
-
-                    <dir class="row">&nbsp;</dir>
+                    
                     <dir class="row">&nbsp;</dir>
                     <dir class="row">&nbsp;</dir>
                     <dir class="row">
@@ -47,7 +45,16 @@
                             <input id="txt_pwd" name="txt_pwd" type="password" class="form-control qpid-input" style="width:100%;" placeholder="登入密碼" />
                             <div style="text-align:right;margin-top:15px;"><label id="lbl_req_pwd" style="color:#585858;">忘記密碼</label></div>
                         </div>
-                        <div class="col-xs-2"></div>s
+                        <div class="col-xs-2"></div>
+                    </dir>
+                    <dir class="row">&nbsp;</dir>                   
+                    <dir class="row">
+                        <div class="col-xs-2"></div>
+                        <div class="col-xs-8" style="display:inline-block;vertical-align:middle;">
+                            <label id="lbl_record" style="display:inline-block;font-size:15px;vertical-align:middle;">記住我</label>&nbsp;&nbsp;
+                            <input id="chk_record" name="chk_record" type="checkbox" class="form-control " style="width:20px;height:20px;display:inline-block;vertical-align:middle;margin-top:-5px;" />                           
+                        </div>
+                        <div class="col-xs-2"></div>
                     </dir>
                     <dir class="row">&nbsp;</dir>
                     <dir class="row">
@@ -58,7 +65,6 @@
                         <div class="col-xs-2"></div>
                     </dir>
                 </div>
-
             </section>
             <br />                   
             <div class="row" style="width: 100%;">
@@ -70,6 +76,14 @@
         </div>
     </div>
 
+    <div id="div_wait" class="popup-content-box">
+        <div style="margin:10px;">
+            <img src="~/images/wait.gif" style="width:120px;height:80px;" />
+            <br />
+            <strong>資料傳送中</strong>
+        </div>
+    </div>
+
     <script>
 
     var ACTIVITY = '';
@@ -77,6 +91,7 @@
     var CITY = '';
     var LAT = -999999;
     var LONG = -999999;
+    var saveSESSION = false;
 
     $(document).ready(function () {
 
@@ -113,12 +128,21 @@
             if (!string.IsNullOrEmpty(ViewBag.LONG))
              {
                  <text>
-            LONG = '@ViewBag.LONG';
-            </text>
+        LONG = '@ViewBag.LONG';
+        </text>
              }
-
          }
 
+
+        //window.localStorage.removeItem("qpid_session");
+
+        var userSession = getLocalInfo();
+        
+        if (userSession === null) {
+
+        } else {
+            getUserSession(userSession);
+        }
 
         $("#btn_login").click(function () {
 
@@ -142,22 +166,36 @@
                 return false;
             }
 
+            $("#div_wait").show();
+
+            var urlRequest;
+
+            if (saveSESSION) {
+                urlRequest = '@Url.Content("~/")register/verifyAccountWithSession';
+            } else {
+                urlRequest = '@Url.Content("~/")register/verifyAccount';
+            }
+
             var data = "mail=" + mail + "&pwd=" + pwd;
+
             $.ajax({
-                async: false,
                 type: "POST",
-                url: '@Url.Content("~/")register/verifyAccount',
+                url: urlRequest,
                 data: data,
                 dataType: 'json',
                 success: function (data, status, xhr) {
 
+                    $("#div_wait").hide();
                     jDatas = jQuery.parseJSON(data);
                     if (jDatas.length == 1) {
                         if (jDatas[0].VERIFY == '1') {
 
+                            if (jDatas[0].SESSION) {
+                                setLocalInfo(jDatas[0].SESSION);
+                            }
                             window.location.href = '@Url.Content("~/")THC/go?ac=' +
                                     ACTIVITY + '&code=' + CODE + '&tk=' + jDatas[0].TICKET + '&ml=' + jDatas[0].ACC +
-                            '&city=' + CITY + '&lat=' + LAT + '&lng=' + LONG;
+                                    '&city=' + CITY + '&lat=' + LAT + '&lng=' + LONG;
                         } else {
                             $("#rep_message").text(jDatas[0].MESSAGE);
                         }
@@ -168,6 +206,7 @@
                     }
                 },
                 error: function (request, error) {
+                    $("#div_wait").hide();
                     alert(error + " : " + request.responseText);
                 },
                 complete: function () {
@@ -190,42 +229,107 @@
 
             } else {
 
+                $("#div_wait").show();
                 var data = "ml=" + acc;
                 $.ajax({
-                async: false,
-                type: "POST",
-                url: '@Url.Content("~/")register/requestForget',
-                data: data,
-                dataType: 'json',
-                success: function (data, status, xhr) {
+                    type: "POST",
+                    url: '@Url.Content("~/")register/requestForget',
+                    data: data,
+                    dataType: 'json',
+                    success: function (data, status, xhr) {
 
-                    jDatas = jQuery.parseJSON(data);
-                    if (jDatas.length == 1) {
-                        if (jDatas[0].VERIFY == '1') {
+                        $("#div_wait").hide();
+                        jDatas = jQuery.parseJSON(data);
+                        if (jDatas.length == 1) {
+                            if (jDatas[0].VERIFY == '1') {
 
-                            alert('已發密碼修改需求至帳號信箱，請至您的信箱取得更詳細的修改需求');
+                                alert('已發密碼修改需求至帳號信箱，請至您的信箱取得更詳細的修改需求');
 
+                            } else {
+                                $("#rep_message").text(jDatas[0].MESSAGE);
+                            }
                         } else {
-                            $("#rep_message").text(jDatas[0].MESSAGE);
+                            if (jDatas.ErrorMessage) {
+                                $("#rep_message").text(jDatas.ErrorMessage);
+                            }
                         }
-                    } else {
-                        if (jDatas.ErrorMessage) {
-                            $("#rep_message").text(jDatas.ErrorMessage);
-                        }
+                    },
+                    error: function (request, error) {
+                        $("#div_wait").hide();
+                        alert(error + " : " + request.responseText);
+                    },
+                    complete: function () {
+
                     }
-                },
-                error: function (request, error) {
-                    alert(error + " : " + request.responseText);
-                },
-                complete: function () {
-
-                }
-            });
+                });
             }
+        });
 
+        $("#chk_record").change(function () {
+            if (this.checked) {
+                saveSESSION = true;
+            } else {
+                if (typeof Storage !== "undefined") {
+                    window.localStorage.removeItem("qpid_session");
+                }
+                saveSESSION = false;
+            }
         });
 
     });
+
+    function setLocalInfo(data) {
+
+        if (typeof Storage !== "undefined") {
+            window.localStorage["qpid_session"] = data;
+        }
+    }
+
+    function getLocalInfo() {
+        var result = null;
+        if (typeof Storage !== "undefined") {
+            result = window.localStorage["qpid_session"];
+            if (typeof result === "undefined")
+                result = null;
+        }
+        return result;
+    }
+
+    function getUserSession(session) {
+
+        $("#div_wait").show(); 
+        var data = {
+                    'session' : session 
+                   }       
+        $.ajax({
+            type: "POST",
+            url: '@Url.Content("~/")register/deCodeSession',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                $("#div_wait").hide();
+                jDatas = jQuery.parseJSON(data);
+                if (jDatas.length == 1) {
+                    if (jDatas[0].VERIFY == '1') {                                               
+                        $("#txt_mail").val(jDatas[0].ACC);
+                        $("#txt_pwd").val(jDatas[0].TOKEN);
+                        $("#chk_record").prop('checked', true);
+                        saveSESSION = true;
+                    }
+                }
+            },
+            error: function (request, error) {
+                $("#div_wait").hide();
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+
+            }
+        });
+    }
+
+
 
 
     </script>

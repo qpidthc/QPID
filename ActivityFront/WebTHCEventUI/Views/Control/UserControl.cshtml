@@ -1,0 +1,405 @@
+﻿@model System.Data.DataTable
+@using System.Data;
+@using System.Collections.Generic;
+@using System.Collections.Specialized;
+@using THC_Library.Language;
+
+@{
+    ViewBag.Title = "THC 活動控制台";
+    Layout = "~/Views/Shared/_THCBackend.cshtml";
+    THC_Library.Language.LanguageBase lan = (THC_Library.Language.LanguageBase)ViewData["lan"];
+}
+
+<div class="container-fluid">
+
+    <div style="width:100%;padding-top:10px;margin-bottom:10px;">
+        <div>
+            <strong class="event-title"> 使用者管理   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img id="img_bar" src="~/bc/img/progress_bar.gif" style="height:18px;display:none;"></strong>
+            <hr class="style2" />
+        </div>
+
+        <div class="form-inline ">
+            <button type="button" class="btn btn-warning" onclick="addNew();" id="btn_addnew">
+                <span class=" glyphicon glyphicon-plus">
+                </span>&nbsp;&nbsp;&nbsp;&nbsp;新增使用者帳號&nbsp;&nbsp;&nbsp;&nbsp;
+            </button>
+        </div>
+
+    </div>
+    <br />
+
+    <div id="div_table" class="pane panel-primary span8 offset2" style="display:block;">
+
+        <div class="panel-body">
+
+            <div class="col-xs-12">
+                <table id="example" class="ui celled table" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>編輯</th>
+                            <th>AU001</th>
+                            <th>AU002</th>
+                            <th>AU004</th>                           
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            if (Model != null)
+                            {
+                                foreach (DataRow row in @Model.Rows)
+                                {
+                                    <tr>
+                                        <td></td>
+                                        <td>@row["AU001"]</td>
+                                        <td>@row["AU002"]</td>
+                                        <td>@row["AU004"]</td>                                       
+                                    </tr>
+                                }
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="div_content" class="panel panel-info" style="display:none;">
+        <div class="panel-heading">
+            <div class="panel-title pull-left">&nbsp;</div>
+
+            <div class="clearfix"></div>
+        </div>
+        <div class="panel-body">
+
+            <form id="form1" class="form" action="" role="form">
+                <!--data-toggle="validator" -->
+
+                <div class="row">
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_acc">使用者帳號</label>
+                        <input type="text" class="form-control" id="txt_acc" name="txt_acc" maxlength="30" data-error="" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_name">使用者名稱</label>
+                        <input type="text" class="form-control" id="txt_name" name="txt_name" maxlength="20" data-error="" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_login_time">使用者密碼</label>
+                        <input type="password" class="form-control" id="txt_pass" name="txt_pass" data-error="" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-4 form-inline">
+                        <label for="txt_login_time">登入時間</label>
+                        <input type="text" class="form-control" id="txt_login_time" name="txt_login_time" data-error="" readonly>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+
+                <hr />
+                <button type="submit" class="btn btn-primary" id="btn_submit">
+                    <!-- onclick="doSubmit();" -->
+                    <span class="glyphicon glyphicon-saved"></span>&nbsp;&nbsp;&nbsp;&nbsp;儲存&nbsp;&nbsp;&nbsp;&nbsp;
+                </button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-warning" onclick="goCancel();" id="btn_back">
+                    <span class=" glyphicon glyphicon-share-alt">
+                    </span>&nbsp;&nbsp;&nbsp;&nbsp;離開&nbsp;&nbsp;&nbsp;&nbsp;
+                </button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    var dataTable;
+    var tableRow;
+
+    var DELETE_ACTION = 100;
+    var SAVE_ACTION = 200;
+
+    $(document).ready(function () {
+
+        dataTable = $('#example').DataTable({
+            info: true,
+            bLengthChange: false,
+            searching: false,
+            "language": {
+                "lengthMenu": "顯示 _MENU_ 紀錄 每頁",
+                "zeroRecords": "@lan.DataTable_NoData",
+                "info": "@lan.DataTable_CurrentPage _PAGE_ / _PAGES_",
+                "infoEmpty": "@lan.DataTable_NoData",
+                "infoFiltered": "(filtered from _MAX_ total records)",
+                "paginate": {
+                    "next": "&nbsp;&nbsp;@lan.DataTable_NextPage&nbsp;&nbsp;",
+                    "previous": "&nbsp;&nbsp;@lan.DataTable_PreviousPage&nbsp;&nbsp;"
+                }
+            },
+            "columns":
+            [
+                {
+                    bOrderable: false,
+                    bSortable: false,
+                    mRender: function (data, type, row) {
+                        //console.log(row);
+                        var editLink = '<a  data-id="' + row.AU001 + '" onclick="editClick(\'' + row.AU001 + '\');" ><span class="glyphicon glyphicon-pencil" style="cursor: pointer;"></span></a>';
+                        var delLink = '<a  data-id="' + row.AU001 + '" onclick="deleteClick(\'' + row.AU001 + '\');" ><span class="glyphicon glyphicon-trash" style="cursor: pointer;"></a>';
+                        return editLink + '&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;' + delLink;
+                    }
+                },
+                { "title": "使用者帳號", "data": "AU001", bVisible: true },
+                { "title": "使用者名稱", "data": "AU002", bVisible: true },
+                { "title": "登入時間", "data": "AU004", bVisible: true }
+            ],
+        });
+
+        $('#form1').validator();
+        $('#form1').validator().on('submit', function (e) {
+            if (e.isDefaultPrevented()) {
+                // handle the invalid form...
+                //alert('invalid');
+            } else {
+                // everything looks good!
+                e.preventDefault();               
+                //doUpdate();
+
+                if (editMode == 'A') {
+                    doAddQuestion();
+                } else if (editMode == 'U') {
+                    doUpdate();
+                }
+            }
+        })
+    })
+
+    function getUserInfo(key) {
+
+        var data = 'account=' + key;
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")Control/UserInfo',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                var source = JSON.parse(data);
+
+                if (source.ErrorMessage) {
+                    showQMoal('e', false, source.ErrorMessage, 0, null);
+                } else {
+
+                    if (source.length > 0) {
+                        $("#txt_acc").val(source[0].AU001);
+                        $("#txt_name").val(source[0].AU002);
+                        $("#txt_pass").val(source[0].AU003);
+                        $("#txt_login_time").val(source[0].AU004);
+
+                        $("#div_table").hide();
+                        $("#div_content").fadeIn(500);
+
+                        getTargetRow(key);
+                        $('#txt_acc').prop('readonly', true);
+                    }
+                }
+
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function addNew() {
+
+        $('#form1')[0].reset();
+        $("#div_bar").hide();
+        $('#div_info').hide();
+        $("#div_table").hide();
+        $("#div_content").fadeIn(500);
+        $('#txt_acc').prop('readonly', false);
+        editMode = 'A';
+
+    }
+
+    function editClick(key) {
+
+        $('#form1')[0].reset();
+        getUserInfo(key);
+        editMode = 'U';
+    }
+
+    function deleteClick(key) {
+
+        getTargetRow(key);
+        showQMoal('q', true, '確定刪除這使用者?', DELETE_ACTION, onQuestion);
+    }
+
+
+    function goCancel() {
+        $("#div_content").hide();
+        $("#div_table").fadeIn(500);
+    }
+
+    function doAddQuestion() {
+        showQMoal('q', false, '@lan.CheckSave', SAVE_ACTION, onQuestion);
+    }
+
+    function onQuestion(action, type) {
+
+        if (type == 'y') {
+            if (action == DELETE_ACTION) {
+                doDelete();
+            } else if (action == SAVE_ACTION) {
+
+                if (editMode == 'A') {
+                    doAdd();
+                } else if (editMode == 'U') {
+                    doUpdate();
+                }
+            }
+        } else if (type == 'n') {
+
+        }
+    }
+
+    function doAdd() {
+
+        $formData = $("#form1").serialize();
+
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")Control/NewUser',
+            data: $formData,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                var source = JSON.parse(data);
+
+                if (source.ErrorMessage) {
+                    showQMoal('e', false, source.ErrorMessage, 0, null);
+                    peddingHide();
+                } else {
+
+                    tableRow = dataTable.row.add({
+                        "AU001": $("#txt_acc").val(),
+                        "AU002": $("#txt_name").val(),
+                        "AU004": $("#txt_login_time").val()
+                    });
+                    tableRow.draw();
+
+                    $("#div_content").hide();
+                    $("#div_table").fadeIn(500);
+                }
+
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function doUpdate() {
+
+        $formData = $("#form1").serialize();
+
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")Control/UpdateUser',
+            data: $formData,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                var source = JSON.parse(data);
+
+                if (source.ErrorMessage) {
+                    showQMoal('e', false, source.ErrorMessage, 0, null);
+                    peddingHide();
+                } else {
+
+                    var rowData = tableRow.data();
+                    rowData.AU001 = $("#txt_acc").val();
+                    rowData.AU002 = $("#txt_name").val();
+                    rowData.AU004 = $("#txt_login_time").val();                  
+                    tableRow.data(rowData).draw();
+
+                    $("#div_content").hide();
+                    $("#div_table").fadeIn(500);
+                }
+
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+
+    }
+
+    function doDelete() {
+
+        var rowData = tableRow.data();
+        var data = 'account=' + rowData.AU001;
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")Control/DeleteUser',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                var source = JSON.parse(data);
+
+                if (source.ErrorMessage) {
+                    showQMoal('e', false, source.ErrorMessage, 0, null);
+                    peddingHide();
+                } else {
+                    dataTable.row(tableRow).remove().draw();
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+    function getTargetRow(key) {
+        var count = dataTable.data().count();
+        for (var i = 0; i < count; i++) {
+            var r = dataTable.row(i).data();
+            if (r.AU001 === key) {
+                tableRow = dataTable.row(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+</script>
+

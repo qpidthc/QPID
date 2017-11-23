@@ -19,169 +19,39 @@
             <section id="msg">
                 <div class="container">
 
-                    <div class="row">
-                        <div class="col-md-12" style="width:90%;margin:20px auto;border: 0px #6E6E6E ;border-style: solid;text-align:center; vertical-align:middle; font-size:1.5em;padding:10px;color: #595959">
+                    <div id="div_img" class="row">
+                        <div class="col-md-12" style="width:70%;margin:20px auto;border: 2px #6E6E6E ;border-style: solid;text-align:center; vertical-align:middle; font-size:1.5em;padding:10px;color: #595959">
                             <img src="~/@ViewBag.RWD_IMG" style="width:80%;height:130px;" />
                         </div>
-                    </div>
-
-
-                    <div class="row">
-                        
-                        <div class="col-xs-12" style="text-align:center;">
-                            <p style="font-size:18px;color:#6699ff!important;">@ViewBag.RWD_NAME</p>
+                    </div>          
+                    
+                    <div id="div_rwd_desc" class="row">                
+                        <div class="col-xs-8 col-xs-offset-2">
+                            <label style="font-size:16px;">獎項介紹</label>
+                            <label style="font-size:16px;color:#424242!important;">@ViewBag.RWD_DESC</label>
+                           
                         </div>
                     </div>
-
-                    <div class="row">                        
-                        <div class="col-xs-12" style="text-align:left;">
-                            <p style="font-size:12px;color:#424242!important;">@ViewBag.RWD_DESC</p>
-                        </div>
-                    </div>
-
-                    <dir class="row">&nbsp;</dir>
-
-                    <div class="row">
+                                       
+                    <div id="div_info" class="row" style="display:none;">
 
                         <form style="margin-top: 3em">
                             <div class="col-xs-8 col-xs-offset-2">
-                                <div class="col-xs-12">
-                                    <div class="form-group">
-                                        <label id="lbl_mobil" for="txt_mobil">手機電話</label>
-                                        <input id="txt_mobil" name="txt_mobil" type="number" class="form-control qpid-input" placeholder="手機電話" style="width: 100%" />
-                                    </div>
-                                </div>
+                               
                                 <div class="col-xs-12">
                                     <div class="form-group">
                                         <label id="lbl_id" for="txt_id">身份證號</label>
                                         <input id="txt_id" name="txt_id" type="text" class="form-control qpid-input" placeholder="身份證號" style="width:100%;text-transform:uppercase" />
                                     </div>
                                 </div>
-                                <div class="col-xs-12">
-                                    <div class="form-group">
-                                        <label id="lbl_id" for="txt_id">性別</label>
-                                        <select id="sel_gender" name="sel_gender" class=" qpid-select" style="width:100%;">
-                                            @{
-                                                if (string.IsNullOrEmpty(ViewBag.GENDER))
-                                                {
-                                                    <option value="">請選擇</option>
-                                                    <option value="1">男</option>
-                                                    <option value="0">女</option>
-                                                    <option value="2">彩虹</option>
-                                                }
-                                                else
-                                                {
-                                                    <option value="">請選擇</option>
-                                                    if (ViewBag.GENDER == "1")
-                                                    {
-                                                        <option value="1" selected="selected">男</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="1">男</option>
-                                                    }
-                                                    if (ViewBag.GENDER == "0")
-                                                    {
-                                                        <option value="0" selected="selected">女</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="0">女</option>
-                                                    }
-                                                    if (ViewBag.GENDER == "2")
-                                                    {
-                                                        <option value="2" selected="selected">彩虹</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="2">彩虹</option>
-                                                    }
-                                                }
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12">
-                                    <div class="form-group">
-                                        <label id="lbl_id" for="txt_id">年齡</label>
-                                        <select id="sel_age" name="sel_age" class=" qpid-select" style="width:100%;">
 
-                                            @{
-                                                if (string.IsNullOrEmpty(ViewBag.AGE))
-                                                {
-                                                    <option value="">請選擇</option>
-                                                    <option value="1">10-20</option>
-                                                    <option value="2">20-30</option>
-                                                    <option value="3">30-40</option>
-                                                    <option value="4">40-50</option>
-                                                    <option value="5">50-60</option>
-                                                    <option value="6">60-70</option>
-                                                    <option value="7">70 以上</option>
-                                                }
-                                                else
-                                                {
-                                                    <option value="">請選擇</option>
-                                                    if (ViewBag.AGE == "1")
-                                                    {
-                                                        <option value="1" selected="selected">10-20</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="1">10-20</option>
-                                                    }
-                                                    if (ViewBag.AGE == "2")
-                                                    {
-                                                        <option value="2" selected="selected">20-30</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="2">20-30</option>
-                                                    }
-                                                    if (ViewBag.AGE == "3")
-                                                    {
-                                                        <option value="3" selected="selected">30-40</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="3">30-40</option>
-                                                    }
-                                                    if (ViewBag.AGE == "4")
-                                                    {
-                                                        <option value="4" selected="selected">40-50</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="4">40-50</option>
-                                                    }
-                                                    if (ViewBag.AGE == "5")
-                                                    {
-                                                        <option value="5" selected="selected">50-60</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="5">50-60</option>
-                                                    }
-                                                    if (ViewBag.AGE == "6")
-                                                    {
-                                                        <option value="6" selected="selected">60-70</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="6">60-70</option>
-                                                    }
-                                                    if (ViewBag.AGE == "7")
-                                                    {
-                                                        <option value="7" selected="selected">70 以上</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="7">70 以上</option>
-                                                    }
-                                                }
-                                            }
-                                        </select>
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label id="lbl_mobil" for="txt_mobil">手機電話</label>
+                                        <input id="txt_mobil" name="txt_mobil" type="number" class="form-control qpid-input" placeholder="手機電話" style="width: 100%" />
                                     </div>
                                 </div>
+                                                                            
                                 <div class="col-xs-6">
                                     <div class="form-group">
                                         <label id="lbl_city" for="sel_city">縣市</label>
@@ -190,6 +60,7 @@
                                         </select>
                                     </div>
                                 </div>
+
                                 <div class="col-xs-6">
                                     <div class="form-group">
                                         <label id="lbl_town" for="sel_town">區</label>
@@ -198,6 +69,7 @@
                                         </select>
                                     </div>
                                 </div>
+
                                 <div class="col-xs-12">
                                     <div class="form-group">
                                         <label id="lbl_road" for="sel_road">路/街/道</label>
@@ -206,15 +78,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <!--
-                                     <div class="col-xs-6">
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">段</label>
-                                        <input id="txt_sec" name="txt_sec" type="text" class="form-control qpid-input" style="width: 100%" />
-                                    </div>
-                                </div>
-                                -->
-
+                               
                                 <div class="col-xs-6">
                                     <div class="form-group">
                                         <label for="txt_lane">巷</label>
@@ -240,10 +104,14 @@
                                     </div>
                                 </div>
 
+                                <div class="col-xs-12" style="text-align:left;">
+                                    請確實填寫寄送資料以供核對，如回報資料有誤將視同棄權，切勿讓自身權益受損。
+                                </div>
+
                                 <div class="col-xs-12">
                                     <div class="form-group">
-                                        <label for="btn_next">&nbsp;&nbsp;</label>
-                                        <button id="btn_next" name="btn_next" onclick="doNext();" type="button" class="form-control ok-btn">下一步</button>
+                                        <label for="btn_ok">&nbsp;&nbsp;</label>
+                                        <button id="btn_ok" name="btn_next" onclick="doUpdate();" type="button" class="form-control ok-btn">完成</button>
                                     </div>
                                 </div>
                             </div>
@@ -253,8 +121,23 @@
 
                 </div>
                 <dir class="row">&nbsp;</dir>
+            
             </section>
 
+            <div class="row" style="position:fixed; bottom: 5%; width: 100%;">
+                <div class="col-xs-8 col-xs-offset-2">
+                    <button id="btn_next" name="btn_next" type="button" class="form-control ok-btn" onclick="doNext();">下一步</button>
+                </div>
+            </div>     
+
+        </div>
+    </div>
+
+    <div id="div_wait" class="popup-content-box">
+        <div style="margin:10px;">
+            <img src="~/images/wait.gif" style="width:120px;height:80px;" />
+            <br />
+            <strong>資料傳送中</strong>
         </div>
     </div>
 
@@ -270,6 +153,7 @@
     var iid = '';
     var address = '';
     var coup_number = '';
+    var img = '';
     var log = '';
     var CITY = '';
     var LAT = -999999;
@@ -373,8 +257,15 @@
             if (!string.IsNullOrEmpty(ViewBag.LONG))
              {
                  <text>
-            LONG = '@ViewBag.LONG';
-            </text>
+        LONG = '@ViewBag.LONG';
+        </text>
+             }
+
+              if (!string.IsNullOrEmpty(ViewBag.RWD_IMG))
+             {
+                 <text>
+        img = '@ViewBag.RWD_IMG';
+        </text>
              }
 
         }
@@ -398,15 +289,19 @@
             getRoad();
         });
 
-
-
     });
 
     function doNext() {
 
-        var mobil = $("#txt_mobil").val();
-        var gender = $("#sel_gender").val();
-        var age = $("#sel_age").val();
+        $("#div_img").hide();
+        $("#div_rwd_desc").hide();
+        $("#div_info").show();
+        $("#btn_next").hide();       
+    }
+
+    function doUpdate() {
+               
+        var mobil = $("#txt_mobil").val();     
         var id = $("#txt_id").val().toUpperCase();
         var city = $("#sel_city").val();
         var town = $("#sel_town").val();
@@ -421,19 +316,7 @@
             return false;
         } else {
             $("#lbl_mobil").css('color', 'black');
-        }
-        if (gender.length == 0) {
-            $("#lbl_gender").css('color', 'red');
-            return false;
-        } else {
-            $("#lbl_gender").css('color', 'black');
-        }
-        if (age.length == 0) {
-            $("#lbl_age").css('color', 'red');
-            return false;
-        } else {
-            $("#lbl_age").css('color', 'black');
-        }
+        } 
         if (id.length == 0) {
             $("#lbl_id").css('color', 'red');
             return false;
@@ -474,7 +357,7 @@
 
         var addr = city + "*" + town + "*" + road + "*" +
             lane + "*" + alley + "*" + no + "*" + floor;
-
+               
         var needUpdate = false;
 
         if (address != addr) {
@@ -488,22 +371,22 @@
         if (iid != id) {
             needUpdate = true;
         }
-
+                
         if (needUpdate) {
 
             var data = "ml=" + acc + "&tk=" + tk + "&m=" + mobil +
-                "&g=" + gender + "&a=" + age + "&iid=" + id +
-                "&addr=" + addr;
+                "&iid=" + id + "&addr=" + addr;
 
             updateInfo(data);
         } else {
 
             nextStep();
         }
-
     }
 
     function updateInfo(data) {
+
+        $("#div_wait").show();
 
         $.ajax({
             async: false,
@@ -519,12 +402,14 @@
                         nextStep();
                     }
                 } else {
+                    $("#div_wait").show();
                     if (jDatas.ErrorMessage) {
                         alert(jDatas.ErrorMessage);
                     }
                 }
             },
             error: function (request, error) {
+                $("#div_wait").hide();
                 alert(error + " : " + request.responseText);
             },
             complete: function () {
@@ -538,13 +423,7 @@
 
         window.location.href = '@Url.Content("~/")THC/get?act=' + act + '&code=' + code + '&tk=' + tk +
                         '&ml=' + acc + '&m=' + m + "&lk=" + log + "&coup=" + coup_number + "&type=1" +
-                        '&city=' + CITY + '&lat=' + LAT + '&lng=' + LONG;
-
-        //window.location.href = 'http://60.251.140.166/WebTHCApp';
-
-        //window.location.href = '@Url.Content("~/")THC/get?ac=' + act + '&code=' + code + '&tk=' + tk +
-        //                '&ml=' + acc + '&m=' + m;
-
+                        '&city=' + CITY + '&lat=' + LAT + '&lng=' + LONG + '&img=' + img;
     }
 
 

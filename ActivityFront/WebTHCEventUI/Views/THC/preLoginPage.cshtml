@@ -25,13 +25,11 @@
                     </div>
                 </div>
             </section>
-            <br />
-            <br />
-            <br />
-            <br />
-            <br />           
-            <div class="row text-center" style="width: 100%;">
-                <img src="~/images/FB_Login.png" id="img_fb" name="img_fb" onclick="fb_login();">
+                
+            <div class="row text-center" style="position:absolute;bottom:20px;width: 100%;display:none;">
+                <span>連結至</span>
+                <br />
+                <img src="~/images/FB_image.png" id="img_fb" name="img_fb"  onclick="fb_login();">
             </div>
         </div>
     </div>
@@ -79,8 +77,8 @@
             if (!string.IsNullOrEmpty(ViewBag.LONG))
              {
                  <text>
-            LONG = '@ViewBag.LONG';
-            </text>
+        LONG = '@ViewBag.LONG';
+        </text>
              }
 
          }
@@ -94,6 +92,8 @@
             window.location.href = '@Url.Content("~/")THC/regAccount?ac=' + ACTIVITY + '&code=' + CODE +
                             '&city=' + CITY + '&lat=' + LAT + '&lng=' + LONG;
         });
+
+
 
     });
 
@@ -195,6 +195,9 @@
         var data = 'ac=' + ACTIVITY + '&code=' + CODE +
                     "&FB=" + email + '&NAME=' + name +
                     "&GENDER=" + gender;
+
+
+
         $.ajax({
             async: false,
             type: "POST",
@@ -204,7 +207,9 @@
             success: function (data, status, xhr) {
 
                 jDatas = jQuery.parseJSON(data);
+
                 if (jDatas.length == 1) {
+                   
                     window.location.href = '@Url.Content("~/")THC/go?ac=' + ACTIVITY + '&code=' + CODE + '&tk=' + jDatas[0].TICKET +
                                     '&ml=' + jDatas[0].ACC + '&city=' + CITY + '&lat=' + LAT + '&lng=' + LONG;
                 } else {

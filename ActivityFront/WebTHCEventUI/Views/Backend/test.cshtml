@@ -1,0 +1,96 @@
+﻿@model System.Data.DataTable
+@using System.Data;
+@using System.Collections.Generic;
+@using System.Collections.Specialized;
+@using THC_Library.Language;
+
+@{
+    ViewBag.Title = "test";
+    Layout = "~/Views/Shared/_THCBackend.cshtml";
+    THC_Library.Language.LanguageBase lan = (THC_Library.Language.LanguageBase)ViewData["lan"];
+}
+
+<div id="div_table" class="pane panel-primary span8 offset2" style="display:block;">
+
+    <div class="panel-body">
+
+        <div class="col-xs-12">
+            <table id="example" class="ui celled table" cellspacing="0" style="width:100%;border:1px solid black;">
+                <thead>
+                    <tr>                       
+                        <th>AEP001</th>                       
+                        <th>AEP002</th>    
+                    </tr>
+                </thead>
+                <tbody>
+                   
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    var dataTable;
+
+    $(document).ready(function () {
+
+        var v = '@Url.Action("EventRewards", "Backend")'
+        //alert(v);
+
+        dataTable = $('#example').DataTable({
+            info: true,
+            bLengthChange: false,
+            searching: false,
+            "language": {
+                "lengthMenu": "顯示 _MENU_ 紀錄 每頁",
+                "zeroRecords": "@lan.DataTable_NoData",
+                "info": "@lan.DataTable_CurrentPage _PAGE_ / _PAGES_",
+                "infoEmpty": "@lan.DataTable_NoData",
+                "infoFiltered": "(filtered from _MAX_ total records)",
+                "paginate": {
+                    "next": "&nbsp;&nbsp;@lan.DataTable_NextPage&nbsp;&nbsp;",
+                    "previous": "&nbsp;&nbsp;@lan.DataTable_PreviousPage&nbsp;&nbsp;"
+                }
+            },
+            "columns":
+            [
+                { "title": "KEY", "data": "AEP001", bVisible: true },
+                { "title": "EVENTKEY", "data": "AEP002", bVisible: true }
+            ],
+        });
+
+            $.ajax({
+                type: "Post",
+                url: "@Url.Content("~/")Backend/EventRewardInfo?event_no=1022",
+            dataType: "json",
+            success: function (data) {
+                var soruce = JSON.parse(data);
+
+                dataTable.clear().draw();
+                dataTable.rows.add(soruce).draw();
+            },
+            error: function (err) {
+                alert(err);
+            }
+        })
+
+        //$(document).ready(function () {
+
+        //});
+
+        /*
+         "columns": [
+				{ "data": 'AEP001', "fnRender": function (oObj) { return alert(oObj);}  }
+
+            ]
+        */
+    });
+
+</script>
+
+
+

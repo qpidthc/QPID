@@ -1,0 +1,200 @@
+﻿
+@model System.Data.DataTable
+@using System.Collections.Generic;
+@using System.Collections.Specialized;
+@using THC_Library.Language;
+
+@{    
+    ViewBag.Title = "THC 活動控制台";
+    Layout = "~/Views/Shared/_THCBackend.cshtml";
+    THC_Library.Language.LanguageBase lan = (THC_Library.Language.LanguageBase)ViewData["lan"];
+}
+
+<div class="container-fluid">
+
+    <div style="width:100%;padding-top:10px;margin-bottom:10px;">
+        <div>
+            <strong class="event-title"> 中獎資料查詢與匯出   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img id="img_bar" src="~/bc/img/progress_bar.gif" style="height:18px;display:none;"></strong>
+            <hr class="style2" />
+        </div>
+
+        <div class="form-inline ">
+            <label class="control-label" for="txt_sh_eventno">活動清單</label>
+            <div class="input-group">
+                <input type="text" class="form-control " id="txt_sh_eventno" name="txt_sh_eventno" aria-label="...">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle btn-info" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">清單 <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        @foreach (var row in @ViewBag.Data.Rows)
+                        {
+                            <li><a href="#" kid='@row["AE001"]'>@row["AE002"] <span>@row["AE003"]</span> </a></li>
+                        }
+                    </ul>
+                </div><!-- /btn-group -->
+            </div><!-- /input-group -->
+        </div>
+
+    </div>
+    <br />
+    <button type="button" class="btn btn-info" onclick="goDownload()" id="btn_log" name="btn_log" data-popup-open="popup-1">中獎資料匯出</button>   
+    <br />
+    <span id="sp_total" style="color:blue;font-size:20px;"></span>
+    <br />
+    <br />
+    <div id="div_table" class="pane panel-primary span8 offset2" style="display:block;">
+
+        <div class="panel-body">
+
+            <div class="col-xs-12">
+                <table id="example" class="ui celled table" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>QRC001</th>
+                            <th>QRC004</th>
+                            <th>QRC008</th>
+                            <th>QRC011</th>
+                            <th>QRC013</th>
+                            <th>QRC015</th>
+                            <th>QRC016</th>                            
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+        
+</div>
+
+<script>
+
+    var dataTable;
+    var EXPORT_ACTION = 100;
+    var EVENT_NO;
+
+    $(document).ready(function () {
+
+        $(".dropdown-menu li a").click(function () {
+
+            var kid = $(this).attr('KID');
+            var eventItem = $(this).text();
+            var splits = eventItem.split(' ');
+            $("#txt_sh_eventno").val(eventItem);
+            getRewardEarnList(splits[0]);
+        });
+
+        dataTable = $('#example').DataTable({
+            info: true,
+            bLengthChange: false,
+            searching: false,
+            "language": {
+                "lengthMenu": "顯示 _MENU_ 紀錄 每頁",
+                "zeroRecords": "@lan.DataTable_NoData",
+                "info": "@lan.DataTable_CurrentPage _PAGE_ / _PAGES_",
+                "infoEmpty": "@lan.DataTable_NoData",
+                "infoFiltered": "(filtered from _MAX_ total records)",
+                "paginate": {
+                    "next": "&nbsp;&nbsp;@lan.DataTable_NextPage&nbsp;&nbsp;",
+                    "previous": "&nbsp;&nbsp;@lan.DataTable_PreviousPage&nbsp;&nbsp;"
+                }
+            },
+            "columns":
+            [
+                { "title": "KEY", "data": "QRC001", bVisible: false },
+                { "title": "序號", "data": "QRC004", bVisible: true },
+                { "title": "獎項碼", "data": "QRC008", bVisible: true },
+                { "title": "獎項名稱", "data": "QRC011", bVisible: true },
+                { "title": "掃描時間", "data": "QRC013", bVisible: true },
+                { "title": "實際碼", "data": "QRC015", bVisible: true },
+                { "title": "得獎帳號", "data": "QRC016", bVisible: true }
+
+            ],
+        });
+
+    });
+
+    function getRewardEarnList(event_no) {
+
+        var data = "event_no=" + event_no;
+
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")Backend/RewardEarnList',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                var source = JSON.parse(data);
+
+                if (source.ErrorMessage) {
+                    showQMoal('e', false, source.ErrorMessage, 0, null);
+                } else {
+                    dataTable.clear().draw();
+                    dataTable.rows.add(source).draw();
+                    $("#sp_total").text('共' + source.length + '筆資料');
+                    EVENT_NO = event_no;
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+
+    }
+
+    function onQuestion(action, type) {
+
+        if (type == 'y') {
+            if (action == EXPORT_ACTION) {
+                doExport();
+            }
+        } else if (type == 'n') {
+
+        }
+    }
+
+    function goDownload() {
+        var len = dataTable.data().count();
+        if (len > 0) {
+            showQMoal('q', true, '確定匯出資料 ?', EXPORT_ACTION, onQuestion);
+        }
+
+    }
+
+    function doExport() {
+
+        var data = "event_no=" + EVENT_NO;
+
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")Backend/RewardEarnExport',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                var source = JSON.parse(data);
+
+                if (source.ErrorMessage) {
+                    showQMoal('e', false, source.ErrorMessage, 0, null);
+                    peddingHide();
+                } else {
+                    
+                    window.location.href = "@Url.Content("~/")exports/" + source.id;
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+                hideLoadingBar();
+            }
+        });
+    }
+
+</script>

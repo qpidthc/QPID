@@ -16,27 +16,38 @@
 
             <div class="logo w50">
                 <img src="~/images/Logo_sm.png" class="logo-sm" />
-            </div>
+            </div>          
             <section id="msg">
                 <div class="container">
-
+                    
                     <div class="row">
-                        <div class="col-md-12" style="width:130px;margin:20px auto;border: 0px #6E6E6E ;border-style: solid;text-align:center; vertical-align:middle; font-size:1.5em;padding:10px;color: #595959">
-                            <img src="~/@ViewBag.RWD_IMG" style="width:100px;height:130px;" />
+                        <div class="col-md-12" style="width:50%;margin:0px auto;border: 2px #6E6E6E ;border-style: solid;text-align:center; vertical-align:middle; font-size:1.5em;padding:10px;color: #595959">
+                            <img src="~/@ViewBag.RWD_IMG" style="width:100px;height:130px;" />                            
+                        </div>                        
+                    </div>
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <div class="col-md-12" style="width:70%;margin:0px auto;border: 0px #6E6E6E ;border-style: solid; vertical-align:middle; font-size:1.5em;padding:10px;color: #595959">
+                            <section>
+                                系統會發送兌獎序號到
+                                您的手機，請確認輸入的
+                                手機號碼能收到簡訊。
+                            </section>
                         </div>
+
                     </div>
 
 
-                    <div class="row">
+                    <div class="row" style="display:none;">
                         <div class="col-xs-4" style="text-align:right;padding-right:10px;">
                             <p>獎項名稱</p>
                         </div>
                         <div class="col-xs-8" style="text-align:left;">
-                            <p style="font-size:28px;color:blue!important;">@ViewBag.RWD_NAME</p>
+                            <p>@ViewBag.RWD_NAME</p>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row" style="display:none;">
                         <div class="col-xs-4" style="text-align:right;padding-right:10px;">
                             <p>中獎序號</p>
                         </div>
@@ -45,23 +56,22 @@
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-xs-4" style="text-align:right;;padding-right:10px;">
+                    <div class="row" style="display:none;">
+                        <div class="col-xs-4" style="text-align:right;padding-right:10px;">
                             <p>有效期間</p>
                         </div>
                         <div class="col-xs-8" style="text-align:left;">
                             <p style="font-size:24px;color:blue!important;">@ViewBag.RWD_DATE</p>
                         </div>
                     </div>
-
-
-                    <dir class="row">&nbsp;</dir>
-                    <dir class="row">
+                                       
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
                         <div class="col-xs-2"></div>
-                        <div class="col-xs-8"><label id="lbl_mobil">簡訊手機</label></div>
+                        <div class="col-xs-8"><label id="lbl_mobil">請輸入手機號碼</label></div>
                         <div class="col-xs-2"></div>
-                    </dir>
-                    <dir class="row">
+                    </div>
+                    <div class="row">
                         <div class="col-xs-2"></div>
                         <div class="col-xs-8">
                             @{
@@ -77,14 +87,14 @@
 
                         </div>
                         <div class="col-xs-2"></div>
-                    </dir>
-                    <dir class="row">&nbsp;</dir>
-                    <dir class="row">
+                    </div>
+                    <div class="row">&nbsp;</div>
+                    <div class="row" style="display:none;">
                         <div class="col-xs-2"></div>
                         <div class="col-xs-8"><label id="lbl_gender">性別</label></div>
                         <div class="col-xs-2"></div>
-                    </dir>
-                    <dir class="row">
+                    </div>
+                    <div class="row" style="display:none;">
                         <div class="col-xs-2"></div>
                         <div class="col-xs-8">
                             <select id="sel_gender" name="sel_gender" class=" qpid-select" style="width:100%;">
@@ -128,14 +138,14 @@
                             </select>
                         </div>
                         <div class="col-xs-2"></div>
-                    </dir>
-                    <dir class="row">&nbsp;</dir>
-                    <dir class="row">
+                    </div>
+                    <div class="row" style="display:none;">&nbsp;</div>
+                    <div class="row" style="display:none;">
                         <div class="col-xs-2"></div>
                         <div class="col-xs-8"><label id="lbl_age">年齡</label></div>
                         <div class="col-xs-2"></div>
-                    </dir>
-                    <dir class="row">
+                    </div>
+                    <div class="row" style="display:none;">
                         <div class="col-xs-2"></div>
                         <div class="col-xs-8">
                             <select id="sel_age" name="sel_age" class=" qpid-select" style="width:100%;">
@@ -216,19 +226,25 @@
                             </select>
                         </div>
                         <div class="col-xs-2"></div>
-                    </dir>
+                    </div>
 
-                </div>
-                <dir class="row">&nbsp;</dir>
+                </div>                
             </section>
 
-            <div class="row" style="width: 100%;">
+            <div class="row" style="position:fixed; bottom: 5%; width: 100%;">
                 <div class="col-xs-8 col-xs-offset-2">
                     <button id="btn_next" name="btn_next" type="button" class="form-control ok-btn">下一步</button>
                 </div>
-            </div>
+            </div>           
+            <br />
+        </div>
+    </div>
 
-
+    <div id="div_wait" class="popup-content-box">
+        <div style="margin:10px;">
+            <img src="~/images/wait.gif" style="width:120px;height:80px;" />
+            <br />
+            <strong>資料傳送中</strong>
         </div>
     </div>
 
@@ -242,6 +258,8 @@
     var g = '';
     var a = '';
     var coup_number = '';
+    var vaild_date = '';
+    var img = '';
     var log = '';
     var CITY = '';
     var LAT = -999999;
@@ -314,6 +332,13 @@
         </text>
             }
 
+            if (!string.IsNullOrEmpty(ViewBag.RWD_DATE))
+            {
+                <text>
+        vaild_date = '@ViewBag.RWD_DATE';
+        </text>
+            }
+
             if (!string.IsNullOrEmpty(ViewBag.CITY))
              {
                  <text>
@@ -331,38 +356,30 @@
             if (!string.IsNullOrEmpty(ViewBag.LONG))
              {
                  <text>
-            LONG = '@ViewBag.LONG';
-            </text>
+        LONG = '@ViewBag.LONG';
+        </text>
              }
 
+            if (!string.IsNullOrEmpty(ViewBag.RWD_IMG))
+             {
+                 <text>
+        img = '@ViewBag.RWD_IMG';
+        </text>
+             }
         }
 
         $("#btn_next").click(function () {
 
             var mobil = $("#txt_mobil").val();
-            var gender = $("#sel_gender").val();
-            var age = $("#sel_age").val();
-
 
             if (mobil.length == 0) {
                 $("#lbl_mobil").css('color', 'red');
                 return false;
+            } else if (mobil.length != 10) {
+                $("#lbl_mobil").css('color', 'red');
+                return false;
             } else {
                 $("#lbl_mobil").css('color', 'black');
-            }
-
-            if (gender.length == 0) {
-                $("#lbl_gender").css('color', 'red');
-                return false;
-            } else {
-                $("#lbl_gender").css('color', 'black');
-            }
-
-            if (age.length == 0) {
-                $("#lbl_age").css('color', 'red');
-                return false;
-            } else {
-                $("#lbl_age").css('color', 'black');
             }
 
             var needUpdate = false;
@@ -370,33 +387,27 @@
             if (m != mobil) {
                 needUpdate = true;
             }
-            if (g != gender) {
-                needUpdate = true;
-            }
-            if (a != age) {
-                needUpdate = true;
-            }
 
             if (needUpdate) {
 
-                var data = "ml=" + acc + "&tk=" + tk + "&m=" + mobil +
-                         "&g=" + gender + "&a=" + age;
-
+                var data = "ml=" + acc + "&tk=" + tk + "&m=" + mobil;
                 updateInfo(data);
             } else {
-
                 nextStep();
             }
+            
 
         });
     });
 
     function updateInfo(data) {
 
+        $("#div_wait").show();
+
         $.ajax({
             async: false,
             type: "POST",
-            url: '@Url.Content("~/")Register/renewAccountInfo',
+            url: '@Url.Content("~/")Register/renewAccountMobil',
             data: data,
             dataType: 'json',
             success: function (data, status, xhr) {
@@ -407,12 +418,14 @@
                         nextStep();
                     }
                 } else {
+                    $("#div_wait").hide();
                     if (jDatas.ErrorMessage) {
                         alert(jDatas.ErrorMessage);
                     }
                 }
             },
             error: function (request, error) {
+                $("#div_wait").hide();
                 alert(error + " : " + request.responseText);
             },
             complete: function () {
@@ -426,10 +439,10 @@
 
         window.location.href = '@Url.Content("~/")THC/get?act=' + act + '&code=' + code + '&tk=' + tk +
                         '&ml=' + acc + '&m=' + m + "&lk=" + log + "&coup=" + coup_number + "&type=0" +
-                        '&city=' + CITY + '&lat=' + LAT + '&lng=' + LONG;
+                        '&vdate=' + vaild_date + '&img=' + img + '&city=' + CITY + '&lat=' + LAT + '&lng=' + LONG;
 
     }
 
-    </script>
+</script>
 
 </body>
