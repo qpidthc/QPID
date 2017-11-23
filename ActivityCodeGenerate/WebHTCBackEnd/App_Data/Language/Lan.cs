@@ -2,259 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using THC_Library.Language;
 
 namespace WebHTCBackEnd.Language
-{   
-    public class LanguageBase
-    {
-        public static Lan_Zone CURRENT_LANGUAGE = Lan_Zone.TW;
-        public static Dictionary<string, string[]> BaseSet = new Dictionary<string, string[]>();
-        protected int iIndex = 0;
-
-        public LanguageBase()
-        {
-            if (BaseSet.Count == 0)
-            {
-                BaseSet.Add("app_title", new string[] { "宏全國際行銷管理平台", "THC Global Selling Platform ", "宏全国际行销管理平台" });
-                BaseSet.Add("sys_message", new string[] { "系統訊息", "System Message", "系统讯息" });
-                BaseSet.Add("logout", new string[] { "登 出", "Logout", "登 出" });
-                BaseSet.Add("lanuage", new string[] { "語 系", "Language", "语 系" });
-                BaseSet.Add("TW", new string[] { "繁體中文", "Traditional Chinese", "繁体中文" });
-                BaseSet.Add("EN", new string[] { "英文 ", "English", "英文" });
-                BaseSet.Add("CN", new string[] { "簡體中文", "Simplified Chinese", "简体中文" });
-                BaseSet.Add("search", new string[] { "搜尋", "Search", "搜寻" });
-                BaseSet.Add("clear", new string[] { "清空", "Clear", "清空" });
-                BaseSet.Add("add", new string[] { "新增", "AddNew", "新增" });
-                BaseSet.Add("editor", new string[] { "編輯", "Edit", "编辑" });
-                BaseSet.Add("select", new string[] { "選取", "Select", "选取" });
-                BaseSet.Add("editor_panel", new string[] { "資料編輯", "Edit Panel", "资料编辑" });
-                BaseSet.Add("comfirm", new string[] { "確 認", "Confirm", "确 认" });
-                BaseSet.Add("back", new string[] { "返 回", "Back", "返 回" });
-                BaseSet.Add("check_remove", new string[] { "確定刪除 ?", "Confirm to remove  ?", "确定删除" });
-                BaseSet.Add("check_save", new string[] { "確定儲存資料嗎 ?", "Save Data ?", "确定储存资料吗 ?" });
-                /*data table*/
-                BaseSet.Add("no_data", new string[] { "目前無資料", "Nothing found", "目前无资料" });
-                BaseSet.Add("current_page", new string[] { "目前頁數", "Current Page", "目前页数" });
-                BaseSet.Add("next_page", new string[] { "下一頁", "Next Page", "下一页" });
-                BaseSet.Add("prev_page", new string[] { "上一頁", "Previous Page", "上一页" });
-
-                /**/
-                BaseSet.Add("yes", new string[] { "是", "Yes", "是" });
-                BaseSet.Add("no", new string[] { "否", "No", "否" });
-                BaseSet.Add("ok", new string[] { "確認", "OK", "确认" });                
-            }
-        }
-
-        public Lan_Zone CurrentZone
-        {            
-            set
-            {
-                if (value == Lan_Zone.TW)
-                {
-                    iIndex = 0;
-                }
-                else if (value == Lan_Zone.EN)
-                {
-                    iIndex = 1;
-                }
-                else if (value == Lan_Zone.CN)
-                {
-                    iIndex = 2;
-                }
-            }
-        }
-
-        public string ApplicationTitle
-        {
-            get
-            {
-                return BaseSet["app_title"][iIndex];
-            }
-        }
-
-        public string SystemMessage
-        {
-            get
-            {
-                return BaseSet["sys_message"][iIndex];
-            }
-        }
-
-        public string Logout
-        {
-            get
-            {
-                return BaseSet["logout"][iIndex];
-            }
-        }
-
-        public string Language
-        {
-            get
-            {
-                return BaseSet["lanuage"][iIndex];
-            }
-        }
-        public string TW
-        {
-            get
-            {
-                return BaseSet["TW"][iIndex];
-            }
-        }
-        public string EN
-        {
-            get
-            {
-                return BaseSet["EN"][iIndex];
-            }
-        }
-        public string CN
-        {
-            get
-            {
-                return BaseSet["CN"][iIndex];
-            }
-        }
-
-        public string Search
-        {
-            get
-            {
-                return BaseSet["search"][iIndex];
-            }
-        }
-
-        public string Clear
-        {
-            get
-            {
-                return BaseSet["clear"][iIndex];
-            }
-        }
-
-        public string AddDate
-        {
-            get
-            {
-                return BaseSet["add"][iIndex];
-            }
-        }
-
-        public string Editor
-        {
-            get
-            {
-                return BaseSet["editor"][iIndex];
-            }
-        }
-
-        public string Select
-        {
-            get
-            {
-                return BaseSet["select"][iIndex];
-            }
-        }
-
-        public string EditorPanel
-        {
-            get
-            {
-                return BaseSet["editor_panel"][iIndex];
-            }
-        }
-
-        public string Confirm
-        {
-            get
-            {
-                return BaseSet["comfirm"][iIndex];
-            }
-        }
-
-        public string Back
-        {
-            get
-            {
-                return BaseSet["back"][iIndex];
-            }
-        }
-
-        public string CheckRemove
-        {
-            get
-            {
-                return BaseSet["check_remove"][iIndex];
-            }
-        }
-
-        public string CheckSave
-        {
-            get
-            {
-                return BaseSet["check_save"][iIndex];
-            }
-        }
-
-        public string DataTable_NoData
-        {
-            get
-            {
-                return BaseSet["no_data"][iIndex];
-            }
-        }
-
-        public string DataTable_CurrentPage
-        {
-            get
-            {
-                return BaseSet["current_page"][iIndex];
-            }
-        }
-
-        public string DataTable_NextPage
-        {
-            get
-            {
-                return BaseSet["next_page"][iIndex];
-            }
-        }
-
-        public string DataTable_PreviousPage
-        {
-            get
-            {
-                return BaseSet["prev_page"][iIndex];
-            }
-        }
-
-        public string Yes
-        {
-            get
-            {
-                return BaseSet["yes"][iIndex];
-            }
-        }
-
-        public string No
-        {
-            get
-            {
-                return BaseSet["no"][iIndex];
-            }
-        }
-
-        public string OK
-        {
-            get
-            {
-                return BaseSet["ok"][iIndex];
-            }
-        }
-
-    }
-
+{       
     public class Vender_Lan : LanguageBase
     {
         public static Dictionary<string, string[]> VenderSet = new Dictionary<string, string[]>();
@@ -413,7 +164,8 @@ namespace WebHTCBackEnd.Language
                 EventSet.Add("err_event_no", new string[] { "專案編號必要", "Project No required", "专案编号必要" });
                 EventSet.Add("err_event_name", new string[] { "專案名稱必要", "Project Name required", "专案名称必要" });
                 EventSet.Add("err_vender", new string[] { "活動廠商必要", "Vender required", "活动厂商称必要" });
-                EventSet.Add("err_start_time", new string[] { "開始時間必要", "Vender required", "开始时间必要" });
+                EventSet.Add("err_start_time", new string[] { "開始時間必要", "Begining Time required", "开始时间必要" });
+                EventSet.Add("err_end_time", new string[] { "結束時間必要", "Ending Time required", "结束时间必要" });
 
                 EventSet.Add("err_code_id", new string[] { "發碼代號必要", "Code Id required", "发码代号必要" });
                 EventSet.Add("err_code_nums", new string[] { "發碼數量必要", "Code Numbers required", "发码数量必要" });
@@ -596,6 +348,13 @@ namespace WebHTCBackEnd.Language
             get
             {
                 return EventSet["err_start_time"][iIndex];
+            }
+        }
+        public string Error_End_Time
+        {
+            get
+            {
+                return EventSet["err_end_time"][iIndex];
             }
         }
         public string Error_Code_Id
@@ -980,8 +739,8 @@ namespace WebHTCBackEnd.Language
                 EventReward.Add("rwd_level", new string[] { "獎項層級", "Prize Level", "奖项层级" });
                 EventReward.Add("rwd_name", new string[] { "獎項名稱", "Prize Item", "奖项名称" });
                 EventReward.Add("rwd_number", new string[] { "獎項數量", "Prize Number", "奖项数量" });
-                EventReward.Add("rwd_sms", new string[] { "獎項簡訊", "Prize SMS", "奖项简讯" });
-                EventReward.Add("rwd_memo", new string[] { "說明備註", "Prize Memo", "说明备注" });
+                EventReward.Add("rwd_sms", new string[] { "獎項簡訊 (%s%表示電子序號符號)", "Prize SMS (%s% represent electric no)", "奖项简讯 (%s%表示电子序号符号)" });
+                EventReward.Add("rwd_memo", new string[] { "獎項說明 (實體獎項說明)", "Prize Memo (For Phyical Reward)", "奖项说明 (实体奖项说明)" });
                 EventReward.Add("event_list", new string[] { "事件清單 ", "Event List ", "事件清单 " });
                 EventReward.Add("event_title", new string[] { "活動專案", "Event Project", "活动专案" });
                
@@ -998,6 +757,7 @@ namespace WebHTCBackEnd.Language
                 EventReward.Add("qr_records", new string[] { "發碼紀錄", "QR Records", "发码纪录" });
                 EventReward.Add("rwd_image", new string[] { "獎項圖示", "Prize Image", "奖项图示" });
                 EventReward.Add("rwd_effective_time", new string[] { "有效時間", "Effective Time", "有效时间" });
+                EventReward.Add("rwd_win_desc", new string[] { "兌獎網址", "Winning Desc", "兑奖网址" });
                 
 
                 EventReward.Add("qr_gendate", new string[] { "產生日期時間 ", "Code Generate Date ", "产生日期时间 " });
@@ -1189,6 +949,14 @@ namespace WebHTCBackEnd.Language
                 return EventReward["rwd_image"][iIndex];
             }
         }
+        public string RwdWinDesc
+        {
+            get
+            {
+                return EventReward["rwd_win_desc"][iIndex];
+            }
+        }
+
 
         public string RwdEffectiveTime
         {
@@ -1457,10 +1225,130 @@ namespace WebHTCBackEnd.Language
         }
     }
 
-    public enum Lan_Zone
+    public class User_Lan : LanguageBase
     {
-        TW = 0,
-        EN = 1,
-        CN = 2
+        public static Dictionary<string, string[]> VenderSet = new Dictionary<string, string[]>();
+
+        public static void InitLanguage()
+        {
+            if (VenderSet.Count == 0)
+            {
+                VenderSet.Add("title", new string[] { "使用者資料管理", "Uaer Management Info", "使用者資料管理" });
+                VenderSet.Add("account", new string[] { "使用者帳號", "Account", "使用者帳號" });
+                VenderSet.Add("name", new string[] { "使用者名稱", "Name", "使用者名稱" });
+                VenderSet.Add("password", new string[] { "使用者密碼", "Password", "使用者密碼" });
+                VenderSet.Add("login_time", new string[] { "登入時間", "LoginTime", "登入時間" });
+                VenderSet.Add("new_user", new string[] { "新增使用者帳號", "Add User", "新增使用者帳號" });
+            }
+        }
+
+        public User_Lan()
+        {
+            InitLanguage();
+        }
+
+        public string Title
+        {
+            get
+            {
+                return VenderSet["title"][iIndex];
+            }
+        }
+
+        public string Account
+        {
+            get
+            {
+                return VenderSet["account"][iIndex];
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return VenderSet["name"][iIndex];
+            }
+        }
+
+        public string Password
+        {
+            get
+            {
+                return VenderSet["password"][iIndex];
+            }
+        }
+
+        public string LoginTime
+        {
+            get
+            {
+                return VenderSet["login_time"][iIndex];
+            }
+        }
+
+        public string NewUser
+        {
+            get
+            {
+                return VenderSet["new_user"][iIndex];
+            }
+        }
+
+    }
+
+    public class ChangeCode_Lan : LanguageBase
+    {
+        public static Dictionary<string, string[]> VenderSet = new Dictionary<string, string[]>();
+
+        public static void InitLanguage()
+        {
+            if (VenderSet.Count == 0)
+            {
+                VenderSet.Add("title", new string[] { "變更密碼", "Vender Info", "厂商资料管理" });
+                VenderSet.Add("old_pass", new string[] { "輸入舊密碼", "Account", "厂商帐号" });
+                VenderSet.Add("new_pass", new string[] { "輸入新密碼", "FullName", "厂商全名" });
+                VenderSet.Add("confirm_pass", new string[] { "確認新密碼", "FullName", "厂商全名" });
+               
+            }
+        }
+
+        public ChangeCode_Lan()
+        {
+            InitLanguage();
+        }
+
+        public string Title
+        {
+            get
+            {
+                return VenderSet["title"][iIndex];
+            }
+        }
+
+        public string Old_Pass
+        {
+            get
+            {
+                return VenderSet["old_pass"][iIndex];
+            }
+        }
+
+        public string New_Pass
+        {
+            get
+            {
+                return VenderSet["new_pass"][iIndex];
+            }
+        }
+
+        public string Confirm_Pass
+        {
+            get
+            {
+                return VenderSet["confirm_pass"][iIndex];
+            }
+        }
+
     }
 }
