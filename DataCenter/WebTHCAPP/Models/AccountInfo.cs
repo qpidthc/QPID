@@ -48,6 +48,12 @@ namespace WebTHCAPP.Models
             set;
         }
 
+        public byte[] Image
+        {
+            get;
+            set;
+        }
+
 
 
     }

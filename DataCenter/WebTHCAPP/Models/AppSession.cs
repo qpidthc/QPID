@@ -13,6 +13,12 @@ namespace WebTHCAPP.Models
             set;
         }
 
+        public int EventNo
+        {
+            get;
+            set;
+        }
+
         public long Ticket
         {
             get;

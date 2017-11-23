@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
+using System.Drawing.Imaging;
 using THC_Library;
 
 namespace WebTHCAPP.Models
@@ -18,9 +20,10 @@ namespace WebTHCAPP.Models
             return false;
         }
 
-        public long verifyAccount(string mail, string pwd, out Error error)
+        public long verifyAccount(string mail, string pwd, out int state, out Error error)
         {
             error = null;
+            state = 0; // 1 帳號不存在 2 密碼錯誤
             long lgTimestamp = -1;
             bool bReturn = false;
             SqlParameter sqlParam;
@@ -45,12 +48,19 @@ namespace WebTHCAPP.Models
                 if (dataReader.Read())
                 {
                     string realPwd = dataReader["CM007"].ToString();
-
-
                     if (string.Compare(realPwd, pwd) == 0)
                     {
+                        state = 0;
                         bReturn = true;
                     }
+                    else
+                    {
+                        state = 2;
+                    }
+                }
+                else
+                {
+                    state = 1;
                 }
                 dataReader.Close();
 
@@ -94,15 +104,113 @@ namespace WebTHCAPP.Models
             return lgTimestamp;
         }
 
-        public int newAccount(string acccount, string mail, string mobil, string pwd, out long timestamp, out Error error)
+        public long verifyAccountWitInfo(string mail, string pwd, out int state, out string name,
+                    out string mobil, out string addr, out string iid, out string gender, out string age, out Error error)
+        {
+            error = null;
+            state = 0; // 1 帳號不存在 2 密碼錯誤
+            name = "";
+            mobil = "";
+            addr = "";
+            iid = "";
+            gender = "";
+            age = "";
+
+            long lgTimestamp = -1;
+            bool bReturn = false;
+            SqlParameter sqlParam;
+            IDataReader dataReader;
+            IList<SqlParameter> paraList = new System.Collections.Generic.List<SqlParameter>();
+            string strSQL = "select CM006,CM007,CM008,CM009,CM010,CM012,CM013 from consumer_member where CM002=@CM002";
+
+            THC_Library.DataBase.DataBaseControl dbCtl = new THC_Library.DataBase.DataBaseControl();
+            try
+            {
+                byte[] pwdBytes = System.Text.Encoding.Default.GetBytes(pwd); //將字串來源轉為Byte[] 
+                System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create(); //使用MD5 
+                pwdBytes = md5.ComputeHash(pwdBytes);//進行加密 
+                pwd = Convert.ToBase64String(pwdBytes);//將加密後的字串從byte[]轉回string
+
+                sqlParam = new SqlParameter("@CM002", mail);
+                paraList.Add(sqlParam);
+
+
+                dbCtl.Open();
+                dataReader = dbCtl.GetReader(strSQL, paraList);
+                if (dataReader.Read())
+                {
+                    string realPwd = dataReader["CM007"].ToString();
+                    name = dataReader["CM006"].ToString();
+                    mobil = dataReader["CM008"].ToString();
+                    addr = dataReader["CM009"].ToString();
+                    iid = dataReader["CM010"].ToString();
+                    gender = dataReader["CM012"].ToString();
+                    age = dataReader["CM013"].ToString();
+                    if (string.Compare(realPwd, pwd) == 0)
+                    {
+                        state = 0;
+                        bReturn = true;
+                    }
+                    else
+                    {
+                        state = 2;
+                    }
+                }
+                else
+                {
+                    state = 1;
+                }
+                dataReader.Close();
+
+                if (bReturn)
+                {
+                    lgTimestamp = DateTime.Now.Ticks;
+                    strSQL = "update consumer_member set CM016=@CM016 where CM002=@CM002";
+                    paraList.Clear();
+                    sqlParam = new SqlParameter("@CM016", lgTimestamp);
+                    paraList.Add(sqlParam);
+                    sqlParam = new SqlParameter("@CM002", mail);
+                    paraList.Add(sqlParam);
+                    dbCtl.ExecuteCommad(strSQL, paraList);
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                error = new Error();
+                if (sqlEx.Number == 2601)
+                {
+                    error.Number = 101;
+                    error.ErrorMessage = "帳號已註冊";
+                }
+                else
+                {
+                    error.Number = 100;
+                    error.ErrorMessage = "系統錯誤";
+                }
+            }
+            catch (Exception ex)
+            {
+                error = new Error();
+                error.Number = 100;
+                error.ErrorMessage = "系統錯誤";
+            }
+            finally
+            {
+                dbCtl.Close();
+            }
+
+            return lgTimestamp;
+        }
+
+        public int newAccount(string acccount, string mail, string mobil, string pwd, string gender, string age, out long timestamp, out Error error)
         {
             error = null;
             timestamp = -1;
             SqlParameter sqlParam;
 
             IList<SqlParameter> paraList = new System.Collections.Generic.List<SqlParameter>();
-            string strSQL = "insert into consumer_member (CM002,CM007,CM008,CM014,CM016,CM017) values " +
-                            "(@CM002,@CM007,@CM008,@CM014,@CM016,@CM017);SELECT CAST(scope_identity() AS int);";
+            string strSQL = "insert into consumer_member (CM002,CM007,CM008,CM012,CM013,CM014,CM016,CM017) values " +
+                            "(@CM002,@CM007,@CM008,@CM012,@CM013,@CM014,@CM016,@CM017);SELECT CAST(scope_identity() AS int);";
 
             THC_Library.DataBase.DataBaseControl dbCtl = new THC_Library.DataBase.DataBaseControl();
             try
@@ -121,6 +229,10 @@ namespace WebTHCAPP.Models
                     sqlParam.Value = DBNull.Value;
                 else
                     sqlParam.Value = mobil;
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@CM012", gender);
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@CM013", age);
                 paraList.Add(sqlParam);
                 sqlParam = new SqlParameter("@CM014", DateTime.Now);
                 paraList.Add(sqlParam);
@@ -168,14 +280,82 @@ namespace WebTHCAPP.Models
             return 0;
         }
 
-        public int updateAccount(string acccount, string timestamp, string mobil, string gender, string age,
-                                 string iid, string addr, out Error error)
+        public int updateAccount(string acccount, string timestamp, string mobil, string iid, string addr, byte[] image, out Error error)
         {
             error = null;
             int iUpdateCount = 0;
             SqlParameter sqlParam;
             IList<SqlParameter> paraList = new System.Collections.Generic.List<SqlParameter>();
-            string strSQL = "update consumer_member set CM008=@CM008,CM009=@CM009,CM010=@CM010,CM012=@CM012,CM013=@CM013 " +
+            string strSQL = "update consumer_member set CM008=@CM008,CM009=@CM009,CM010=@CM010,CM018=@CM018 " +
+                            "where CM002=@CM002 and CM016=@CM016";
+            //CM008 手機 CM009 地址 CM010 身分證號 
+            THC_Library.DataBase.DataBaseControl dbCtl = new THC_Library.DataBase.DataBaseControl();
+            try
+            {
+                paraList.Clear();
+                sqlParam = new SqlParameter("@CM008", mobil);
+                paraList.Add(sqlParam);
+                if (addr == null)
+                {
+                    sqlParam = new SqlParameter("@CM009", DBNull.Value);
+                }
+                else
+                {
+                    sqlParam = new SqlParameter("@CM009", addr);
+                }
+                paraList.Add(sqlParam);
+                if (iid == null)
+                {
+                    sqlParam = new SqlParameter("@CM010", DBNull.Value);
+                }
+                else
+                {
+                    sqlParam = new SqlParameter("@CM010", iid);
+                }
+                paraList.Add(sqlParam);
+                
+                sqlParam = new SqlParameter("@CM002", acccount);
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@CM016", SqlDbType.BigInt);
+                sqlParam.Value = long.Parse(timestamp);
+                paraList.Add(sqlParam);
+
+                sqlParam = new SqlParameter("@CM018", SqlDbType.Image);
+                if (image == null)
+                {
+                    sqlParam.Value = DBNull.Value;
+                }
+                else
+                {
+                    sqlParam.Value = image;
+                }
+                paraList.Add(sqlParam);
+
+                dbCtl.Open();
+                iUpdateCount = dbCtl.ExecuteCommad(strSQL, paraList);
+
+            }
+            catch (Exception ex)
+            {
+                error = new Error();
+                error.Number = 100;
+                error.ErrorMessage = ex.ToString(); //"資料更新系統錯誤";
+            }
+            finally
+            {
+                dbCtl.Close();
+            }
+            return iUpdateCount;
+        }
+
+        public int updateAccount(string acccount, string timestamp, string mobil, string gender, string age,
+                                 string iid, string addr, byte[] image, out Error error)
+        {
+            error = null;
+            int iUpdateCount = 0;
+            SqlParameter sqlParam;
+            IList<SqlParameter> paraList = new System.Collections.Generic.List<SqlParameter>();
+            string strSQL = "update consumer_member set CM008=@CM008,CM009=@CM009,CM010=@CM010,CM012=@CM012,CM013=@CM013,CM018=@CM018 " +
                             "where CM002=@CM002 and CM016=@CM016";
             //CM008 手機 CM009 地址 CM010 身分證號 CM012 性別 CM013 年齡
             THC_Library.DataBase.DataBaseControl dbCtl = new THC_Library.DataBase.DataBaseControl();
@@ -226,6 +406,17 @@ namespace WebTHCAPP.Models
                 sqlParam.Value = long.Parse(timestamp);
                 paraList.Add(sqlParam);
 
+                sqlParam = new SqlParameter("@CM018", SqlDbType.Image);
+                if (image == null)
+                {                   
+                    sqlParam.Value = DBNull.Value;
+                }
+                else
+                {                   
+                    sqlParam.Value = image;
+                }
+                paraList.Add(sqlParam);
+
                 dbCtl.Open();
                 iUpdateCount = dbCtl.ExecuteCommad(strSQL, paraList);
 
@@ -234,7 +425,45 @@ namespace WebTHCAPP.Models
             {
                 error = new Error();
                 error.Number = 100;
-                error.ErrorMessage = "資料更新系統錯誤";
+                error.ErrorMessage = ex.ToString(); //"資料更新系統錯誤";
+            }
+            finally
+            {
+                dbCtl.Close();
+            }
+            return iUpdateCount;
+        }
+
+        public int updateAccountMobil(string acccount, string timestamp, string mobil, out Error error)
+        {
+            error = null;
+            int iUpdateCount = 0;
+            SqlParameter sqlParam;
+            IList<SqlParameter> paraList = new System.Collections.Generic.List<SqlParameter>();
+            string strSQL = "update consumer_member set CM008=@CM008 " +
+                            "where CM002=@CM002 and CM016=@CM016";
+            //CM008 手機
+            THC_Library.DataBase.DataBaseControl dbCtl = new THC_Library.DataBase.DataBaseControl();
+            try
+            {
+                paraList.Clear();
+                sqlParam = new SqlParameter("@CM008", mobil);
+                paraList.Add(sqlParam);                
+                sqlParam = new SqlParameter("@CM002", acccount);
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@CM016", SqlDbType.BigInt);
+                sqlParam.Value = long.Parse(timestamp);
+                paraList.Add(sqlParam);
+
+                dbCtl.Open();
+                iUpdateCount = dbCtl.ExecuteCommad(strSQL, paraList);
+
+            }
+            catch (Exception ex)
+            {
+                error = new Error();
+                error.Number = 100;
+                error.ErrorMessage = ex.ToString(); //"資料更新系統錯誤";
             }
             finally
             {
@@ -369,6 +598,14 @@ namespace WebTHCAPP.Models
                     accInfo.IId = dataReader["CM010"].ToString();
                     accInfo.Gender = dataReader["CM012"].ToString();
                     accInfo.Age = dataReader["CM013"].ToString();
+                    if (dataReader["CM018"] == DBNull.Value)
+                    {
+                        accInfo.Image = null;
+                    }
+                    else
+                    {
+                        accInfo.Image = (byte[])dataReader["CM018"];
+                    }                   
                     accInfo.Number = 0;
                     accInfo.ErrorMessage = "";
                 }
@@ -395,9 +632,69 @@ namespace WebTHCAPP.Models
 
         }
 
+        public AccountInfo getAccountInfoNoTicket(string acc, out Error error)
+        {
+            error = null;
+            AccountInfo accInfo = null;
+            IDataReader dataReader;
+            IList<SqlParameter> paraList = new System.Collections.Generic.List<SqlParameter>();
+            string strSQL = "select * from consumer_member where CM002=@CM002";
+            THC_Library.DataBase.DataBaseControl dbCtl = new THC_Library.DataBase.DataBaseControl();
+            try
+            {
+                paraList.Clear();
+                paraList.Add(new SqlParameter("@CM002", acc));               
+
+                dbCtl.Open();
+                dataReader = dbCtl.GetReader(strSQL, paraList);
+                if (dataReader.Read())
+                {
+                    accInfo = new AccountInfo();
+                    accInfo.FB = dataReader["CM003"].ToString();
+                    accInfo.Mail = dataReader["CM017"].ToString();
+                    accInfo.Mobil = dataReader["CM008"].ToString();
+                    accInfo.Address = dataReader["CM009"].ToString();
+                    accInfo.IId = dataReader["CM010"].ToString();
+                    accInfo.Gender = dataReader["CM012"].ToString();
+                    accInfo.Age = dataReader["CM013"].ToString();
+                    if (dataReader["CM018"] == DBNull.Value)
+                    {
+                        accInfo.Image = null;
+                    }
+                    else
+                    {
+                        accInfo.Image = (byte[])dataReader["CM018"];
+                    }
+                    accInfo.Number = 0;
+                    accInfo.ErrorMessage = "";
+                }
+                else
+                {
+                    dataReader.Close();
+                    throw new THCException(102, "無效的帳號資訊");
+                }
+                dataReader.Close();
+
+            }
+            catch (Exception ex)
+            {
+                error = new Error();
+                error.Number = 100;
+                error.ErrorMessage = "系統錯誤";
+            }
+            finally
+            {
+                dbCtl.Close();
+            }
+
+            return accInfo;
+
+        }
+
         public void newRecord(string eventkey, string qrcode, string date, string account,
                                 string age, string gender, string area, string temp, string weather,
-                                string lat, string lng, string reward, string tk, out Error error)
+                                string lat, string lng, string reward, string ec, string rwdtype, string windesc,
+                                string tk, out Error error)
         {           
             error = null;
             AccountInfo accInfo = null;
@@ -428,8 +725,8 @@ namespace WebTHCAPP.Models
                     throw new THC_Library.THCException(801, "無效的帳號資料");
                 }
 
-                strSQL = "insert into event_user_records (EUR002,EUR003,EUR004,EUR005,EUR006,EUR007,EUR008,EUR009,EUR010,EUR011,EUR012,EUR013) values " +
-                        "(@EUR002,@EUR003,@EUR004,@EUR005,@EUR006,@EUR007,@EUR008,@EUR009,@EUR010,@EUR011,@EUR012,@EUR013);" + 
+                strSQL = "insert into event_user_records (EUR002,EUR003,EUR004,EUR005,EUR006,EUR007,EUR008,EUR009,EUR010,EUR011,EUR012,EUR013,EUR014,EUR015,EUR016) values " +
+                        "(@EUR002,@EUR003,@EUR004,@EUR005,@EUR006,@EUR007,@EUR008,@EUR009,@EUR010,@EUR011,@EUR012,@EUR013,@EUR014,@EUR015,@EUR016);" +
                         "SELECT CAST(scope_identity() AS int);";
 
                 paraList.Clear();
@@ -462,7 +759,7 @@ namespace WebTHCAPP.Models
                 paraList.Add(sqlParam);
                 sqlParam = new SqlParameter("@EUR011", SqlDbType.Float);
                 sqlParam.Value = lat; //緯度
-                paraList.Add(sqlParam);               
+                paraList.Add(sqlParam);
                 sqlParam = new SqlParameter("@EUR012", SqlDbType.Float);
                 sqlParam.Value = lng; //經度
                 paraList.Add(sqlParam);
@@ -474,9 +771,33 @@ namespace WebTHCAPP.Models
                 else
                 {
                     sqlParam.Value = reward; //獎項名稱
-                }                
+                }
+                paraList.Add(sqlParam);
+                sqlParam = new SqlParameter("@EUR014", SqlDbType.VarChar);
+                if (ec == null)
+                {
+                    sqlParam.Value = DBNull.Value;
+                }
+                else
+                {
+                    sqlParam.Value = ec;  //電子卷號碼
+                }
                 paraList.Add(sqlParam);
 
+                sqlParam = new SqlParameter("@EUR015", SqlDbType.VarChar);
+                sqlParam.Value = rwdtype;  //獎項型態
+                paraList.Add(sqlParam);
+
+                sqlParam = new SqlParameter("@EUR016", SqlDbType.VarChar);
+                if (windesc == null)
+                {
+                    sqlParam.Value = DBNull.Value;
+                }
+                else
+                {
+                    sqlParam.Value = windesc;  //兌獎說明網址
+                }
+                paraList.Add(sqlParam);
 
                 dbCtl.ExecuteScalar(strSQL, paraList);
 
@@ -535,8 +856,6 @@ namespace WebTHCAPP.Models
                     paraList.Add(new SqlParameter("@CM002", acc));
 
                     dbCtl.ExecuteCommad(strSQL, paraList);
-
-                    
                 }
                 else
                 {
@@ -570,11 +889,11 @@ namespace WebTHCAPP.Models
             DataTable resultTable = null;
             SqlParameter sqlParam;
             IList<SqlParameter> paraList = new System.Collections.Generic.List<SqlParameter>();
-            string strSQL = "select AE003,AE005,AE006,AE008,EUR004,EUR013 " + 
+            string strSQL = "select AE003,AE005,AE006,AE008,EUR004,EUR013,EUR014,EUR015,EUR016 " + 
                             "from event_user_records inner join activity_event " +  
                             "on EUR002=AE001 " +
-                            "where EUR005=@EUR005 and EUR013 is not NULL and LEN(EUR013)>0 " + 
-                            "order by AE001";
+                            "where EUR005=@EUR005 and EUR013 is not NULL and LEN(EUR013)>0 " +
+                            "order by EUR004 desc";
 
             THC_Library.DataBase.DataBaseControl dbCtl = new THC_Library.DataBase.DataBaseControl();
 
@@ -672,7 +991,6 @@ namespace WebTHCAPP.Models
             return bCodeExist;
         }
 
-
         public void doResetPassword(string acc, string access_code, string pwd, out Error error)
         {
             error = null;
@@ -749,6 +1067,92 @@ namespace WebTHCAPP.Models
                 error.ErrorMessage = ex.ToString();
             }
                         
+        }
+
+        public byte[] getMyPoto(string acc, string tk, out Error error)
+        {
+            error = null;
+            byte[] myPoto = null;
+            IDataReader dataReader;
+            IList<SqlParameter> paraList = new System.Collections.Generic.List<SqlParameter>();
+            string strSQL = "select CM018 from consumer_member where CM002=@CM002 and CM016=@CM016";
+            THC_Library.DataBase.DataBaseControl dbCtl = new THC_Library.DataBase.DataBaseControl();
+            try
+            {   
+                paraList.Clear();
+                paraList.Add(new SqlParameter("@CM002", acc));
+                paraList.Add(new SqlParameter("@CM016", tk));
+
+                dbCtl.Open();
+                dataReader = dbCtl.GetReader(strSQL, paraList);
+                if (dataReader.Read())
+                {
+                    myPoto = (byte[])dataReader["CM018"];
+                }
+                else
+                {
+                    dataReader.Close();
+                    throw new THCException(102, "無效的帳號資訊");
+                }
+                dataReader.Close();
+
+            }
+            catch (Exception ex)
+            {
+                error = new Error();
+                error.Number = 100;
+                error.ErrorMessage = "系統錯誤";
+            }
+            finally
+            {
+                dbCtl.Close();
+            }
+
+            return myPoto;
+        }
+
+        public byte[] compressImage(System.IO.Stream stream)
+        {
+            try
+            {
+                System.Drawing.Image image = System.Drawing.Image.FromStream(stream);
+                ImageFormat thisFormat = image.RawFormat;
+
+                int fixWidth = 0;
+                int fixHeight = 0;
+                int maxPx = 100;
+
+                if (image.Width > maxPx || image.Height > maxPx)
+                {
+                    if (image.Width >= image.Height)
+                    {
+                        fixWidth = maxPx;
+                        fixHeight = Convert.ToInt32((Convert.ToDouble(fixWidth) / Convert.ToDouble(image.Width)) * Convert.ToDouble(image.Height));
+                    }
+                    else
+                    {
+                        fixHeight = maxPx;
+                        fixWidth = Convert.ToInt32((Convert.ToDouble(fixHeight) / Convert.ToDouble(image.Height)) * Convert.ToDouble(image.Width));
+                    }
+                }
+                else
+                {
+                    fixHeight = image.Height;
+                    fixWidth = image.Width;
+                }
+                Bitmap imageOutput = new Bitmap(image, fixWidth, fixHeight);
+
+                System.IO.MemoryStream memStream = new System.IO.MemoryStream();
+                imageOutput.Save(memStream, thisFormat);
+
+                imageOutput.Dispose();
+                image.Dispose();
+                return memStream.ToArray();  
+            }
+            catch (Exception)
+            {
+                return null;
+            }        
         }
     }
 }

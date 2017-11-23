@@ -15,8 +15,8 @@ namespace WebTHCAPP.Models
             mms.From = new MailAddress("qpid0421@gmail.com");           
             mms.Subject = "THC宏全QPID密碼變更通知";
             //信件內容
-            mms.Body =  "請點選以下連結修改密碼<br/>" + 
-                        string.Format("{0}Members/AccessRestPassword?acc={1}&access={2}", mydomain, acc, access_code);
+            mms.Body =  "請點選以下連結修改密碼<br/>" +
+                        string.Format("{0}WebTHCApp/Members/AccessRestPassword?acc={1}&access={2}", mydomain, acc, access_code);
             mms.IsBodyHtml = true;
             mms.BodyEncoding = System.Text.Encoding.UTF8;
 

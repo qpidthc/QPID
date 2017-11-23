@@ -19,6 +19,7 @@ namespace WebTHCAPP.Models
             set;
         }
     }
+
     public class Result : ResultBase
     {
         public Result()
@@ -38,6 +39,79 @@ namespace WebTHCAPP.Models
         }
 
         public string Acc
+        {
+            get;
+            set;
+        }
+
+        public string Ticket
+        {
+            get;
+            set;
+        }
+
+        public string Addition
+        {
+            get;
+            set;
+        }
+    }
+
+    public class ResultWithInfo : ResultBase
+    {
+        public ResultWithInfo() : base()
+        {
+            Name = "";
+            Mobil = "";
+            Name = "";
+            Addr = "";
+            Gender = "";
+            Age = "";
+        }
+
+        public int Verify
+        {
+            get;
+            set;
+        }
+
+        public string Acc
+        {
+            get;
+            set;
+        }
+
+        public string Name
+        {
+            get;
+            set;
+        }
+        
+        public string Mobil
+        {
+            get;
+            set;
+        }
+
+        public string Addr
+        {
+            get;
+            set;
+        }
+
+        public string IId
+        {
+            get;
+            set;
+        }
+
+        public string Gender
+        {
+            get;
+            set;
+        }
+
+        public string Age
         {
             get;
             set;
