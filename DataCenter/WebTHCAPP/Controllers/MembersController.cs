@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace WebTHCAPP.Controllers
 {
@@ -69,13 +71,15 @@ namespace WebTHCAPP.Controllers
 
             if (error == null)
             {
-                var reqMail = Request.Form["mail"];
+                var reqMail = Request.Form["mail"];                  
                 var reqPwd = Request.Form["pwd"];
                 var reqMobil = Request.Form["mobil"];
-                string strAccount = Request.Form["acc"];
+                var strAccount = Request.Form["acc"];
+                var reqGender = Request.Form["gender"];
+                var reqAge = Request.Form["age"];  
 
                 Models.Member member = new Models.Member();
-                newKey = member.newAccount(strAccount, reqMail, reqMobil, reqPwd, out timeStamp, out error);
+                newKey = member.newAccount(strAccount, reqMail, reqMobil, reqPwd, reqGender, reqAge, out timeStamp, out error);
                 result.Addition = newKey.ToString();
                 result.Ticket = timeStamp.ToString();
                 result.Acc = strAccount;
@@ -109,8 +113,9 @@ namespace WebTHCAPP.Controllers
             {
                 var reqMail = Request.Form["mail"];
                 var reqPwd = Request.Form["pwd"];
+                int state;
                 Models.Member member = new Models.Member();
-                long lgTimestamp = member.verifyAccount(reqMail, reqPwd, out error);
+                long lgTimestamp = member.verifyAccount(reqMail, reqPwd, out state, out error);
                 if (lgTimestamp > -1)
                 {
                     result.Verify = 1;
@@ -122,7 +127,18 @@ namespace WebTHCAPP.Controllers
                     result.Ticket = lgTimestamp.ToString();
                     result.Number = 10;
                     result.Verify = 0;
-                    result.ErrorMessage = "登入錯誤";                    
+                    if (state == 1)
+                    {
+                        result.ErrorMessage = "帳號不存在";  
+                    }
+                    else if (state == 2)
+                    {
+                        result.ErrorMessage = "密碼錯誤";  
+                    }
+                    else
+                    {
+                        result.ErrorMessage = "登入錯誤";  
+                    }                                      
                 }
             }
                                   
@@ -132,6 +148,64 @@ namespace WebTHCAPP.Controllers
                 result.ErrorMessage = error.ErrorMessage;              
             }
             
+            return Json(result, "application/json", JsonRequestBehavior.AllowGet);
+        }
+        //verifyAccountWithInfo
+        [HttpPost]
+        public JsonResult THC_Member_02_1()
+        {
+            THC_Library.Error error = null;
+            string strTick = Request.Headers["QPID-TICK"];
+            string strData = Request.Headers["QPID-DATA"];
+            error = WebTHCAPP.Models.RequestChecker.CheckRequest(strTick, strData);
+
+            Models.ResultWithInfo result = new Models.ResultWithInfo();
+            if (error == null)
+            {
+                var reqMail = Request.Form["mail"];
+                var reqPwd = Request.Form["pwd"];
+                int state;
+                string name, mobil, addr, iid, gender, age;
+                Models.Member member = new Models.Member();
+                long lgTimestamp = member.verifyAccountWitInfo(reqMail, reqPwd, out state, out name, out mobil, out addr, out iid, out gender, out age, out error);
+                if (lgTimestamp > -1)
+                {
+                    result.Verify = 1;
+                    result.Ticket = lgTimestamp.ToString();
+                    result.Acc = reqMail;
+                    result.Name = name;
+                    result.Mobil = mobil;
+                    result.Addr = addr;
+                    result.IId = iid;
+                    result.Gender = gender;
+                    result.Age = age;
+                }
+                else
+                {
+                    result.Ticket = lgTimestamp.ToString();
+                    result.Number = 10;
+                    result.Verify = 0;
+                    if (state == 1)
+                    {
+                        result.ErrorMessage = "帳號不存在";
+                    }
+                    else if (state == 2)
+                    {
+                        result.ErrorMessage = "密碼錯誤";
+                    }
+                    else
+                    {
+                        result.ErrorMessage = "登入錯誤";
+                    }
+                }
+            }
+
+            if (error != null)
+            {
+                result.Number = error.Number;
+                result.ErrorMessage = error.ErrorMessage;
+            }
+
             return Json(result, "application/json", JsonRequestBehavior.AllowGet);
         }
 
@@ -199,14 +273,11 @@ namespace WebTHCAPP.Controllers
                 var reqMail = Request.Form["ml"];
                 var reqTicket = Request.Form["tk"];
                 var reqMobil = Request.Form["m"];
-                var reqGender = Request.Form["g"];
-                var reqAge = Request.Form["a"];
                 var reqIId = Request.Form["iid"];
                 var reqAddr = Request.Form["addr"];
 
                 Models.Member member = new Models.Member();
-                int iRowCount = member.updateAccount(reqMail, reqTicket, reqMobil, reqGender,
-                                    reqAge, reqIId, reqAddr, out error);
+                int iRowCount = member.updateAccount(reqMail, reqTicket, reqMobil, reqIId, reqAddr, null, out error);
                 if (iRowCount > 0)
                 {
                     result.Verify = 1;                    
@@ -226,6 +297,46 @@ namespace WebTHCAPP.Controllers
                 result.ErrorMessage = error.ErrorMessage;               
             }
            
+            return Json(result, "application/json", JsonRequestBehavior.AllowGet);
+        }
+
+        //renewAccountMobil
+        [HttpPost]
+        public JsonResult THC_Member_04_m()
+        {
+            THC_Library.Error error = null;
+            string strTick = Request.Headers["QPID-TICK"];
+            string strData = Request.Headers["QPID-DATA"];
+            error = WebTHCAPP.Models.RequestChecker.CheckRequest(strTick, strData);
+            Models.Result result = new Models.Result();
+
+            if (error == null)
+            {
+                var reqMail = Request.Form["ml"];
+                var reqTicket = Request.Form["tk"];
+                var reqMobil = Request.Form["m"];
+               
+                Models.Member member = new Models.Member();
+                int iRowCount = member.updateAccountMobil(reqMail, reqTicket, reqMobil, out error);
+                if (iRowCount > 0)
+                {
+                    result.Verify = 1;
+                    result.Addition = iRowCount.ToString();
+                }
+                else
+                {
+                    result.Number = 20;
+                    result.Verify = 0;
+                    result.ErrorMessage = "資料未更新錯誤";
+                }
+            }
+
+            if (error != null)
+            {
+                result.Number = error.Number;
+                result.ErrorMessage = error.ErrorMessage;
+            }
+
             return Json(result, "application/json", JsonRequestBehavior.AllowGet);
         }
 
@@ -295,12 +406,16 @@ namespace WebTHCAPP.Controllers
                 var reqLat = Request.Form["lat"];
                 var reqLong = Request.Form["lng"];
                 var reqRewardName = Request.Form["rwd"];
+                var reqECNumber = Request.Form["ec"];
+                var reqRewardType = Request.Form["rwdtype"];
+                var reqWinDesc = Request.Form["windesc"];
                 var reqTicket = Request.Form["tk"];
                 
 
                 Models.Member member = new Models.Member();
                 member.newRecord( reqEventKey, reqCode, reqDate, reqAcc, reqAge, reqGender, reqArea,
-                                    reqTempture, reqWeather, reqLat, reqLong, reqRewardName, reqTicket, out error);
+                                    reqTempture, reqWeather, reqLat, reqLong, reqRewardName, reqECNumber, reqRewardType,
+                                    reqWinDesc, reqTicket, out error);
 
                 if (error == null)
                 {
@@ -333,7 +448,7 @@ namespace WebTHCAPP.Controllers
 
         //login from activity
         //[HttpPost]
-        public ActionResult THC_Member_07(string acc, string tk)
+        public ActionResult THC_Member_07(string acc, string evt, string tk)
         {
             THC_Library.Error error = null;
             //string strTick = Request.Headers["QPID-TICK"];
@@ -341,7 +456,7 @@ namespace WebTHCAPP.Controllers
             //error = WebTHCAPP.Models.RequestChecker.CheckRequest(strTick, strData);
             Models.Result result = new Models.Result();
 
-            if (string.IsNullOrEmpty(acc) || string.IsNullOrEmpty(tk))
+            if (string.IsNullOrEmpty(acc) || string.IsNullOrEmpty(evt) || string.IsNullOrEmpty(tk))
             {
                 return View("../Error/NotAllow");
             }
@@ -353,6 +468,7 @@ namespace WebTHCAPP.Controllers
             {
                 Models.AppSession appSession = new Models.AppSession();
                 appSession.Account = acc;
+                appSession.EventNo = int.Parse(evt);
                 appSession.Ticket = newTicket;
 
                 Session["tk"] = appSession;
@@ -371,6 +487,44 @@ namespace WebTHCAPP.Controllers
                 return View("../Error/SystemError");
             }
             
+        }
+
+        [HttpPost]
+        public JsonResult THC_Member_08(string acc, string authkey)
+        {
+            THC_Library.Error error = null;
+            string strTick = Request.Headers["QPID-TICK"];
+            string strData = Request.Headers["QPID-DATA"];
+            error = WebTHCAPP.Models.RequestChecker.CheckRequest(strTick, strData);
+            Models.Result result = new Models.Result();
+
+            if (error == null)
+            {
+                var reqAcc = Request.Form["acc"];
+                var reqTicket = Request.Form["tk"];
+
+                Models.Member member = new Models.Member();
+                Models.AccountInfo accInfo = member.getAccountInfoNoTicket(reqAcc, out error);
+                if (accInfo != null)
+                {
+                    return Json(accInfo, "application/json", JsonRequestBehavior.AllowGet);                   
+                }
+                else
+                {
+                    result.Number = 22;
+                    result.Verify = 0;
+                    result.ErrorMessage = "無效資料";                    
+                }
+            }
+
+            if (error != null)
+            {
+                result.Number = error.Number;
+                result.ErrorMessage = error.ErrorMessage;
+            }
+
+            return Json(result, "application/json", JsonRequestBehavior.AllowGet);
+
         }
 
         [HttpPost]
@@ -397,7 +551,7 @@ namespace WebTHCAPP.Controllers
 
             Models.Member member = new Models.Member();
             int iRowCount = member.updateAccount(reqMail, reqTicket, reqMobil, reqGender,
-                                reqAge, reqIId, reqAddr, out error);
+                                reqAge, reqIId, reqAddr, null, out error);
 
             if (error == null)
             {
@@ -423,6 +577,114 @@ namespace WebTHCAPP.Controllers
 
             return Json(result, "application/json", JsonRequestBehavior.AllowGet);
         }
+        //
+        [HttpPost]
+        public ActionResult RenewUserInfo2(HttpPostedFileBase userFile)
+        {
+            byte[] bImage = null;
+
+            THC_Library.Error error;
+            Models.Result result = new Models.Result();
+
+            if (Session["tk"] == null)
+            {
+                result.Number = 999;
+                result.Verify = 0;
+                result.ErrorMessage = "無效的操作";
+                return Json(result, "application/json", JsonRequestBehavior.AllowGet);
+            }
+
+            var reqMail = Request.Form["ml"];
+            var reqTicket = Request.Form["tk"];
+            var reqMobil = Request.Form["m"];
+            var reqGender = Request.Form["g"];
+            var reqAge = Request.Form["a"];
+            var reqIId = Request.Form["iid"];
+            var reqAddr = Request.Form["addr"];
+
+            Models.Member member = new Models.Member();
+
+            if (userFile != null)
+            {
+                bImage = member.compressImage(userFile.InputStream);
+            }
+
+            int iRowCount = member.updateAccount(reqMail, reqTicket, reqMobil, reqGender,
+                                reqAge, reqIId, reqAddr, bImage, out error);
+
+            if (error == null)
+            {
+                if (iRowCount > 0)
+                {
+                    result.Number = 0;
+                    result.Verify = 1;
+                    result.Addition = iRowCount.ToString();
+                }
+                else
+                {
+                    result.Number = 20;
+                    result.Verify = 0;
+                    result.ErrorMessage = "資料未更新錯誤";
+                }
+            }
+            else
+            {
+                result.Number = error.Number;
+                result.ErrorMessage = error.ErrorMessage;
+            }
+
+            return Json(result, "application/json", JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpPost]
+        public ActionResult MyPoto()
+        {  
+            THC_Library.Error error;
+            Models.Result result = new Models.Result();
+
+            //if (Session["tk"] == null)
+            //{
+            //    result.Number = 10;
+            //    result.Verify = 0;
+            //    result.ErrorMessage = "無效的操作";
+            //    return Json(result, "application/json", JsonRequestBehavior.AllowGet);
+            //}
+
+            //Models.AppSession appSession = (Models.AppSession)Session["tk"];
+            //var reqMail = appSession.Account;
+            //var reqTicket = appSession.Ticket;
+
+            var reqMail = Request.Form["ml"];
+            var reqTicket = Request.Form["tk"];
+           
+            Models.Member member = new Models.Member();
+                       
+            byte[] myPoto = member.getMyPoto(reqMail, reqTicket, out error);
+
+            if (error == null)
+            {                
+                if (myPoto != null)
+                {
+                    result.Number = 0;
+                    result.Verify = 1;
+                    result.Addition = "data:image/png;base64," + Convert.ToBase64String(myPoto, 0, myPoto.Length);
+                }
+                else
+                {
+                    result.Number = 21;
+                    result.Verify = 0;
+                    result.ErrorMessage = "取得圖檔錯誤";
+                }
+            }
+            else
+            {
+                result.Number = error.Number;
+                result.ErrorMessage = error.ErrorMessage;
+            }
+
+            return Json(result, "application/json", JsonRequestBehavior.AllowGet);
+        }
 
         [HttpPost]
         public ActionResult ForgestPassword()
@@ -438,12 +700,14 @@ namespace WebTHCAPP.Controllers
 
             if (error == null)
             {
+                //String myURL = HttpContext.Request.Url.Host;
                 String strPathAndQuery = Request.Url.PathAndQuery;
                 String strUrl = Request.Url.AbsoluteUri.Replace(strPathAndQuery, "/");
-
+               
                 Models.MailClass mail = new Models.MailClass();
                 mail.Send(reqMail, accessCode, strUrl, out error);
 
+                
                 if (error != null)
                 {
                     result.Number = error.Number;
@@ -466,6 +730,7 @@ namespace WebTHCAPP.Controllers
 
         public ActionResult AccessRestPassword(string acc, string access)
         {
+            //http://60.251.140.166/WebTHCApp/Members/AccessRestPassword?acc=tungken@gmail.com&access=29b67e6e0c874958989747007b1d4e8c
             THC_Library.Error error;
             Models.Result result = new Models.Result();
 

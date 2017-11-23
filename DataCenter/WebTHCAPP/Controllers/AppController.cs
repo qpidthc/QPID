@@ -12,7 +12,7 @@ namespace WebTHCAPP.Controllers
         // GET: App
         public ActionResult Index()
         {
-            return View("HistoryList");
+            return View();
         }
 
         public ActionResult HistoryList()
@@ -21,14 +21,14 @@ namespace WebTHCAPP.Controllers
             THC_Library.Error error;
 
             //Models.Member member = new Models.Member();
-            //DataTable resultTable = member.getRewardGain(acc, out error);
-
+            //DataTable resultTable = member.getRewardGain("test@gmail.com", out error);
+                        
             //if (error != null)
             //{
             //    return View(resultTable);
             //}
             //else
-            //{
+            //{                
             //    return View(resultTable);
             //}
 
@@ -50,12 +50,32 @@ namespace WebTHCAPP.Controllers
                     @ViewBag.NUMBER = error.Number;
                     @ViewBag.ERROR = error.ErrorMessage;
                     return View("../Error/SystemError");
-                
+
                 }
             }
             else
             {
-                return View("../Error/NotAllow");
+                return RedirectToAction("", "App");
+                //return View("../Error/NotAllow");
+            }            
+        }
+
+        public ActionResult WinDesc(string activity , string page)
+        {
+            //ViewBag.ACTIVITY = activity;
+            //ViewBag.PAGE = page;
+            //return View();
+
+            if (Session["tk"] != null)
+            {
+                ViewBag.ACTIVITY = activity;
+                ViewBag.PAGE = page;
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("", "App");
+                //return View("../Error/NotAllow");
             }            
         }
 
@@ -63,26 +83,89 @@ namespace WebTHCAPP.Controllers
         {           
             THC_Library.Error error;
 
-            //Models.Activity activity = new Models.Activity();
-            //DataTable resultTable = activity.getActivities(out error);
-
-            //if (error != null)
+            //int EventNo = 1037;
+            //if (EventNo < 0)
             //{
-            //    return View(resultTable);
+            //    Models.Activity activity = new Models.Activity();
+            //    DataTable resultTable = activity.getActivities(out error);
+
+            //    if (error == null)
+            //    {
+            //        return View(resultTable);
+            //    }
+            //    else
+            //    {
+            //        @ViewBag.NUMBER = error.Number;
+            //        @ViewBag.ERROR = error.ErrorMessage;
+            //        return View("../Error/SystemError");
+            //    }
             //}
             //else
             //{
-            //    return View(resultTable);
+            //    return RedirectToAction("Activity", "App");
             //}
 
             if (Session["tk"] != null)
             {
+                Models.AppSession appSession = (Models.AppSession)Session["tk"];
+                if (appSession.EventNo < 0)
+                {
+                    Models.Activity activity = new Models.Activity();
+                    DataTable resultTable = activity.getActivities(out error);
+
+                    if (error == null)
+                    {
+                        return View(resultTable);
+                    }
+                    else
+                    {
+                        @ViewBag.NUMBER = error.Number;
+                        @ViewBag.ERROR = error.ErrorMessage;
+                        return View("../Error/SystemError");
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("Activity", "App");
+                }
+            }
+            else
+            {
+                return RedirectToAction("", "App");
+            }            
+        }
+
+        public ActionResult Activity()
+        {
+            THC_Library.Error error;
+            string strPage;
+            
+            //Models.Activity activity = new Models.Activity();
+            //activity.getActivity(1037, out strPage, out error);
+
+            //if (error == null)
+            //{
+            //    ViewBag.PAGE = strPage;
+            //    return View();
+            //}
+            //else
+            //{
+            //    @ViewBag.NUMBER = error.Number;
+            //    @ViewBag.ERROR = error.ErrorMessage;
+            //    return View("../Error/SystemError");
+            //}
+
+            if (Session["tk"] != null)
+            {
+                Models.AppSession appSession = (Models.AppSession)Session["tk"];
+
                 Models.Activity activity = new Models.Activity();
-                DataTable resultTable = activity.getActivities(out error);
+                activity.getActivity(appSession.EventNo, out strPage, out error);
 
                 if (error == null)
                 {
-                    return View(resultTable);
+                    ViewBag.PAGE = strPage;
+                    return View();
                 }
                 else
                 {
@@ -93,8 +176,8 @@ namespace WebTHCAPP.Controllers
             }
             else
             {
-                return View("../Error/NotAllow");
-            }            
+                return RedirectToAction("", "App");
+            }
         }
 
         public ActionResult ActivityDesc(string page)
@@ -109,7 +192,7 @@ namespace WebTHCAPP.Controllers
             }
             else
             {
-                return View("../Error/NotAllow");
+                return RedirectToAction("", "App");
             }            
         }
 
@@ -117,17 +200,26 @@ namespace WebTHCAPP.Controllers
         {
             THC_Library.Error error;
             //Models.Member m = new Models.Member();
-            //Models.AccountInfo acc = m.getAccountInfo("Test@gmail.com", "636401686312802583", out error);
+            //Models.AccountInfo acc = m.getAccountInfo("Test@gmail.com", "636461981531234989", out error);
 
             //if (error == null)
             //{
-            //    ViewBag.TICKET = "636401686312802583";
+            //    ViewBag.TICKET = "636461981531234989";
             //    ViewBag.ACC = "Test@gmail.com";
             //    ViewBag.MOBIL = acc.Mobil;
             //    ViewBag.GENDER = acc.Gender;
             //    ViewBag.AGE = acc.Age;
             //    ViewBag.IID = acc.IId;
             //    ViewBag.ADDRESS = acc.Address;
+            //    if (acc.Image != null)
+            //    {
+            //        ViewBag.IMAGE = "data:image/png;base64," + Convert.ToBase64String(acc.Image, 0, acc.Image.Length);
+            //    }
+            //    else
+            //    {
+            //        ViewBag.IMAGE = null;
+            //    }
+
             //    return View();
             //}
             //else
@@ -152,6 +244,14 @@ namespace WebTHCAPP.Controllers
                     ViewBag.AGE = acc.Age;
                     ViewBag.IID = acc.IId;
                     ViewBag.ADDRESS = acc.Address;
+                    if (acc.Image != null)
+                    {
+                        ViewBag.IMAGE = "data:image/png;base64," + Convert.ToBase64String(acc.Image, 0, acc.Image.Length);
+                    }
+                    else
+                    {
+                        ViewBag.IMAGE = null;
+                    }
                     return View();
                 }
                 else
@@ -163,7 +263,7 @@ namespace WebTHCAPP.Controllers
             }
             else
             {
-                return View("../Error/NotAllow");
+                return RedirectToAction("login", "App");
             }                       
         }       
        
@@ -174,7 +274,83 @@ namespace WebTHCAPP.Controllers
 
         public ActionResult About()
         {
-            return View("");
+            return View();
+        }
+
+        public ActionResult Login()
+        {
+            if (Session["tk"] != null)
+            {
+                return View("Index");
+            }
+
+            var acc = Request.Form["txt_account"];
+            var pwd = Request.Form["txt_pwd"];
+
+            if (String.IsNullOrEmpty(acc) && String.IsNullOrEmpty(pwd))
+            {
+                return View();
+            }
+            else
+            {
+                if (String.IsNullOrEmpty(acc) && !String.IsNullOrEmpty(pwd))
+                {
+                    ViewBag.ERROR = "請輸入帳號";
+                    return View();
+                }
+                else if (!String.IsNullOrEmpty(acc) && String.IsNullOrEmpty(pwd))
+                {
+                    ViewBag.ERROR = "請輸入密碼";
+                    return View();
+                }
+                else
+                {
+                    THC_Library.Error error;
+                    int state;
+                    Models.Member member = new Models.Member();
+                    long newTicket = member.verifyAccount(acc, pwd, out state, out error);
+
+                    if (error != null)
+                    {
+                        ViewBag.ERROR = "系統錯誤";
+                        return View();
+                    }
+                    else
+                    {
+                        if (newTicket == -1)
+                        {
+                            if (state == 1)
+                            {
+                                ViewBag.ERROR = "帳號不存在";
+                            }
+                            else if (state == 2)
+                            {
+                                ViewBag.ERRORe = "密碼錯誤";
+                            }
+                            else
+                            {
+                                ViewBag.ERROR = "登入錯誤";
+                            }
+                            ViewBag.ACC = acc;
+                            return View();
+                        }
+                        else
+                        {
+                            Models.AppSession appSession = new Models.AppSession();
+                            appSession.Account = acc;
+                            appSession.EventNo = -1;
+                            appSession.Ticket = newTicket;
+                            Session["tk"] = appSession;
+                            ViewBag.ACC = acc;
+                            ViewBag.TICKET = newTicket;
+
+                            return RedirectToAction("", "App");
+                            //Response.Redirect("/");
+                            //return View("Index");
+                        }
+                    }
+                }               
+            }
         }
 
         [HttpPost]
