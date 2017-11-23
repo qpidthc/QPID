@@ -25,14 +25,35 @@
     .cp{
         color:#cc3300;
     }
+
+     h3 {
+        color:#808080;
+    }
+
+    .link{
+         color:#42A8DF;
+    }
+
+    span{
+        text-decoration:none;
+    }
+
+    .win_img{
+        float:right;
+        margin-top:-20px;
+    }
 </style>
 
     <div class="content inputcontent text-center">
         <div style="clear:both"></div>
-        <h3 class="blk">活動中獎紀錄</h3>
-        <div class="listpanel" id="scroll" style="height:575px;overflow-x:hidden ;overflow-y: scroll;border: 1px solid #fff;">
+        <br />
+        <img id="img" style="" src="~/images/winning.png">
+        <br />
+        <br />
+        <div class="listpanel" id="scroll" style="height:575px;overflow-x:hidden ;overflow-y: scroll;border: 1px solid #fff;border-radius:8px;padding-top:5px;padding-bottom:5px;padding-left:10px;padding-right:10px;">
+
             <div>
-                
+
                 @{
                     if (Model != null)
                     {
@@ -40,82 +61,47 @@
                         {
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <div class="listheader">
+                                    <div class="col-xs-12 col-xs-offset-0" style="border:1px solid #dcd9d9;background-color:rgba(0,0,0,0.2);">
+                                        <hr style="color:blue!important;height:1px;" />
+                                    </div>
+                                                   
+                                    @if(@row["EUR015"].ToString() == "0")
+                                    {
+                                    <div style="text-align:left;padding-top:30px;padding-bottom:10px;">
+                                        <p style="font-size:large;color:black!important;">@row["AE003"] @row["AE008"]</p>
+                                        中獎序號 @row["EUR014"]
+                                        <img class="win_img" src="~/images/win_desc_1.png" act="@row["AE003"]" windesc="@row["EUR016"]" /> 
+                                    </div>
+                                    }
+                                    else
+                                    {
+                                    <div style="text-align:left;padding-top:30px;padding-bottom:10px;">
+                                        <p style="font-size:large;color:black!important;">@row["AE003"] @row["AE008"]</p>
+                                        中獎獎項 @row["EUR013"]                                       
+                                    </div>
+                                    }
+                                   
+                                    
+                                    @*<div class="listheader">
                                         <div class="title col-xs-9">@row["AE003"]</div>
-                                        <div class="link col-xs-3"><strong class="cp">恭喜中獎</strong></div>
+                                        <div class="link col-xs-3"><a src="~images/win_desc_1.png"><strong class="cp">恭喜中獎</strong></a></div>
                                     </div>
                                     <div class="listcontent">
                                         <div class="thumb"><img src="~/images/bonuse.png" /></div>
                                         <div class="description">
-                                            活動期間 @row["AE005"] ~ @row["AE006"] <br />                                            
+                                            活動期間 @row["AE005"] ~ @row["AE006"] <br />
                                             活動系列 @row["AE008"]<br />
                                             掃描時間 @row["EUR004"]<br />
                                             得獎獎項 @row["EUR013"]<br />
-                                            
+
                                         </div>
-                                    </div>
+                                    </div>*@
                                 </div>
                             </div>
                         }
                     }
-                }
+                }                                
 
-                <!-- 
-                     <div class="row">
-                    <div class="col-xs-12">
-                        <div class="listheader">
-                            <div class="title col-xs-9">99Happy Family 快樂加入中友家族</div>
-                            <div class="link col-xs-3"><a href="">如何加入</a></div>
-                        </div>
-                        <div class="listcontent" >
-                            <div class="thumb"><img src="~/images/bonuse.png" /></div>
-                            <div class="description">
-                                只要滿18歲以上，填寫資料，...<br />
-                                只要滿18歲以上，填寫資料，...<br />
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-xs-12">
-                        <div class="listheader">
-                            <div class="title col-xs-9">99Happy Family 快樂加入中友家族</div>
-                            <div class="link col-xs-3"><a href="">如何加入</a></div>
-                        </div>
-                        <div class="listcontent">
-                            <div class="thumb"><img src="images/bonuse.png" /></div>
-                            <div class="description">
-                                只要滿18歲以上，填寫資料，...<br />
-                                只要滿18歲以上，填寫資料，...<br />
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                                只要滿18歲以上，填寫資料，...
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                -->
-               
-                             
             </div>
 
         </div><!--end listpanel-->
@@ -134,18 +120,24 @@
 <script>
 
     $(document).ready(function () {
-            
+
 
         var screenHigth = (typeof window.outerHeight != 'undefined') ?
-            Math.max(window.outerHeight, $(window).height()) : $(window).height();
-
+               Math.max(window.outerHeight, $(window).height()) : $(window).height();
         var fixedHeader = $("#div_header").height();
-
-        var title = $(".blk").height();
-               
-        var contentHeight = screenHigth - fixedHeader - title - 50;
-                
+        var img = $("#img").height();
+        var contentHeight = screenHigth - fixedHeader - img - 80;
         $("#scroll").height(contentHeight + 'px');
+               
+
+        $(".win_img").click(function () {
+
+            //alert($(this).attr('windesc'));
+
+            window.location.href = "@Url.Content("~/")App/WinDesc?activity=" +
+                        $(this).attr('act') +
+                        "&page=" + $(this).attr('windesc');
+        });
 
 
     });

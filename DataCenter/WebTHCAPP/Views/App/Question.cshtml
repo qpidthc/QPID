@@ -42,8 +42,12 @@
 
 <div class="content inputcontent text-center">
     <div style="clear:both"></div>
-    <h3 class="blk">常見問題</h3>
-    <div class="listpanel" id="scroll" style="height:575px;overflow-x:hidden ;overflow-y: scroll;border: 1px solid #fff;">
+    <br />
+    <img id="img" style="" src="~/images/question.png">
+    <br />
+    <br />
+
+    <div class="listpanel" id="scroll" style="height:575px;overflow-x:hidden ;overflow-y: scroll;border: 1px solid #fff;border-radius:8px;padding-top:5px;padding-bottom:5px;padding-left:10px;padding-right:10px;">
         <div style="text-align:left;">
 
             <ul>                
@@ -204,22 +208,14 @@
 <script>
 
     $(document).ready(function () {
-
-
+        
         var screenHigth = (typeof window.outerHeight != 'undefined') ?
-            Math.max(window.outerHeight, $(window).height()) : $(window).height();
-
+               Math.max(window.outerHeight, $(window).height()) : $(window).height();
         var fixedHeader = $("#div_header").height();
-
-        var title = $(".blk").height();
-
-        var contentHeight = screenHigth - fixedHeader - title - 50;
-
+        var img = $("#img").height();
+        var contentHeight = screenHigth - fixedHeader - img - 80;
         $("#scroll").height(contentHeight + 'px');
 
-
     });
-
-
 
 </script>

@@ -21,7 +21,7 @@
         }
 
         nav img {
-            padding-left: 20px;
+            margin-left:20px;
         }
 
         nav div {
@@ -42,7 +42,7 @@
             <ul>
                 <li>
                     <a>
-                        <img src="~/images/user-175.png" class="userpic" /><br>
+                        <img id="QPID_MYPOTO" name="QPID_MYPOTO" src="~/images/user-175.png" class="userpic" style="width:100px;height:100px;" /><br>
                         <div class="userphone">@ViewBag.ACC</div>
                     </a>
                     <hr class="divsion" />
@@ -74,7 +74,44 @@
     <script type="text/javascript">
             $(function() {
                 $('nav#menu').mmenu();
+
+                if (typeof Storage !== "undefined") {
+
+                    if (window.localStorage.QPID_MYPOTO) {
+                        if (window.localStorage.QPID_MYPOTO.length > 0) {
+                            $("#QPID_MYPOTO").attr('src', window.localStorage.QPID_MYPOTO);
+                        }
+                    }
+                }
             });
+
+            function getMyPoto() {
+
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    url: '@Url.Content("~/")Members/MyPoto',
+                    data: "",
+                    dataType: 'json',
+                    success: function (data, status, xhr) {
+
+                        if (data.Number == "0") {
+                            window.localStorage.QPID_MYPOTO = data.Addition;
+                            $("#QPID_MYPOTO").attr('src', window.localStorage.QPID_MYPOTO);
+                        } else {
+                            //alert(data.ErrorMessage);
+                        }
+                    },
+                    error: function (request, error) {
+                        alert(error + " : " + request.responseText);
+                    },
+                    complete: function () {
+
+                    }
+                });
+
+            }
+
 
     </script>
 </body>

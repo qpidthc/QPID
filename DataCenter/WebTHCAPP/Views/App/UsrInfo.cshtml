@@ -1,21 +1,39 @@
 ﻿
 @{
+    ViewBag.Title = "QPID APP";
     Layout = "~/Views/Shared/_THC.cshtml";
 }
 
 
 <div class="content inputcontent">
     <div style="clear:both"></div>
-    <div class="text-center">
-        <h3 class="blk" style="color:#fff;">個人資料編輯</h3>
-    </div>
-    
+    @if (!String.IsNullOrEmpty( ViewBag.IMAGE) )
+    {
+        <br />
+        <img id="imgPoto" onclick="imgClick();" style="margin: 0 auto;display: block;height:100px;width:100px;border-radius: 50%;" src="@ViewBag.IMAGE" >
+        <br />
+        <div id="info2" style="text-align:center;">
+            <span id="hh" style="font-size:22px;color:#ffffff;">個人資料</span>
+        </div>
+    }
+    else
+    {
+        <br />
+    <img id="imgPoto" onclick="imgClick();" style="margin: 0 auto;display: block;" src="~/images/userImg.png">
+        <br />
+        <div id="info2" style="text-align:center;display:none;">
+            <span id="hh" style="font-size:22px;color:#ffffff;">個人資料</span>
+        </div>
+
+    }
+   
+       
     <div class="row">
         <form>
             <div class="col-xs-8 col-xs-offset-2">
                 <div class="col-xs-12">
-                    <div class="form-group">
-                        <h3>帳號 : @ViewBag.ACC</h3>                        
+                    <div class="form-group" style="text-align:center;">
+                        <h3>帳號 : @ViewBag.ACC</h3>
                     </div>
                 </div>
                 <div class="col-xs-12">
@@ -213,12 +231,23 @@
                         <input id="txt_floor" name="txt_floor" type="number" class="form-control qpid-input" style="width: 100%" />
                     </div>
                 </div>
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label id="lbl_floor" for="txt_floor">頭像圖檔</label>
+                        <input id="userFile" name="userFile" type="file" class="form-control qpid-input" style="width: 100%" />
+                    </div>
+                   
+                </div>
                 <button id="btn_next" name="btn_next" onclick="subData();" type="button" class="form-control qpid-btn">確  認</button>
 
             </div>
         </form>
     </div>
 </div>
+
+
+
+<script src="~/js/ajaxfileupload.js"></script>
 
 <script>
 
@@ -232,56 +261,68 @@
 
     $(document).ready(function () {
 
-         @{                        
+        @{
 
              if (!string.IsNullOrEmpty(ViewBag.ACC))
              {
                  <text>
-         acc = '@ViewBag.ACC';
-                 </text>
+        acc = '@ViewBag.ACC';
+        </text>
              }
 
              if (!string.IsNullOrEmpty(ViewBag.TICKET))
              {
                  <text>
-         tk = '@ViewBag.TICKET';
-                 </text>
+        tk = '@ViewBag.TICKET';
+        </text>
              }
 
              if (!string.IsNullOrEmpty(ViewBag.MOBIL))
              {
                  <text>
-         m = '@ViewBag.MOBIL';
-                 </text>
+        m = '@ViewBag.MOBIL';
+        </text>
              }
 
              if (!string.IsNullOrEmpty(ViewBag.GENDER))
              {
                  <text>
-         g = '@ViewBag.GENDER';
-                 </text>
+        g = '@ViewBag.GENDER';
+        </text>
              }
 
              if (!string.IsNullOrEmpty(ViewBag.AGE))
              {
                  <text>
-         a = '@ViewBag.AGE';
-                 </text>
+        a = '@ViewBag.AGE';
+        </text>
              }
 
              if (!string.IsNullOrEmpty(ViewBag.IID))
              {
                  <text>
-         iid = '@ViewBag.IID';
-                 </text>
+        iid = '@ViewBag.IID';
+        </text>
              }
 
              if (!string.IsNullOrEmpty(ViewBag.ADDRESS))
              {
                  <text>
-         address = '@ViewBag.ADDRESS';
+        address = '@ViewBag.ADDRESS';
         </text>
              }
+
+             <text>
+        if (typeof Storage !== "undefined") {
+            var remoteImg = '@ViewBag.IMAGE';
+            if (remoteImg != window.localStorage.QPID_MYPOTO) {
+                window.localStorage.QPID_MYPOTO = remoteImg;
+                $("#QPID_MYPOTO").attr('src', remoteImg);
+            }
+        }
+
+        </text>
+
 
          }
 
@@ -379,19 +420,23 @@
         var addr = city + "*" + town + "*" + road + "*" +
             lane + "*" + alley + "*" + no + "*" + floor;
 
-        var needUpdate = false;
+        var needUpdate = true;
 
-        if (address != addr) {
-            needUpdate = true;
-        }
+        //if (address != addr) {
+        //    needUpdate = true;
+        //}
 
-        if (m != mobil) {
-            needUpdate = true;
-        }
+        //if (m != mobil) {
+        //    needUpdate = true;
+        //}
 
-        if (iid != id) {
-            needUpdate = true;
-        }
+        //if (iid != id) {
+        //    needUpdate = true;
+        //}
+
+        //if ($("#userFile").val().length > 0) {
+        //    needUpdate = true;
+        //}
 
         if (needUpdate) {
 
@@ -399,8 +444,14 @@
                 "&g=" + gender + "&a=" + age + "&iid=" + id +
                 "&addr=" + addr;
 
-            updateInfo(data);
+            //updateInfo(data);
+            updateInfo2(acc, tk, mobil, gender, age, id, addr);
+
         }
+    }
+
+    function imgClick() {
+        $("#userFile").trigger('click'); 
     }
 
     function updateInfo(data) {
@@ -413,26 +464,93 @@
             dataType: 'json',
             success: function (data, status, xhr) {
 
-                //alert(data.ErrorMessage);
-                //jDatas = jQuery.parseJSON(data);
-
                 if (data.Number == "0") {
                     alert(' 修 改 完 成 ');
                 } else {
                     alert(data.ErrorMessage);
                 }
-                /*
-                 if (jDatas.length == 1) {
-                    if (jDatas[0].VERIFY == "1") {
-                        nextStep();
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+
+            }
+        });
+
+    }
+
+    function updateInfo2(acc, tk, mobil, gender, age, id, addr) {
+
+        $("#div_wait").show();
+        var data = {
+            ml: acc,
+            tk: tk,
+            m: mobil,
+            g: gender,
+            a: age,
+            iid: id,
+            addr: addr
+        };
+
+        $.ajaxFileUpload(
+            {
+                url: '@Url.Content("~/")Members/RenewUserInfo2',
+                secureuri: false,
+                data: data,
+                fileElementId: 'userFile',
+                dataType: 'json',
+                success: function (data, status) {
+                    $("#div_wait").hide();
+
+                    if (data.Number == "0") {
+                        alert(' 修 改 完 成 ');
+                        window.location.reload();
+                    } else {
+                        if (data.Number == 999) {
+                            window.location.href = '@Url.Content("~/")app/Loin';
+                        } else {
+                            alert(data.ErrorMessage);
+                        }
+
                     }
-                } else {
-                    if (jDatas.ErrorMessage) {
-                       
-                    }
+                },
+                error: function (data, status, e) {
+                    $("#div_wait").hide();
+                    showQMoal('e', true, e, 0, null);
                 }
-                */
-               
+            }
+        );
+    }
+
+    function getMyPoto(){
+
+        alert('getMyPoto');
+        var data = "ml=" + acc + "&tk=" + tk;
+        $.ajax({
+            async: true,
+            type: "POST",
+            url: '@Url.Content("~/")Members/MyPoto',
+            data: data,
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                if (data.Number == "0") {
+
+                    $("#imgPoto").attr('src', data.Addition);
+                    $("#imgPoto").css('height', '100px');
+                    $("#imgPoto").css('width', '100px');
+                    $("#imgPoto").css('border-radius', '50%');
+                    $("#info2").show();
+                    if (typeof Storage !== "undefined") {
+                        window.localStorage.QPID_MYPOTO = data.Addition;
+                        $("#QPID_MYPOTO").attr('src', window.localStorage.QPID_MYPOTO);
+                    }
+
+                } else {
+                    //alert(data.ErrorMessage);
+                }
+                alert(' 修 改 完 成 ');
             },
             error: function (request, error) {
                 alert(error + " : " + request.responseText);

@@ -22,7 +22,7 @@
         }
 
         nav img {
-            padding-left:20px;
+            margin-left:20px;
         }
 
         nav div {
@@ -33,8 +33,27 @@
             font-size:18px;
             padding-left:20px;
         }
+
+        .popup-content-box {
+            background-color: white;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            -ms-transform: translate(-50%,-50%);
+            -moz-transform: translate(-50%,-50%);
+            -webkit-transform: translate(-50%,-50%);
+            transform: translate(-50%,-50%);
+            width: 150px;
+            height: 150px;
+            border: 2px solid black;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 10px 10px 5px #a3a3a3;
+            display: none;
+        }
         
     </style>
+
 </head>
 
 <body class="bg2">
@@ -42,9 +61,10 @@
 
         <nav id="menu">
             <ul >
-                <li >
+                <li >                    
                     <a>
-                        <img src="~/images/user-175.png" class="userpic" /><br>
+                        <img id="QPID_MYPOTO" name="QPID_MYPOTO" src="~/images/user-175.png" class="userpic" style="width:100px;height:100px;" />
+                        <br>
                         <div class="userphone">@ViewBag.ACC</div>
                     </a>
                     <hr class="divsion" />
@@ -66,18 +86,68 @@
         <div class="header-bar fixed" id="div_header">
             <a id="a_menu" href="#menu"><span></span></a><i class="backbtn fa fa-times pull-right" aria-hidden="true" style="display:none;"></i>
             <i id="i_reply" class="backbtn fa fa-reply pull-left" aria-hidden="true" style="display:none;margin-left:-40px;"></i>            
-            <div class="logo w30"><img src="~/images/logo.png" class="logo-img" /></div>
+            <div class="logo w30"><img src="~/images/logo.png" class="logo-img" onclick="goIndex();" /></div>
         </div>
 
         @RenderBody()
             
     </div>
 
+    <div id="div_wait" class="popup-content-box">
+        <div style="margin:10px;">
+            <img src="~/images/wait.gif" style="width:120px;height:80px;" />
+            <br />
+            <strong>資料傳送中</strong>
+        </div>
+    </div>
+
     <script type="text/javascript">
-            $(function() {
-                $('nav#menu').mmenu();
-            });
-                    
+    $(function () {
+        $('nav#menu').mmenu();
+
+        if (typeof Storage !== "undefined") {
+
+            if (window.localStorage.QPID_MYPOTO) {
+                if (window.localStorage.QPID_MYPOTO.length > 0) {
+                    $("#QPID_MYPOTO").attr('src', window.localStorage.QPID_MYPOTO);
+                } else {
+                    getMyPoto();
+                }
+            }
+        }
+    });
+
+    function goIndex() {
+        window.location.href = "@Url.Content("~/")App/index";
+    }
+
+    function getMyPoto() {
+                       
+        $.ajax({
+            async: false,
+            type: "POST",
+            url: '@Url.Content("~/")Members/MyPoto',
+            data: "",
+            dataType: 'json',
+            success: function (data, status, xhr) {
+
+                if (data.Number == "0") {
+                    window.localStorage.QPID_MYPOTO = data.Addition;
+                    $("#QPID_MYPOTO").attr('src', window.localStorage.QPID_MYPOTO);
+                } else {
+                    //alert(data.ErrorMessage);
+                }
+            },
+            error: function (request, error) {
+                alert(error + " : " + request.responseText);
+            },
+            complete: function () {
+
+            }
+        });
+
+    }
+
     </script>
 </body>
 

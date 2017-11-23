@@ -6,29 +6,49 @@
 
 <style>
     section{
-        color:#ffffff;
-        text-align:justify;
+        color:#000000;
+        text-align:justify;        
     }
     h1{
         color:#0033cc;
     }
+     #scroll::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    #scroll::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 10px;
+    }
+
+    #scroll::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    }
 </style>
 
 <div class="content inputcontent text-center">
-    <div style="clear:both"></div>
-    <h3 class="blk">關於我們</h3>
-    <img src="~/images/logo.svg">
-    <div class="row">
-        <div class="col-xs-10  col-xs-offset-1">
-            <h1 >八大構面挑戰最高品質榮譽</h1>
-            <section >
+    <div style="clear:both"></div>    
+    <br />
+    <img id="img" style="width:60px;height:60px;" src="~/images/information.png">
+    <br />
+    <br />
+    <span id="hh" style="font-size:22px;color:#ffffff;">關於我們</span>
+    <br />      
+    <br />
+    <div class="listpanel" id="scroll" style="height:575px;overflow-x:hidden ;overflow-y: scroll;border: 1px solid #fff;border-radius:8px;padding-top:5px;padding-bottom:5px;padding-left:10px;padding-right:10px;">
+
+        <div>
+
+            <h1>八大構面挑戰最高品質榮譽</h1>
+            <section>
                 宏全公司從草創時期的家庭代工生產吸管與瓶蓋內墊產品，隨著台灣經濟發展的腳步開始轉型跨及飲料相關包材及代工領域，經營團隊認真務實，績效不斷創新突破。
             </section>
             <section>
                 為提升公司整體經營體質，我們全員共識挑戰卓越經營管理最高品質榮譽-國家品質獎，公司全體同仁從上到下全心全力投入，展現八大構面的經營過程與績效，終於贏得評審委員的認同，榮獲國家品質獎的殊榮。這至高的榮耀屬於公司全體同仁、協力廠商與客戶所共享，得獎是肯定更是責任，宏全公司除積極拓展營運，將產業經營經驗與企業先進分享外，亦將積極投入社會公益與環境保護活動，以回饋社會大眾。
             </section>
-           
-            <h1 >創新的商業經營模式深獲國外客戶認同</h1>
+
+            <h1>創新的商業經營模式深獲國外客戶認同</h1>
             <section>
                 宏全公司歷經四十年的經驗累積及扎根，已成為台灣飲料包材與代工領導廠商，其核心競爭力來自於創新的商業經營模式，跳脫價格競爭的紅海，不斷墊高及加大競爭門檻。並取得相關品質管理認證，如國際可口可樂、百事可樂、統一企業等，與ISO 9001、ISO 22000、HACCP、GMP與國家品質獎的認證，以提升整體競爭力。
             </section>
@@ -41,10 +61,41 @@
             <section>
                 展望未來，宏全公司專注本業，重視市場、重視客戶、重視人才。立足台灣，成立營運總部整合資源，目前正興建營運總部大樓規劃成立包裝科技博物館，取之於社會，用之於社會，提供社會教育平台與大眾分享。不斷創新研發技術以提升產品品質。近而布局大陸與東南亞，將台灣經驗復制運用以擴展市場，並放眼全世界，與國際大品牌為伍，將大中華經驗延伸至全球市場。
             </section>
-        </div>
-    </div>
 
-    <div style="clear:both;"></div>
+            <br />
+            <div style="height:1px;border-bottom:1px solid black;width:100%;"></div>            
+            <br />
+            <div style="text-align:left;">
+                <span style="color:#000000;font-size:18px;">徐景崴 副理</span>
+                <br />
+                <span style="color:#000000;font-size:14px;">連絡電話 886-4-2359-0088 分機 1510</span> 
+                <br />
+                <span style="color:#000000;font-size:14px;">電子信箱 vick@mail.honchuan.com.tw</span>
+                <br />   
+                <br />     
+            </div>
+        </div>
+    </div>       
+       
 </div>
+
+<script>
+
+    $(document).ready(function () {
+
+        var screenHigth = (typeof window.outerHeight != 'undefined') ?
+            Math.max(window.outerHeight, $(window).height()) : $(window).height();       
+        var fixedHeader = $("#div_header").height();
+        var img = $("#img").height();       
+        var title = $("#hh").height();       
+        var contentHeight = screenHigth - fixedHeader - title - img - 100;
+        $("#scroll").height(contentHeight + 'px');
+       
+
+    });
+
+
+
+</script>
 
 

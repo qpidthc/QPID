@@ -1,7 +1,8 @@
-﻿
-@{
+﻿@{
     Layout = "~/Views/Shared/_THC.cshtml";
 }
+
+
 
 <style>
     ::-webkit-scrollbar {
@@ -21,10 +22,10 @@
 
 <div class="content inputcontent text-center">
     <div style="clear:both"></div>
-    <h3 class="blk">活動說明</h3>
-
+    <h3 class="blk">兌獎說明</h3>
+    <h3 class="blk">@ViewBag.ACTIVITY</h3>
     <iframe class="listpanel" id="scroll" style="height:575px;overflow-x:hidden ;overflow-y: scroll;border: 1px solid #fff;" src="@ViewBag.PAGE"></iframe>
-   
+
 </div>
 
 <script>
@@ -39,7 +40,7 @@
 
         var title = $(".blk").height();
 
-        var contentHeight = screenHigth - fixedHeader - title - 50;
+        var contentHeight = screenHigth - fixedHeader - title - 90;
 
         $("#scroll").height(contentHeight + 'px');
 
@@ -52,4 +53,7 @@
         });
     });
 
+
+
 </script>
+

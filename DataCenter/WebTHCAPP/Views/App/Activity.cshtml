@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     Layout = "~/Views/Shared/_THC.cshtml";
 }
 
@@ -21,35 +20,25 @@
 
 <div class="content inputcontent text-center">
     <div style="clear:both"></div>
-    <h3 class="blk">活動說明</h3>
+    <br />
+    <img id="img" style="" src="~/images/activity.png">
+    <br />
+    <br />
 
     <iframe class="listpanel" id="scroll" style="height:575px;overflow-x:hidden ;overflow-y: scroll;border: 1px solid #fff;" src="@ViewBag.PAGE"></iframe>
-   
+
 </div>
 
 <script>
 
     $(document).ready(function () {
 
-
         var screenHigth = (typeof window.outerHeight != 'undefined') ?
-            Math.max(window.outerHeight, $(window).height()) : $(window).height();
-
+                 Math.max(window.outerHeight, $(window).height()) : $(window).height();
         var fixedHeader = $("#div_header").height();
-
-        var title = $(".blk").height();
-
-        var contentHeight = screenHigth - fixedHeader - title - 50;
-
+        var img = $("#img").height();
+        var contentHeight = screenHigth - fixedHeader - img - 80;
         $("#scroll").height(contentHeight + 'px');
-
-
-        $("#a_menu").css("display", "none");//.hide();
-        $("#i_reply").show();
-
-        $("#i_reply").click(function () {
-            window.history.back();
-        });
     });
 
 </script>
